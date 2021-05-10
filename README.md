@@ -16,3 +16,5 @@ More precisely ->
     for programming notes :
     
     for user manual :
+
+For your convenience, please use your browser translator.
