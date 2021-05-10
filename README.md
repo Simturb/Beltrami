@@ -8,7 +8,11 @@ This workbench necessitates the installation of FreeCAD Workbench Curves
 Description of this tool is available under www.simturb.com
 
 More precisely -> 
+
     for theory: 
+    
     for numerical implementation :
+    
     for programming notes :
+    
     for user manual :
