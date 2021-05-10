@@ -74,6 +74,7 @@ class beltrami:
         fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de pole en t").Def_t=4
         fp.Proxy=self
         fp.setEditorMode("Version",1)
+        fp.setEditorMode("Def_t",2)
     #   fp est le feature python nommé Parametres
     #   Création des sketchs de pilotages
         self.initPilote(fp)
