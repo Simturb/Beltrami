@@ -64,7 +64,7 @@ class beltrami:
     #
     #   Création des listes pour sauvegarder l'information
     #
-        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.1
+        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.01
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(2,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","Npts","Base","Nombre de points par filet").Npts=(9,9,513,8)
@@ -73,6 +73,7 @@ class beltrami:
         fp.addProperty("App::PropertyBool","Init","Base","Vrai pour modification").Init=True
         fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de pole en t").Def_t=4
         fp.Proxy=self
+        fp.setEditorMode("Version",1)
     #   fp est le feature python nommé Parametres
     #   Création des sketchs de pilotages
         self.initPilote(fp)
