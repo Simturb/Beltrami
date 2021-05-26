@@ -126,89 +126,46 @@ class beltrami:
             return
         if (prop == "Sens"):
             debug('Beltrami.onChanged '+prop)
-            self.efface(fp, "Plan_Cascade")
-            self.traceCascade(fp)
-            self.voile3D(fp)
+        #
+        #   Traitement des plans des longueurs et de la cascade
+        #
+            docPlanCascade = App.ActiveDocument.getObject('Plan_Cascade')
+            docPlanLongueurs = App.ActiveDocument.getObject('Plan_Longueurs')
+            for o in docPlanCascade.Group: App.ActiveDocument.removeObject(o.Name)
+            for o in docPlanLongueurs.Group: App.ActiveDocument.removeObject(o.Name)
+            Te = App.ActiveDocument.getObject("Theta_entree")
+            Ts = App.ActiveDocument.getObject("Theta_sortie")
+            Ae = App.ActiveDocument.getObject("Alpha_entree")
+            As = App.ActiveDocument.getObject("Alpha_sortie")
+            We = App.ActiveDocument.getObject("Poids_entree")
+            Ws = App.ActiveDocument.getObject("Poids_sortie")
+            Le = App.ActiveDocument.getObject("Long_entree")
+            Ls = App.ActiveDocument.getObject("Long_sortie")
+            self.sketchDiscCascade(fp, Te, Ts, Ae, As, We, Ws, Le, Ls)
+        #
+        #   Traitement du voile 3D 
+        #
+            docVoile3Da = App.ActiveDocument.getObject("Voile3Da")
+            docVoile3De = App.ActiveDocument.getObject("Voile3De")
+            docVoile3Di = App.ActiveDocument.getObject("Voile3Di")
+            docDomaine3D = App.ActiveDocument.getObject("Domaine3D")
+            for o in docVoile3Da.Group: App.ActiveDocument.removeObject(o.Name)
+            for o in docVoile3De.Group: App.ActiveDocument.removeObject(o.Name)
+            for o in docVoile3Di.Group: App.ActiveDocument.removeObject(o.Name)
+            self.calculVoile(fp, docVoile3Da, docVoile3De, docVoile3Di, docDomaine3D)
+            App.ActiveDocument.recompute()
             debug('onChanged - fin')
             return
         if(prop == "Npts"):
             debug('Beltrami.onChanged Npts')
             debug(prop)
-            for i in range(fp.Nfilets):
-                I=str(i+1)
-                debug('Pour le filet '+str(i))
-                FiletMi=App.ActiveDocument.getObject("FiletM"+I)
-                FiletMi.Number=fp.Npts
-                FiletMi.recompute()
-                debug('Filet méridien traité')
-                fpe=App.ActiveDocument.getObject("LoiEpaisseur"+I+"e")
-                fpe.Number=fp.Npts
-                fpe.recompute()
-                debug("LoiEpaisseur"+I+"e traité")
-                fpi=App.ActiveDocument.getObject("LoiEpaisseur"+I+"i")
-                fpi.Number=fp.Npts
-                fpi.recompute()
-                debug("LoiEpaisseur"+I+"i traité")
-                fpes=App.ActiveDocument.getObject("LoiEpaisseur"+I+"es")
-                fpes.Npts=fp.Npts
-                fpes.recompute()
-                debug("LoiEpaisseur"+I+"es traité")
-                fpis=App.ActiveDocument.getObject("LoiEpaisseur"+I+"is")
-                fpis.Npts=fp.Npts
-                fpis.recompute()
-                debug("LoiEpaisseur"+I+"is traité")
-                Ts=App.ActiveDocument.getObject("Theta_sortie")
-                Usmax=self.CascadeUsmax(i)
-                sketchA=App.ActiveDocument.getObject('Cascade'+I)
-                sketchA.setDatum(24,App.Units.Quantity(str(Usmax)))
-                debug('Usmax= '+str(Usmax))
-                fpAa=App.ActiveDocument.getObject("FiletCAa"+I)
-                fpAa.a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Ts.Points[i].z),0)
-                fpAa.Number=fp.Npts
-                fpAa.recompute()
-                debug("FiletCAa"+I+" traité")
-                fpAs=App.ActiveDocument.getObject("FiletCAs"+I)
-                fpAs.Npts=fp.Npts
-                fpAs.recompute()
-                debug("FiletCAs"+I+" traité")
-                fpLa=App.ActiveDocument.getObject("FiletCLa"+I)
-                fpLa.Npts=fp.Npts
-                fpLa.recompute()
-                debug("FiletCLa"+I+" traité")
-                fpLe=App.ActiveDocument.getObject("FiletCLe"+I)
-                fpLe.Npts=fp.Npts
-                fpLe.recompute()
-                debug("FiletCLe"+I+" traité")
-                fpLi=App.ActiveDocument.getObject("FiletCLi"+I)
-                fpLi.Npts=fp.Npts
-                fpLi.recompute()
-                debug("FiletCLi"+I+" traité")
-                fpAe=App.ActiveDocument.getObject("FiletCAe"+I)
-                fpAe.Npts=fp.Npts
-                fpAe.recompute()
-                debug("FiletCAe"+I+" traité")
-                fpAi=App.ActiveDocument.getObject("FiletCAi"+I)
-                fpAi.Npts=fp.Npts
-                fpAi.recompute()
-                debug("FiletCAi"+I+" traité")
-#            self.modifNptsCascade(fp)
-#            App.ActiveDocument.recompute()
-            self.modifVoile(fp)
+            self.onChangedNpts( fp)
             debug('Beltrami.onChanged Npts - fin')
             return
         if(prop == "Nfilets"):
-            self.efface(fp, "IsoCurve")
-            self.traceMeridien(fp)
-            self.traceEpaisseur(fp)
-            App.ActiveDocument.recompute()
-            self.traceCascade(fp)
-            self.voile3D(fp)
+            self.onChangedNfilets(fp)
             debug('onChanged - fin')
             return
-        # elif(prop == "Meridien"):
-            # debug('elif(prop == Meridien')
-            # self.modifCascade(fp)
-            # self.modifVoile(fp)
         elif (prop == "Epaisseur"):
             debug('on est rendu à if prop ==Epaisseur')
             self.modifEpaisseur(fp)
@@ -221,7 +178,150 @@ class beltrami:
             self.modifCascade(fp)
             self.modifVoile(fp)
         debug('onChanged - fin')               
-        return  
+        return 
+    def onChangedNpts(self, fp):
+        for i in range(fp.Nfilets):
+            I=str(i+1)
+            debug('Pour le filet '+str(i))
+            FiletMi=App.ActiveDocument.getObject("FiletM"+I)
+            FiletMi.Number=fp.Npts
+            FiletMi.recompute()
+            debug('Filet méridien traité')
+            fpe=App.ActiveDocument.getObject("LoiEpaisseur"+I+"e")
+            fpe.Number=fp.Npts
+            fpe.recompute()
+            debug("LoiEpaisseur"+I+"e traité")
+            fpi=App.ActiveDocument.getObject("LoiEpaisseur"+I+"i")
+            fpi.Number=fp.Npts
+            fpi.recompute()
+            debug("LoiEpaisseur"+I+"i traité")
+            fpes=App.ActiveDocument.getObject("LoiEpaisseur"+I+"es")
+            fpes.Npts=fp.Npts
+            fpes.recompute()
+            debug("LoiEpaisseur"+I+"es traité")
+            fpis=App.ActiveDocument.getObject("LoiEpaisseur"+I+"is")
+            fpis.Npts=fp.Npts
+            fpis.recompute()
+            debug("LoiEpaisseur"+I+"is traité")
+            Ts=App.ActiveDocument.getObject("Theta_sortie")
+            Usmax=self.CascadeUsmax(i)
+            sketchA=App.ActiveDocument.getObject('Cascade'+I)
+            sketchA.setDatum(24,App.Units.Quantity(str(Usmax)))
+            debug('Usmax= '+str(Usmax))
+            fpAa=App.ActiveDocument.getObject("FiletCAa"+I)
+            fpAa.a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Ts.Points[i].z),0)
+            fpAa.Number=fp.Npts
+            fpAa.recompute()
+            debug("FiletCAa"+I+" traité")
+            fpAs=App.ActiveDocument.getObject("FiletCAs"+I)
+            fpAs.Npts=fp.Npts
+            fpAs.recompute()
+            debug("FiletCAs"+I+" traité")
+            fpLa=App.ActiveDocument.getObject("FiletCLa"+I)
+            fpLa.Npts=fp.Npts
+            fpLa.recompute()
+            debug("FiletCLa"+I+" traité")
+            fpLe=App.ActiveDocument.getObject("FiletCLe"+I)
+            fpLe.Npts=fp.Npts
+            fpLe.recompute()
+            debug("FiletCLe"+I+" traité")
+            fpLi=App.ActiveDocument.getObject("FiletCLi"+I)
+            fpLi.Npts=fp.Npts
+            fpLi.recompute()
+            debug("FiletCLi"+I+" traité")
+            fpAe=App.ActiveDocument.getObject("FiletCAe"+I)
+            fpAe.Npts=fp.Npts
+            fpAe.recompute()
+            debug("FiletCAe"+I+" traité")
+            fpAi=App.ActiveDocument.getObject("FiletCAi"+I)
+            fpAi.Npts=fp.Npts
+            fpAi.recompute()
+            debug("FiletCAi"+I+" traité")
+        self.modifVoile(fp)
+        return
+    def onChangedNfilets(self, fp):
+        Gui.Selection.clearSelection()
+    #
+    #   Traitement du plan méridien
+    #
+        IsoCurve=App.ActiveDocument.getObject('IsoCurve')
+        IsoCurve_fin=IsoCurve.InList.__len__()-1
+        for i in range(IsoCurve_fin):
+            App.ActiveDocument.removeObject(IsoCurve.InList[0].Name)
+        IsoCurve.NumberU=fp.Nfilets
+        IsoCurve.recompute()
+    #   Discretisation des filets
+        docPlanMeridien=App.ActiveDocument.getObject('Plan_Meridien')
+        i=0
+        for edge in IsoCurve.Shape.Edges:
+            I=str(i+1)
+            debug(I)
+            fpM = App.ActiveDocument.addObject("Part::FeaturePython","FiletM"+I)
+            docPlanMeridien.addObject(fpM)
+            Discretize.Discretization(fpM, (App.ActiveDocument.getObject("IsoCurve"),"Edge"+I))
+            fpM.Number=fp.Npts
+            Discretize.ViewProviderDisc(fpM.ViewObject)
+            fpM.ViewObject.PointSize = 3
+            i+=1
+    #   Traitement du plan des épaisseurs
+        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseur')
+        for o in docPlanEpaisseur.Group: App.ActiveDocument.removeObject(o.Name)
+        EpMaxXEx = App.ActiveDocument.getObject( "EpMaxXEx") 
+        EpMaxXEx.Number=fp.Nfilets
+        EpMaxXIn = App.ActiveDocument.getObject( "EpMaxXIn") 
+        EpMaxXIn.Number=fp.Nfilets
+        EpMaxYEx = App.ActiveDocument.getObject( "EpMaxYEx") 
+        EpMaxYEx.Number=fp.Nfilets
+        EpMaxYIn = App.ActiveDocument.getObject( "EpMaxYIn") 
+        EpMaxYIn.Number=fp.Nfilets
+        EpInflexEx = App.ActiveDocument.getObject( "EpInflexEx") 
+        EpInflexEx.Number=fp.Nfilets
+        EpInflexIn = App.ActiveDocument.getObject( "EpInflexIn") 
+        EpInflexIn.Number=fp.Nfilets
+        EpLastEx = App.ActiveDocument.getObject( "EpLastEx") 
+        EpLastEx.Number=fp.Nfilets
+        EpLastIn = App.ActiveDocument.getObject( "EpLastIn") 
+        EpLastIn.Number=fp.Nfilets
+        App.ActiveDocument.recompute()
+        self.sketchDiscEpaisseur(fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn)
+    #
+    #   Traitement des plans des longueurs et de la cascade
+    #
+        docPlanCascade = App.ActiveDocument.getObject('Plan_Cascade')
+        docPlanLongueurs = App.ActiveDocument.getObject('Plan_Longueurs')
+        for o in docPlanCascade.Group: App.ActiveDocument.removeObject(o.Name)
+        for o in docPlanLongueurs.Group: App.ActiveDocument.removeObject(o.Name)
+        Te = App.ActiveDocument.getObject("Theta_entree")
+        Te.Number = fp.Nfilets
+        Ts = App.ActiveDocument.getObject("Theta_sortie")
+        Ts.Number = fp.Nfilets
+        Ae = App.ActiveDocument.getObject("Alpha_entree")
+        Ae.Number = fp.Nfilets
+        As = App.ActiveDocument.getObject("Alpha_sortie")
+        As.Number = fp.Nfilets
+        We = App.ActiveDocument.getObject("Poids_entree")
+        We.Number = fp.Nfilets
+        Ws = App.ActiveDocument.getObject("Poids_sortie")
+        Ws.Number = fp.Nfilets
+        Le = App.ActiveDocument.getObject("Long_entree")
+        Le.Number = fp.Nfilets
+        Ls = App.ActiveDocument.getObject("Long_sortie")
+        Ls.Number = fp.Nfilets
+        App.ActiveDocument.recompute()
+        self.sketchDiscCascade(fp, Te, Ts, Ae, As, We, Ws, Le, Ls)
+    #
+    #   Traitement du voile 3D 
+    #
+        docVoile3Da = App.ActiveDocument.getObject("Voile3Da")
+        docVoile3De = App.ActiveDocument.getObject("Voile3De")
+        docVoile3Di = App.ActiveDocument.getObject("Voile3Di")
+        docDomaine3D = App.ActiveDocument.getObject("Domaine3D")
+        for o in docVoile3Da.Group: App.ActiveDocument.removeObject(o.Name)
+        for o in docVoile3De.Group: App.ActiveDocument.removeObject(o.Name)
+        for o in docVoile3Di.Group: App.ActiveDocument.removeObject(o.Name)
+        self.calculVoile(fp, docVoile3Da, docVoile3De, docVoile3Di, docDomaine3D)
+        App.ActiveDocument.recompute()
+        return
     def __setstate__(self, state):
         debug('setstate')
         fp=App.ActiveDocument.getObject('Parametres')
@@ -298,23 +398,6 @@ class beltrami:
         sketch.exposeInternalGeometry(BS)
         sketch.recompute()
         return (BS,L1,L2)        
-    def efface(self,fp, Nom):
-    #   efface les objets de la cascade
-        debug('efface')
-        Gui.Selection.clearSelection()
-        i=0
-        debutEfface=0
-        for o in App.ActiveDocument.Objects:
-            if o.Label==Nom : 
-                debutEfface = i
-                break
-            i+=1
-        if (debutEfface >0): 
-            for obj in App.ActiveDocument.Objects[debutEfface:App.ActiveDocument.Objects.__len__()]:
-                App.ActiveDocument.removeObject(obj.Name)
-        App.ActiveDocument.recompute()
-        debug('efface - fin')
-        return
 #
 #
 #       Routines tableur
@@ -916,12 +999,12 @@ class beltrami:
     # #   Stokage pour sauvegarde de l'information dans Epaisseur
     # #   
         docPlanEpaisseur = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Epaisseur")
-    #    docPlanEpaisseur.Label="Plan_Epaisseur"
+        docPilote = App.ActiveDocument.getObject("Pilote")
     #
     #   Discretisation des pilotes des variables pour chaque filet
     #
         EpMaxXEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXEx")
-        docPlanEpaisseur.addObject(EpMaxXEx)
+        docPilote.addObject(EpMaxXEx)
         Discretize.Discretization(EpMaxXEx, (App.ActiveDocument.getObject("EpMaxX"),"Edge1"))
     #    EpMaxXEx.Label="EpMaxXEx"
         EpMaxXEx.Number=fp.Nfilets
@@ -929,7 +1012,7 @@ class beltrami:
         EpMaxXEx.ViewObject.PointSize = 3
         
         EpMaxXIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXIn")
-        docPlanEpaisseur.addObject(EpMaxXIn)
+        docPilote.addObject(EpMaxXIn)
         Discretize.Discretization(EpMaxXIn, (App.ActiveDocument.getObject("EpMaxX"),"Edge2"))
     #    EpMaxXIn.Label="EpMaxXIn"
         EpMaxXIn.Number=fp.Nfilets
@@ -937,7 +1020,7 @@ class beltrami:
         EpMaxXIn.ViewObject.PointSize = 3
         
         EpMaxYEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYEx")
-        docPlanEpaisseur.addObject(EpMaxYEx)
+        docPilote.addObject(EpMaxYEx)
         Discretize.Discretization(EpMaxYEx, (App.ActiveDocument.getObject("EpMaxY"),"Edge1"))
     #    EpMaxYEx.Label="EpMaxYEx"
         EpMaxYEx.Number=fp.Nfilets
@@ -945,7 +1028,7 @@ class beltrami:
         EpMaxYEx.ViewObject.PointSize = 3
         
         EpMaxYIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYIn")
-        docPlanEpaisseur.addObject(EpMaxYIn)
+        docPilote.addObject(EpMaxYIn)
         Discretize.Discretization(EpMaxYIn, (App.ActiveDocument.getObject("EpMaxY"),"Edge2"))
     #    EpMaxYIn.Label="EpMaxYIn"
         EpMaxYIn.Number=fp.Nfilets
@@ -953,7 +1036,7 @@ class beltrami:
         EpMaxYIn.ViewObject.PointSize = 3
         
         EpInflexEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexEx")
-        docPlanEpaisseur.addObject(EpInflexEx)
+        docPilote.addObject(EpInflexEx)
         Discretize.Discretization(EpInflexEx, (App.ActiveDocument.getObject("EpInflex"),"Edge1"))
     #    EpInflexEx.Label="EpInflexEx"
         EpInflexEx.Number=fp.Nfilets
@@ -961,7 +1044,7 @@ class beltrami:
         EpInflexEx.ViewObject.PointSize = 3
         
         EpInflexIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexIn")
-        docPlanEpaisseur.addObject(EpInflexIn)
+        docPilote.addObject(EpInflexIn)
         Discretize.Discretization(EpInflexIn, (App.ActiveDocument.getObject("EpInflex"),"Edge2"))
     #    EpInflexIn.Label="EpInflexIn"
         EpInflexIn.Number=fp.Nfilets
@@ -969,7 +1052,7 @@ class beltrami:
         EpInflexIn.ViewObject.PointSize = 3
         
         EpLastEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastEx")
-        docPlanEpaisseur.addObject(EpLastEx)
+        docPilote.addObject(EpLastEx)
         Discretize.Discretization(EpLastEx, (App.ActiveDocument.getObject("EpLast"),"Edge1"))
     #    EpLastEx.Label="EpLastEx"
         EpLastEx.Number=fp.Nfilets
@@ -977,14 +1060,18 @@ class beltrami:
         EpLastEx.ViewObject.PointSize = 3
         
         EpLastIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastIn")
-        docPlanEpaisseur.addObject(EpLastIn)
+        docPilote.addObject(EpLastIn)
         Discretize.Discretization(EpLastIn, (App.ActiveDocument.getObject("EpLast"),"Edge2"))
     #    EpLastIn.Label="EpLastIn"
         EpLastIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpLastIn.ViewObject)
         EpLastIn.ViewObject.PointSize = 3       
     #   création du sketch en x-y, x représentant la corde du profil et y son épaisseur pour chacun des filets
-        nseg=fp.Npts - 1
+        self.sketchDiscEpaisseur(fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn)
+        debug("traceEpaisseur - fin")
+        return
+    def sketchDiscEpaisseur(self,fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn):
+        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseur')
         for i in range(fp.Nfilets):
             I=str(i+1)
             sketch=App.ActiveDocument.addObject('Sketcher::SketchObject','LoiEpaisseur'+I)
@@ -1051,7 +1138,6 @@ class beltrami:
             fpe.ParameterLast=1.
             fpe.Algorithm="Number"
             fpe.Number=fp.Npts
-        #    fpe.Label="LoiEpaisseur"+I+"e"
             # Discretize.ViewProviderDisc(fpe.ViewObject)
             # fpe.ViewObject.PointSize = 3
             fpe.recompute()
@@ -1062,19 +1148,16 @@ class beltrami:
             docPlanEpaisseur.addObject(fpes)
             eLast=EpLastEx.Points[i].y
             DiscEp_s(fpes, fpe, fp.Npts, eLast)
-#            fpes.recompute()
             ViewProviderDisc(fpes.ViewObject)
             fpes.ViewObject.PointSize = 3 
             debug('fpes.Points')
             debug(fpes.Points)
-#            fpes.recompute()
     #       On calcul les points sur le profil d'épaisseur intrados
             Discretize.Discretization(fpi, (App.ActiveDocument.getObject("LoiEpaisseur"+I),"Edge2"))
 
             fpi.ParameterLast=1.
             fpi.Algorithm="Number"
             fpi.Number=fp.Npts
-        #    fpi.Label="LoiEpaisseur"+I+"i"
             # Discretize.ViewProviderDisc(fpi.ViewObject)
             # fpi.ViewObject.PointSize = 3
             fpi.recompute()
@@ -1085,14 +1168,10 @@ class beltrami:
             docPlanEpaisseur.addObject(fpis)
             iLast=EpLastIn.Points[i].y
             DiscEp_s(fpis,fpi, fp.Npts, iLast)
-#            fpis.recompute()
             ViewProviderDisc(fpis.ViewObject)
             fpis.ViewObject.PointSize = 3 
             debug('fpis.Points')
             debug(fpis.Points)
-#            fpis.recompute()
-#        App.ActiveDocument.recompute()
-        debug("traceEpaisseur - fin")
         return
     def modifEpaisseur(self,fp):
         debug("modifEpaisseur")
@@ -1412,25 +1491,25 @@ class beltrami:
     def traceCascade(self,fp):
         debug('traceCascade')
     #    
+        docPilote = App.ActiveDocument.getObject("Pilote")
     #   Creation des profils dans les plan des longueurs et de casacade pour éventuellement être assemblés pour former le voile en 3D
     #    
         docPlanCascade = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Cascade")
         docPlanLongueurs = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Longueurs")
-        nseg=fp.Npts-1
     #
     #   Discretisation des pilotes Bspine pour chaque filet
     #
         #   Loi de theta 
         #
         Te = App.ActiveDocument.addObject("Part::FeaturePython","Theta_entree")
-        docPlanCascade.addObject(Te)
+        docPilote.addObject(Te)
         Discretize.Discretization(Te, (App.ActiveDocument.getObject("Theta"),"Edge1"))
         Te.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Te.ViewObject)
         Te.ViewObject.PointSize = 3
         Te.recompute()
         Ts = App.ActiveDocument.addObject("Part::FeaturePython","Theta_sortie")
-        docPlanCascade.addObject(Ts)        
+        docPilote.addObject(Ts)        
         Discretize.Discretization(Ts, (App.ActiveDocument.getObject("Theta"),"Edge2"))
         Ts.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ts.ViewObject)
@@ -1440,14 +1519,14 @@ class beltrami:
         #   Loi de alpha 
         #
         Ae = App.ActiveDocument.addObject("Part::FeaturePython","Alpha_entree")
-        docPlanCascade.addObject(Ae)
+        docPilote.addObject(Ae)
         Discretize.Discretization(Ae, (App.ActiveDocument.getObject("Alpha"),"Edge1"))
         Ae.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ae.ViewObject)
         Ae.ViewObject.PointSize = 3
         Ae.recompute()
         As = App.ActiveDocument.addObject("Part::FeaturePython","Alpha_sortie")
-        docPlanCascade.addObject(As)
+        docPilote.addObject(As)
         Discretize.Discretization(As, (App.ActiveDocument.getObject("Alpha"),"Edge2"))
         As.Number=fp.Nfilets
         Discretize.ViewProviderDisc(As.ViewObject)
@@ -1457,14 +1536,14 @@ class beltrami:
         #   Loi de poids 
         #
         We = App.ActiveDocument.addObject("Part::FeaturePython","Poids_entree")
-        docPlanCascade.addObject(We)
+        docPilote.addObject(We)
         Discretize.Discretization(We, (App.ActiveDocument.getObject("Poids"),"Edge1"))
         We.Number=fp.Nfilets
         Discretize.ViewProviderDisc(We.ViewObject)
         We.ViewObject.PointSize = 3
         We.recompute()
         Ws = App.ActiveDocument.addObject("Part::FeaturePython","Poids_sortie")
-        docPlanCascade.addObject(Ws)
+        docPilote.addObject(Ws)
         Discretize.Discretization(Ws, (App.ActiveDocument.getObject("Poids"),"Edge2"))
         Ws.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ws.ViewObject)
@@ -1475,24 +1554,33 @@ class beltrami:
         #
         #   au bord d'attaque
         Le = App.ActiveDocument.addObject("Part::FeaturePython","Long_entree")
-        docPlanLongueurs.addObject(Le)
+        docPilote.addObject(Le)
         Discretize.Discretization(Le, (App.ActiveDocument.getObject("Long"),"Edge1"))
         Le.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Le.ViewObject)
         Le.ViewObject.PointSize = 3
         Le.recompute()
         Ls = App.ActiveDocument.addObject("Part::FeaturePython","Long_sortie")
-        docPlanLongueurs.addObject(Ls)
+        docPilote.addObject(Ls)
         Discretize.Discretization(Ls, (App.ActiveDocument.getObject("Long"),"Edge2"))
         Ls.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ls.ViewObject)
         Ls.ViewObject.PointSize = 3
         Ls.recompute()
+        self.sketchDiscCascade(fp, Te, Ts, Ae, As, We, Ws, Le, Ls)
+        debug('traceCascade - fin')
+        return
+    def sketchDiscCascade(self,fp, Te, Ts, Ae, As, We, Ws, Le, Ls):
+        debug("sketchDiscCascade")
+        docPlanCascade = App.ActiveDocument.getObject("Plan_Cascade")
+        docPlanLongueurs = App.ActiveDocument.getObject("Plan_Longueurs")
     #
     #       Creation de la géométrie incluant un sketch pour chaque filet de Cascade
     #
+        debug("Te.Points= " + str(Te.Points))
         for i in range(fp.Nfilets):     #FiletMeridien in FiletsMeridien:
             I=str(i+1)
+            debug(str(i)+" "+I)
         #
         #   Création fp fpAa qui contient l'information du Discretized_Edge du voile 2D
         #
@@ -1572,8 +1660,8 @@ class beltrami:
             i+=1
             I=str(i+1)
 #        App.ActiveDocument.recompute()
-        debug('traceCascade - fin')
-        return
+        debug("sketchDiscCascade - fin")
+        return   
     def modifCascade(self,fp):
         debug('modifCascade')
         nseg=fp.Npts - 1
@@ -1792,16 +1880,38 @@ class beltrami:
     #   i pour intrados
     #   on crée les groupes
         docVoile3Da = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Voile3Da")
-#        docVoile3Da.Label="Voile3Da"
         docDomaine3D.addObject(docVoile3Da)
         docVoile3De = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Voile3De")
-#        docVoile3De.Label="Voile3De"
         docDomaine3D.addObject(docVoile3De)
         docVoile3Di = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Voile3Di")
-#        docVoile3Di.Label="Voile3Di"
         docDomaine3D.addObject(docVoile3Di)
-        i=1
-        listePt=[]
+        self.calculVoile(fp, docVoile3Da, docVoile3De, docVoile3Di, docDomaine3D)
+            #   Création des surfaces
+        fpSa=App.ActiveDocument.addObject("Part::FeaturePython","Ame") #add object to document
+        approximate.Approximate(fpSa,docVoile3Da)
+        # fpSa.recompute()
+        # fpSa.Method="Smoothing Algorithm"
+        # fpSa.CurvatureWeight = 9.00
+        approximate.ViewProviderApp(fpSa.ViewObject)
+        docDomaine3D.addObject(fpSa)
+        fpSe=App.ActiveDocument.addObject("Part::FeaturePython","Extrados") #add object to document
+        approximate.Approximate(fpSe,docVoile3De)
+        # fpSe.recompute()
+        # fpSe.Method="Smoothing Algorithm"
+        # fpSe.CurvatureWeight = 9.00
+        approximate.ViewProviderApp(fpSe.ViewObject)
+        docDomaine3D.addObject(fpSe)
+        fpSi=App.ActiveDocument.addObject("Part::FeaturePython","Intrados") #add object to document
+        approximate.Approximate(fpSi,docVoile3Di)
+        # fpSi.recompute()
+        # fpSi.Method="Smoothing Algorithm"
+        # fpSi.CurvatureWeight = 9.00
+        approximate.ViewProviderApp(fpSi.ViewObject)
+        docDomaine3D.addObject(fpSi)
+        App.ActiveDocument.recompute()
+        debug('voile3D - fin '+str(App.ActiveDocument.Objects.__len__()))
+        return
+    def calculVoile(self, fp, docVoile3Da, docVoile3De, docVoile3Di, docDomaine3D):
     #   Creation et initialisation des séries de points 3D du voile
         for i in  range(fp.Nfilets):
             I=str(i+1)
@@ -1810,36 +1920,27 @@ class beltrami:
             fpVA = App.ActiveDocument.addObject("Part::FeaturePython",'Voile3Da'+I)
             fpVA.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points")
             fpVA.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
-#            fpVA.Label='Voile3Da'+I
             debug(fpVA.Label)
             ViewProviderDisc(fpVA.ViewObject)
             fpVA.ViewObject.PointSize = 3
-#            fpVA.ViewObject.Visibility=False
             docVoile3Da.addObject(fpVA)
             fpVE = App.ActiveDocument.addObject("Part::FeaturePython",'Voile3De'+I)
             fpVE.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points")
             fpVE.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
-#            fpVE.Label='Voile3De'+I
             debug(fpVE.Label)
             ViewProviderDisc(fpVE.ViewObject)
             fpVE.ViewObject.PointSize = 3
-#            fpVE.ViewObject.Visibility=False
             docVoile3De.addObject(fpVE)
             fpVI = App.ActiveDocument.addObject("Part::FeaturePython",'Voile3Di'+I)
             fpVI.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points")
             fpVI.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
-#            fpVI.Label='Voile3Di'+I
             debug(fpVI.Label)
             ViewProviderDisc(fpVI.ViewObject)
             fpVI.ViewObject.PointSize = 3
-#            fpVI.ViewObject.Visibility=False
             docVoile3Di.addObject(fpVI)
         #   Calcul des 3 voiles A, E, I      
-#            FiletM=FiletsMeridien[i].Points
             FiletMeridien=App.ActiveDocument.getObject('FiletM'+Ip1)
             FiletM=FiletMeridien.Points
-#            FiletME=FiletsMeridienE[i]
-#            FiletMI=FiletsMeridienI[i]
             FiletCascadeA=App.ActiveDocument.getObject('FiletCAs'+Ip1)
             FiletCA=FiletCascadeA.Points
             FiletCascadeE=App.ActiveDocument.getObject('FiletCAe'+Ip1)
@@ -1850,36 +1951,11 @@ class beltrami:
             debug(I)
             debug('FiletM= '+str(FiletM))
             debug('FiletCA= '+str(FiletCA))
-#            debug('FiletMI= '+str(FiletMI))
             debug('FiletCI= '+str(FiletCI))
-#            debug('FiletME= '+str(FiletME))
             debug('FiletCE= '+str(FiletCE))
             Voile3DDiscretization.calcul(fpVA, FiletM, FiletCA, fp.Npts)
             Voile3DDiscretization.calcul(fpVI, FiletM, FiletCI, fp.Npts)
             Voile3DDiscretization.calcul(fpVE, FiletM, FiletCE, fp.Npts)
-    #   Création des surfaces
-        fpSa=App.ActiveDocument.addObject("Part::FeaturePython","Ame") #add object to document
-        approximate.Approximate(fpSa,docVoile3Da)
-        fpSa.Parametrization = "Uniform"
-        fpSa.ApproxTolerance = 0.1
-        approximate.ViewProviderApp(fpSa.ViewObject)
-        docDomaine3D.addObject(fpSa)
-        fpSe=App.ActiveDocument.addObject("Part::FeaturePython","Extrados") #add object to document
-        approximate.Approximate(fpSe,docVoile3De)
-        fpSe.Parametrization = "Uniform"
-        fpSe.ApproxTolerance = 0.1
-        approximate.ViewProviderApp(fpSe.ViewObject)
-        docDomaine3D.addObject(fpSe)
-        fpSi=App.ActiveDocument.addObject("Part::FeaturePython","Intrados") #add object to document
-        approximate.Approximate(fpSi,docVoile3Di)
-        fpSi.Parametrization = "Uniform"
-        fpSi.ApproxTolerance = 0.1
-        approximate.ViewProviderApp(fpSi.ViewObject)
-        docDomaine3D.addObject(fpSi)
-        App.ActiveDocument.recompute()
-#        self.fin+=7+fp.Nfilets*3
-#        self.fin=App.ActiveDocument.Objects.__len__()
-        debug('voile3D - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
     def modifVoile(self, fp):
         #
