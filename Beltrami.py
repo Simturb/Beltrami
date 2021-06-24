@@ -408,7 +408,7 @@ class beltrami:
 #
     def initTableur(self,fp):
         Feuil=App.activeDocument().addObject('Spreadsheet::Sheet','Tableau_pilote')
-        Feuil.set("A1", "Abscisse curviligne")
+        Feuil.set("A1", "Ordonnée t")
         Feuil.set("B1", "0.0")
         Feuil.set("C1", "0.3333333333")
         Feuil.set("D1", "0.6666666666")
