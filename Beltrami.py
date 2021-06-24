@@ -74,6 +74,9 @@ class beltrami:
         fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de pole en t").Def_t=4
         fp.Proxy=self
         fp.setEditorMode("Version",1)
+        fp.setEditorMode("Label",1)
+        fp.setEditorMode("Modifiable",2)
+        fp.setEditorMode("Init",2)
         fp.setEditorMode("Def_t",2)
     #   fp est le feature python nommé Parametres
     #   Création des sketchs de pilotages
@@ -678,7 +681,7 @@ class beltrami:
         LoiMeridien.append(App.Vector(520,72.7,0))
         LoiMeridien.append(App.Vector(393.73,53.97,0))
         LoiMeridien.append(App.Vector(329.956,-10.5916,0))
-        LoiMeridien.append(App.Vector(284,-109,60))
+        LoiMeridien.append(App.Vector(284,-109,0))
         LoiMeridien.append(App.Vector(343.814,-202.235,0))
         LoiMeridien.append(App.Vector(415.814,-242.235,0))
         LoiMeridien.append(App.Vector(500,-229,0))

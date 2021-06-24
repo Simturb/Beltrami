@@ -6,8 +6,8 @@ class modif():
     def GetResources(self):
         return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/Resources/Icons/modif.svg", # the name of a svg file available in the resources
                 'Accel' : "Shift+S", # a default shortcut (optional)
-                'MenuText': "Démarrage à froid d'un tracé - Cold start for a new blade",
-                'ToolTip' : "Un nouveau tracé - A new blade"}
+                'MenuText': "Mettre à jour le tracé - Profile update",
+                'ToolTip' : "Mise-à-jour - Update"}
     
     def Activated(self):
         fp=App.ActiveDocument.getObject("Parametres")
