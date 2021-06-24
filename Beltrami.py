@@ -64,7 +64,7 @@ class beltrami:
     #
     #   Création des listes pour sauvegarder l'information
     #
-        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.01
+        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.02
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(2,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","Npts","Base","Nombre de points par filet").Npts=(9,9,513,8)
@@ -408,7 +408,7 @@ class beltrami:
 #
     def initTableur(self,fp):
         Feuil=App.activeDocument().addObject('Spreadsheet::Sheet','Tableau_pilote')
-        Feuil.set("A1", "Abscisse curviligne")
+        Feuil.set("A1", "Ordonnée t")
         Feuil.set("B1", "0.0")
         Feuil.set("C1", "0.3333333333")
         Feuil.set("D1", "0.6666666666")
