@@ -267,7 +267,7 @@ class beltrami:
             fpM.ViewObject.PointSize = 3
             i+=1
     #   Traitement du plan des épaisseurs
-        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseur')
+        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseurs')
         for o in docPlanEpaisseur.Group: App.ActiveDocument.removeObject(o.Name)
         EpMaxXEx = App.ActiveDocument.getObject( "EpMaxXEx") 
         EpMaxXEx.Number=fp.Nfilets
@@ -1001,7 +1001,7 @@ class beltrami:
     # #
     # #   Stokage pour sauvegarde de l'information dans Epaisseur
     # #   
-        docPlanEpaisseur = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Epaisseur")
+        docPlanEpaisseur = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Epaisseurs")
         docPilote = App.ActiveDocument.getObject("Pilote")
     #
     #   Discretisation des pilotes des variables pour chaque filet
@@ -1074,7 +1074,7 @@ class beltrami:
         debug("traceEpaisseur - fin")
         return
     def sketchDiscEpaisseur(self,fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn):
-        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseur')
+        docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseurs')
         for i in range(fp.Nfilets):
             I=str(i+1)
             sketch=App.ActiveDocument.addObject('Sketcher::SketchObject','LoiEpaisseur'+I)
