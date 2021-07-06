@@ -590,7 +590,7 @@ class beltrami:
         sketchLong.setDatum(3,App.Units.Quantity(str(Feuil.C10)+' mm'))
         sketchLong.setDatum(4,App.Units.Quantity(t2))
         sketchLong.setDatum(5,App.Units.Quantity(str(Feuil.D10)+' mm'))
-        sketchLong.setDatum(6,App.Units.Quantity(str(Feuil.E1)+' mm'))
+        sketchLong.setDatum(6,App.Units.Quantity(t3))
         sketchLong.setDatum(7,App.Units.Quantity(str(Feuil.E10)+' mm'))
         sketchLong.setDatum(8,App.Units.Quantity(t0))
         sketchLong.setDatum(9,App.Units.Quantity(str(Feuil.B11)+' mm'))

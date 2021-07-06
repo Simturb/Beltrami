@@ -10,8 +10,13 @@ class modif():
                 'ToolTip' : "Mise-à-jour - Update"}
     
     def Activated(self):
+        if (App.ActiveDocument==None): 
+            print('Il faut avoir lancé un tracé')
+            return
         fp=App.ActiveDocument.getObject("Parametres")
-        if not fp : return
+        if not fp : 
+            print('Il faut avoir lancé un tracé')
+            return
         pM=fp.Proxy
         pM.modif(fp)
         return
