@@ -2,8 +2,8 @@
 Design of turbine blade profile.
 ![Image of Beltrami](https://github.com/Simturb/Beltrami/blob/main/Resources/repository-open-graph-beltrami.png)
 ## Documentation
-All the documentation has been generated in french. However, your web brwoser translator works very well.
-MS Edge seams to have the best frendly translator.
+All the documentation has been generated in french. However, your web browser translator works very well.
+MS Edge seems to have the best friendly translator.
 ![Image of Installation](https://github.com/Simturb/Beltrami/blob/main/Resources/Installation.png)
 
 
