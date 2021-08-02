@@ -16,6 +16,8 @@ class coldStart():
             print("On ne peut travailler que sur une aube à la fois dans un modèle.")
             return
         fp=App.ActiveDocument.addObject("App::FeaturePython","Parametres")
+        docIU = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Interface_usager")
+        docIU.addObject(fp)
         pM=Beltrami.beltrami(fp)
         return
         

@@ -248,9 +248,14 @@ class beltrami:
     #   Traitement du plan méridien
     #
         IsoCurve=App.ActiveDocument.getObject('IsoCurve')
-        IsoCurve_fin=IsoCurve.InList.__len__()-1
+        IsoCurve_fin=IsoCurve.InList.__len__()
+        j=0
         for i in range(IsoCurve_fin):
-            App.ActiveDocument.removeObject(IsoCurve.InList[0].Name)
+            objName=IsoCurve.InList[j].Name
+            if objName != 'Plan_Meridien' : 
+                App.ActiveDocument.removeObject(objName)
+                j=0
+            else: j=i+1
         IsoCurve.NumberU=fp.Nfilets
         IsoCurve.recompute()
     #   Discretisation des filets
@@ -407,7 +412,9 @@ class beltrami:
 #
 #
     def initTableur(self,fp):
-        Feuil=App.activeDocument().addObject('Spreadsheet::Sheet','Tableau_pilote')
+        Feuil=App.ActiveDocument.addObject('Spreadsheet::Sheet','Tableau_pilote')
+        docIU=App.ActiveDocument.getObject("Interface_usager")
+        docIU.addObject(Feuil)
         Feuil.set("A1", "Ordonnée t")
         Feuil.set("B1", "0.0")
         Feuil.set("C1", "0.3333333333")
@@ -590,7 +597,7 @@ class beltrami:
         sketchLong.setDatum(3,App.Units.Quantity(str(Feuil.C10)+' mm'))
         sketchLong.setDatum(4,App.Units.Quantity(t2))
         sketchLong.setDatum(5,App.Units.Quantity(str(Feuil.D10)+' mm'))
-        sketchLong.setDatum(6,App.Units.Quantity(str(Feuil.E1)+' mm'))
+        sketchLong.setDatum(6,App.Units.Quantity(t3))
         sketchLong.setDatum(7,App.Units.Quantity(str(Feuil.E10)+' mm'))
         sketchLong.setDatum(8,App.Units.Quantity(t0))
         sketchLong.setDatum(9,App.Units.Quantity(str(Feuil.B11)+' mm'))
@@ -689,11 +696,12 @@ class beltrami:
         LoiMeridien.append(App.Vector(511.501,-86.3168,0))
         fp.addProperty("App::PropertyVectorList","Meridien","Plan 1 - Meridien","Vecteurs des points").Meridien=LoiMeridien
         sketch=App.ActiveDocument.addObject('Sketcher::SketchObject','Meridien')
+        docIU=App.ActiveDocument.getObject("Interface_usager")
+        docIU.addObject(sketch)
 #        sketch.Label='Meridien'
         sketch.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(-0.707107,0.000000,0.000000,-0.707107))
 #        sketch.Visibility=False
         docPilote = App.ActiveDocument.getObject("Pilote")
-        docPilote.addObject(sketch)
 #        docPlanMeridien.Visibility=False
     #   On s'assure d'avoir des coordonnées cohérentes avec le sens de rotation
         fp=App.ActiveDocument.getObject('Parametres')
@@ -1605,8 +1613,8 @@ class beltrami:
         #
             Discretize.Discretization(fpAa, (App.ActiveDocument.getObject("Cascade"+I),"Edge1"))
             fpAa.Number=fp.Npts
-            ViewProviderDisc(fpAa.ViewObject)
-            fpAa.ViewObject.PointSize = 3
+            # ViewProviderDisc(fpAa.ViewObject)
+            # fpAa.ViewObject.PointSize = 3
             fpAa.recompute()
         #   fpAs est comme fpAa mais avec une distribution suivant s du plan méridien
             fpAs = App.ActiveDocument.addObject("Part::FeaturePython","FiletCAs"+I)
