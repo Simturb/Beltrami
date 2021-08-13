@@ -64,7 +64,7 @@ class beltrami:
     #
     #   Création des listes pour sauvegarder l'information
     #
-        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.02
+        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.03
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(2,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","Npts","Base","Nombre de points par filet").Npts=(9,9,513,8)
@@ -352,6 +352,7 @@ class beltrami:
         #Création du point de coin
         #
         pt=sketch.Geometry[Pt]
+        sketch.toggleConstruction(Pt)
         Ddlx=sketch.addConstraint(Sketcher.Constraint('DistanceX',Pt,1,pt.X))
         sketch.renameConstraint(Ddlx,nom+'x')
         Ddly=sketch.addConstraint(Sketcher.Constraint('DistanceY',Pt,1,pt.Y))
@@ -544,11 +545,17 @@ class beltrami:
         tt2=str(Feuil.D1)+' mm'
         tt3=str(Feuil.E1)+' mm'
         sketchTheta.setDatum(0,App.Units.Quantity(t0))
+        debug('0= '+ str(t0))
         sketchTheta.setDatum(1,App.Units.Quantity(str(Feuil.B3)+' mm'))
+        debug('1= '+str(Feuil.B3)+' mm'  )
         sketchTheta.setDatum(2,App.Units.Quantity(t1))
+        debug('2= '+ str(t1))
         sketchTheta.setDatum(3,App.Units.Quantity(str(Feuil.C3)+' mm'))
+        debug('3= '+str(Feuil.C3)+' mm'  )
         sketchTheta.setDatum(4,App.Units.Quantity(t2))
+        debug('4= '+ str(t2))
         sketchTheta.setDatum(5,App.Units.Quantity(str(Feuil.D3)+' mm'))
+        debug('5= '+str(Feuil.D3)+' mm'  )
         sketchTheta.setDatum(6,App.Units.Quantity(t3))
         sketchTheta.setDatum(7,App.Units.Quantity(str(Feuil.E3)+' mm'))
         sketchTheta.setDatum(8,App.Units.Quantity(t0))
@@ -700,9 +707,7 @@ class beltrami:
         docIU.addObject(sketch)
 #        sketch.Label='Meridien'
         sketch.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(-0.707107,0.000000,0.000000,-0.707107))
-#        sketch.Visibility=False
         docPilote = App.ActiveDocument.getObject("Pilote")
-#        docPlanMeridien.Visibility=False
     #   On s'assure d'avoir des coordonnées cohérentes avec le sens de rotation
         fp=App.ActiveDocument.getObject('Parametres')
     #
@@ -716,26 +721,22 @@ class beltrami:
             I=str(i+1)
             Pt.append(sketch.addGeometry(Part.Point(fp.Meridien[i])))
             self.immobilisePoint(sketch, Pt[i], "M"+I)
-#        for contrainte in range(24) :sketch.toggleDriving(contrainte)
     #
     #   On crée les 4 arêtes délimitant l'aubage dans le plan méridien
     #
         (BS1,L11,L12)=self.planBS(sketch,Pt[0],Pt[1],Pt[2],Pt[3])   # "Edge1"
         (BS2,L21,L22)=self.planBS(sketch,Pt[3],Pt[4],Pt[5],Pt[6])   # "Edge2"
         (BS3,L31,L32)=self.planBS(sketch,Pt[6],Pt[7],Pt[8],Pt[9])   # "Edge3"
-        (BS4,L41,L42)=self.planBS(sketch,Pt[9],Pt[10],Pt[11],Pt[0])   # "Edge4"
-#      
+        (BS4,L41,L42)=self.planBS(sketch,Pt[9],Pt[10],Pt[11],Pt[0])   # "Edge4"      
     #
     #   groupe Meridien 
     #
     #
         docPlanMeridien = App.ActiveDocument.addObject("App::DocumentObjectGroup", "Plan_Meridien")
-#        docPlanMeridien.Label='Plan_Meridien'
-            #
+    #
     #   Création de la surface servant à  interpoler les filets 
     # 
         surfMeridien=App.ActiveDocument.addObject("Surface::GeomFillSurface","Surface")
-#        surfMeridien.Label='Surface'
         surfMeridien.BoundaryList=[(sketch,("Edge1")),(sketch,("Edge2")),(sketch,("Edge3")),(sketch,("Edge4"))]
         docPlanMeridien.addObject(surfMeridien)
         App.ActiveDocument.recompute()
@@ -777,7 +778,6 @@ class beltrami:
             fpM = App.ActiveDocument.addObject("Part::FeaturePython","FiletM"+I)
             docPlanMeridien.addObject(fpM)
             Discretize.Discretization(fpM, (App.ActiveDocument.getObject("IsoCurve"),"Edge"+I))
- #           fpM.Label="FiletM"+I
             fpM.Number=fp.Npts
             Discretize.ViewProviderDisc(fpM.ViewObject)
             fpM.ViewObject.PointSize = 3
@@ -818,16 +818,12 @@ class beltrami:
         Feuil= App.ActiveDocument.getObject("Tableau_pilote")
         LoiEpaisseur=[]
         sketchEpMaxX=App.ActiveDocument.addObject('Sketcher::SketchObject','EpMaxX')
-#        sketchEpMaxX.Label='EpMaxX'
         docPilote.addObject(sketchEpMaxX)
         sketchEpMaxY=App.ActiveDocument.addObject('Sketcher::SketchObject','EpMaxY')
-#        sketchEpMaxY.Label='EpMaxY'
         docPilote.addObject(sketchEpMaxY)
         sketchEpInflex=App.ActiveDocument.addObject('Sketcher::SketchObject','EpInflex')
-#        sketchEpInflex.Label='EpInflex'
         docPilote.addObject(sketchEpInflex)
         sketchEpLast=App.ActiveDocument.addObject('Sketcher::SketchObject','EpLast')
-#        sketchEpLast.Label='EpLast'
         docPilote.addObject(sketchEpLast)
      #   les abscisses des esquisses sont fonction de t*100, t variant de 0 à 100 mm dans FreeCAD
         t0=Feuil.B1*100.
@@ -882,13 +878,9 @@ class beltrami:
         Pt2=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[2]))
         Pt3=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[3]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxX, Pt0, "PtEx0")
-#        sketchEpMaxX.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxX, Pt1, "PtEx1")
-#        sketchEpMaxX.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxX, Pt2, "PtEx2")
-#        sketchEpMaxX.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxX, Pt3, "PtEx3")
-#        sketchEpMaxX.toggleDriving(Pt3y)
         self.planBS(sketchEpMaxX,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'épaisseur maximum en Y pour l'extrados
@@ -898,13 +890,9 @@ class beltrami:
         Pt2=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[6]))
         Pt3=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[7]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxY, Pt0, "PtEx0")
-#        sketchEpMaxY.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxY, Pt1, "PtEx1")
-#        sketchEpMaxY.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxY, Pt2, "PtEx2")
-#        sketchEpMaxY.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxY, Pt3, "PtEx3")
-#        sketchEpMaxY.toggleDriving(Pt3y)
         self.planBS(sketchEpMaxY,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'inflexion en X pour l'extrados
@@ -914,13 +902,9 @@ class beltrami:
         Pt2=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[10]))
         Pt3=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[11]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflex, Pt0, "PtEx0")
-#        sketchEpInflex.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflex, Pt1, "PtEx1")
-#        sketchEpInflex.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflex, Pt2, "PtEx2")
-#        sketchEpInflex.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflex, Pt3, "PtEx3")
-#        sketchEpInflex.toggleDriving(Pt3y)
         self.planBS(sketchEpInflex,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant le dernier pt en X pour l'extrados
@@ -930,15 +914,11 @@ class beltrami:
         Pt2=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[14]))
         Pt3=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[15]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpLast, Pt0, "PtEx0")
-#        sketchEpLast.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpLast, Pt1, "PtEx1")
-#        sketchEpLast.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLast, Pt2, "PtEx2")
-#        sketchEpLast.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLast, Pt3, "PtEx3")
-#        sketchEpLast.toggleDriving(Pt3y)
         self.planBS(sketchEpLast,Pt0, Pt1, Pt2, Pt3)
-           #
+    #
     #   Loi déterminant l'épaisseur maximum en X pour l'intrados
     # 
         Pt0=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[16]))
@@ -946,13 +926,9 @@ class beltrami:
         Pt2=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[18]))
         Pt3=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[19]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxX, Pt0, "PtIn0")
-#        sketchEpMaxX.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxX, Pt1, "PtIn1")
-#        sketchEpMaxX.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxX, Pt2, "PtIn2")
-#        sketchEpMaxX.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxX, Pt3, "PtIn3")
-#        sketchEpMaxX.toggleDriving(Pt3y)
         self.planBS(sketchEpMaxX,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'épaisseur maximum en Y pour l'intrados
@@ -962,13 +938,9 @@ class beltrami:
         Pt2=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[22]))
         Pt3=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[23]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxY, Pt0, "PtIn0")
-#        sketchEpMaxY.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxY, Pt1, "PtIn1")
-#        sketchEpMaxY.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxY, Pt2, "PtIn2")
-#        sketchEpMaxY.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxY, Pt3, "PtIn3")
-#        sketchEpMaxY.toggleDriving(Pt3y)
         self.planBS(sketchEpMaxY,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'inflexion en X pour l'intrados
@@ -978,13 +950,9 @@ class beltrami:
         Pt2=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[26]))
         Pt3=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[27]))
         (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflex, Pt0, "PtIn0")
-#        sketchEpInflex.toggleDriving(Pt0y)
         (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflex, Pt1, "PtIn1")
-#        sketchEpInflex.toggleDriving(Pt1y)
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflex, Pt2, "PtIn2")
-#        sketchEpInflex.toggleDriving(Pt2y)
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflex, Pt3, "PtIn3")
-#        sketchEpInflex.toggleDriving(Pt3y)
         self.planBS(sketchEpInflex,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant le dernier pt en X pour l'intrados
@@ -1017,63 +985,48 @@ class beltrami:
         EpMaxXEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXEx")
         docPilote.addObject(EpMaxXEx)
         Discretize.Discretization(EpMaxXEx, (App.ActiveDocument.getObject("EpMaxX"),"Edge1"))
-    #    EpMaxXEx.Label="EpMaxXEx"
         EpMaxXEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxXEx.ViewObject)
         EpMaxXEx.ViewObject.PointSize = 3
-        
         EpMaxXIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXIn")
         docPilote.addObject(EpMaxXIn)
         Discretize.Discretization(EpMaxXIn, (App.ActiveDocument.getObject("EpMaxX"),"Edge2"))
-    #    EpMaxXIn.Label="EpMaxXIn"
         EpMaxXIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxXIn.ViewObject)
         EpMaxXIn.ViewObject.PointSize = 3
-        
         EpMaxYEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYEx")
         docPilote.addObject(EpMaxYEx)
         Discretize.Discretization(EpMaxYEx, (App.ActiveDocument.getObject("EpMaxY"),"Edge1"))
-    #    EpMaxYEx.Label="EpMaxYEx"
         EpMaxYEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxYEx.ViewObject)
         EpMaxYEx.ViewObject.PointSize = 3
-        
         EpMaxYIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYIn")
         docPilote.addObject(EpMaxYIn)
         Discretize.Discretization(EpMaxYIn, (App.ActiveDocument.getObject("EpMaxY"),"Edge2"))
-    #    EpMaxYIn.Label="EpMaxYIn"
         EpMaxYIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxYIn.ViewObject)
         EpMaxYIn.ViewObject.PointSize = 3
-        
         EpInflexEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexEx")
         docPilote.addObject(EpInflexEx)
         Discretize.Discretization(EpInflexEx, (App.ActiveDocument.getObject("EpInflex"),"Edge1"))
-    #    EpInflexEx.Label="EpInflexEx"
         EpInflexEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpInflexEx.ViewObject)
         EpInflexEx.ViewObject.PointSize = 3
-        
         EpInflexIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexIn")
         docPilote.addObject(EpInflexIn)
         Discretize.Discretization(EpInflexIn, (App.ActiveDocument.getObject("EpInflex"),"Edge2"))
-    #    EpInflexIn.Label="EpInflexIn"
         EpInflexIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpInflexIn.ViewObject)
         EpInflexIn.ViewObject.PointSize = 3
-        
         EpLastEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastEx")
         docPilote.addObject(EpLastEx)
         Discretize.Discretization(EpLastEx, (App.ActiveDocument.getObject("EpLast"),"Edge1"))
-    #    EpLastEx.Label="EpLastEx"
         EpLastEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpLastEx.ViewObject)
         EpLastEx.ViewObject.PointSize = 3
-        
         EpLastIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastIn")
         docPilote.addObject(EpLastIn)
         Discretize.Discretization(EpLastIn, (App.ActiveDocument.getObject("EpLast"),"Edge2"))
-    #    EpLastIn.Label="EpLastIn"
         EpLastIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpLastIn.ViewObject)
         EpLastIn.ViewObject.PointSize = 3       
@@ -1086,8 +1039,6 @@ class beltrami:
         for i in range(fp.Nfilets):
             I=str(i+1)
             sketch=App.ActiveDocument.addObject('Sketcher::SketchObject','LoiEpaisseur'+I)
-    #        sketch.Label='LoiEpaisseur'+I
-    #       sketch.Visibility=False
             docPlanEpaisseur.addObject(sketch)            
             fpe = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'e')
             docPlanEpaisseur.addObject(fpe)
@@ -1154,7 +1105,7 @@ class beltrami:
             fpe.recompute()
     #       On interpole les points pour qu'ils correspondent à la coordonnée s du plan meridien
             sX=[]
-        #   fpes est comme fpes mais avec une distribution suivant s du plan méridien
+        #   fpes est comme fpe mais avec une distribution suivant s du plan méridien
             fpes = App.ActiveDocument.addObject("Part::FeaturePython","LoiEpaisseur"+I+"es")
             docPlanEpaisseur.addObject(fpes)
             eLast=EpLastEx.Points[i].y
@@ -1174,7 +1125,7 @@ class beltrami:
             fpi.recompute()
     #       On interpole les points pour qu'ils correspondent à la coordonnée s du plan meridien
             sX=[]
-        #   fpis est comme fpis mais avec une distribution suivant s du plan méridien
+        #   fpis est comme fpi mais avec une distribution suivant s du plan méridien
             fpis = App.ActiveDocument.addObject("Part::FeaturePython","LoiEpaisseur"+I+"is")
             docPlanEpaisseur.addObject(fpis)
             iLast=EpLastIn.Points[i].y
@@ -1185,6 +1136,8 @@ class beltrami:
             debug(fpis.Points)
         return
     def modifEpaisseur(self,fp):
+    #
+    #   Routine pour mettre à jours les sketchs LoisEpaisseurI à partir des points discrétisés sur les sketchs des pilotes
         debug("modifEpaisseur")
         EpMaxXEx=App.ActiveDocument.getObject("EpMaxXEx")
         EpMaxXIn=App.ActiveDocument.getObject("EpMaxXIn")
@@ -1210,8 +1163,6 @@ class beltrami:
             sketch.setDatum(52,App.Units.Quantity(str(EpInflexIn.Points[i].y)))
             fpes.Last=EpLastEx.Points[i].y
             fpis.Last=EpLastIn.Points[i].y
-#            fpes.recompute()
- #           fpis.recompute()
         App.ActiveDocument.recompute()
         debug("modifEpaisseur - fin")
         return
@@ -1223,7 +1174,7 @@ class beltrami:
         EpInflex=App.ActiveDocument.getObject("EpInflex")
         EpLast=App.ActiveDocument.getObject("EpLast")
         LoiEpaisseur=[]
-    #   (t,ÉpaisseurMaxXExtrados, r
+    #   (t,ÉpaisseurMaxXExtrados, r)
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxX.Constraints[i].Value,EpMaxX.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurMaxYExtrados, r)
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxY.Constraints[i].Value,EpMaxY.Constraints[i+1].Value,100.))    
@@ -1231,7 +1182,7 @@ class beltrami:
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpInflex.Constraints[i].Value,EpInflex.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurLastExtrados)
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpLast.Constraints[i].Value,EpLast.Constraints[i+1].Value,100.))
-    #   (t,ÉpaisseurMaxXIntrados, r
+    #   (t,ÉpaisseurMaxXIntrados, r)
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxX.Constraints[i+26].Value,EpMaxX.Constraints[i+27].Value,100.))
     #   (t,ÉpaisseurMaxYIntrados, r)
         for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxY.Constraints[i+26].Value,EpMaxY.Constraints[i+27].Value,100.))    
@@ -1470,6 +1421,7 @@ class beltrami:
         (Ws3x,Ws3y)=self.immobilisePoint(sketchPoids, Ws3, "Ws3")
     #   Construction des Bspline
         (BSWe,ceinwe,plfwe)=self.planBS(sketchPoids,We0,We1,We2,We3)   # BORD D'ATTAQUE
+        App.ActiveDocument.recompute()
         (BSWs,ceinws,plfws)=self.planBS(sketchPoids,Ws0,Ws1,Ws2,Ws3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
     #
@@ -1495,6 +1447,7 @@ class beltrami:
         (Ls3x,Ls3y)=self.immobilisePoint(sketchLong, Ls3, "Ls3")
     #   Construction des Bspline
         (BSLe,ceinle,plfle)=self.planBS(sketchLong,Le0,Le1,Le2,Le3)   # BORD D'ATTAQUE
+        App.ActiveDocument.recompute()
         (BSLs,ceinls,plfls)=self.planBS(sketchLong,Ls0,Ls1,Ls2,Ls3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
         debug('initCascade - fin')
@@ -1694,9 +1647,15 @@ class beltrami:
             #   m-à-j des données de "FiletCAa"+I
             fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
             fpAa.a0=App.Vector(0,fp.Sens*1000.*math.radians(Theta_entree.Points[i].z),0)
+            debug('fpAs.a..      *******')
+            debug(Theta_entree.Points)
+            debug(fpAa.a0)
             fpAa.a1=App.Vector(fp.Sens*Alpha_entree.Points[i].z, Poids_entree.Points[i].z, Long_entree.Points[i].z)
+            debug(fpAa.a1)
             fpAa.a2=App.Vector(fp.Sens*Alpha_sortie.Points[i].z, Poids_sortie.Points[i].z, Long_sortie.Points[i].z)
+            debug(fpAa.a2)
             fpAa.a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Theta_sortie.Points[i].z),0)
+            debug(fpAa.a3)
         #   sketchA pour contenir la cascade 
             sketchA=App.ActiveDocument.getObject('Cascade'+I)
             debug(sketchA.Name)
@@ -1744,7 +1703,7 @@ class beltrami:
         return
     def sauveCascade(self,fp):
     #   Sauve les nouvelles limites du sketchAngles 
-        debug('sauveAlpha')
+        debug('sauveCascade')
         sketchTheta=App.ActiveDocument.Theta
         sketchAlpha=App.ActiveDocument.Alpha
         sketchPoids=App.ActiveDocument.Poids
@@ -1758,7 +1717,7 @@ class beltrami:
             LoiAlpha.append(App.Vector(sketchAlpha.getDatum(i+9),sketchPoids.getDatum(i+9),sketchLong.getDatum(i+9)))
         fp.Alpha=LoiAlpha
         App.ActiveDocument.recompute()
-        debug('sauveAlpha - fin')
+        debug('sauveCascade - fin')
         return        
     def planBSCascade(self,sketch,Pt0,Pt1,Pt2,Pt3,r0,r1,r2,r3):
     #
