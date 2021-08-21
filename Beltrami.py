@@ -85,7 +85,7 @@ class beltrami:
         self.traceMeridien(fp)
     #   Traçage du plan des épaisseurs
         self.traceEpaisseur(fp)
-        App.ActiveDocument.recompute()
+#        App.ActiveDocument.recompute()
     #   Traçage du plan de la cascade
         self.traceCascade(fp)
     #   Traçage de la géométrie 3D
@@ -528,14 +528,22 @@ class beltrami:
     #   Met à jour les pilotes à partir des cellules du tableur
         debug('sauveTableur')
         Feuil=App.ActiveDocument.getObject('Tableau_pilote')
-        sketchTheta=App.ActiveDocument.getObject('Theta')
-        sketchAlpha=App.ActiveDocument.getObject('Alpha')
-        sketchPoids=App.ActiveDocument.getObject('Poids')
-        sketchLong=App.ActiveDocument.getObject('Long')
-        sketchEpMaxX=App.ActiveDocument.getObject('EpMaxX')
-        sketchEpMaxY=App.ActiveDocument.getObject('EpMaxY')
-        sketchEpInflex=App.ActiveDocument.getObject('EpInflex')
-        sketchEpLast=App.ActiveDocument.getObject('EpLast')
+        sketchTheta_entree=App.ActiveDocument.getObject('skTheta_entree')
+        sketchTheta_sortie=App.ActiveDocument.getObject('skTheta_sortie')
+        sketchAlpha_entree=App.ActiveDocument.getObject('skAlpha_entree')
+        sketchAlpha_sortie=App.ActiveDocument.getObject('skAlpha_sortie')
+        sketchPoids_entree=App.ActiveDocument.getObject('skPoids_entree')
+        sketchPoids_sortie=App.ActiveDocument.getObject('skPoids_sortie')
+        sketchLong_entree=App.ActiveDocument.getObject('skLong_entree')
+        sketchLong_sortie=App.ActiveDocument.getObject('skLong_sortie')
+        sketchEpMaxXEx=App.ActiveDocument.getObject('skEpMaxXEx')
+        sketchEpMaxXIn=App.ActiveDocument.getObject('skEpMaxXIn')
+        sketchEpMaxYEx=App.ActiveDocument.getObject('skEpMaxYEx')
+        sketchEpMaxYIn=App.ActiveDocument.getObject('skEpMaxYIn')
+        sketchEpInflexEx=App.ActiveDocument.getObject('skEpInflexEx')
+        sketchEpInflexIn=App.ActiveDocument.getObject('skEpInflexIn')
+        sketchEpLastEx=App.ActiveDocument.getObject('skEpLastEx')
+        sketchEpLastIn=App.ActiveDocument.getObject('skEpLastIn')
         t0=str(Feuil.B1*100.)+' mm'
         t1=str(Feuil.C1*100.)+' mm'
         t2=str(Feuil.D1*100.)+' mm'
@@ -544,140 +552,140 @@ class beltrami:
         tt1=str(Feuil.C1)+' mm'
         tt2=str(Feuil.D1)+' mm'
         tt3=str(Feuil.E1)+' mm'
-        sketchTheta.setDatum(0,App.Units.Quantity(t0))
+        sketchTheta_entree.setDatum(0,App.Units.Quantity(t0))
         debug('0= '+ str(t0))
-        sketchTheta.setDatum(1,App.Units.Quantity(str(Feuil.B3)+' mm'))
+        sketchTheta_entree.setDatum(1,App.Units.Quantity(str(Feuil.B3)+' mm'))
         debug('1= '+str(Feuil.B3)+' mm'  )
-        sketchTheta.setDatum(2,App.Units.Quantity(t1))
+        sketchTheta_entree.setDatum(2,App.Units.Quantity(t1))
         debug('2= '+ str(t1))
-        sketchTheta.setDatum(3,App.Units.Quantity(str(Feuil.C3)+' mm'))
+        sketchTheta_entree.setDatum(3,App.Units.Quantity(str(Feuil.C3)+' mm'))
         debug('3= '+str(Feuil.C3)+' mm'  )
-        sketchTheta.setDatum(4,App.Units.Quantity(t2))
+        sketchTheta_entree.setDatum(4,App.Units.Quantity(t2))
         debug('4= '+ str(t2))
-        sketchTheta.setDatum(5,App.Units.Quantity(str(Feuil.D3)+' mm'))
+        sketchTheta_entree.setDatum(5,App.Units.Quantity(str(Feuil.D3)+' mm'))
         debug('5= '+str(Feuil.D3)+' mm'  )
-        sketchTheta.setDatum(6,App.Units.Quantity(t3))
-        sketchTheta.setDatum(7,App.Units.Quantity(str(Feuil.E3)+' mm'))
-        sketchTheta.setDatum(8,App.Units.Quantity(t0))
-        sketchTheta.setDatum(9,App.Units.Quantity(str(Feuil.B4)+' mm'))
-        sketchTheta.setDatum(10,App.Units.Quantity(t1))
-        sketchTheta.setDatum(11,App.Units.Quantity(str(Feuil.C4)+' mm'))
-        sketchTheta.setDatum(12,App.Units.Quantity(t2))
-        sketchTheta.setDatum(13,App.Units.Quantity(str(Feuil.D4)+' mm'))
-        sketchTheta.setDatum(14,App.Units.Quantity(t3))
-        sketchTheta.setDatum(15,App.Units.Quantity(str(Feuil.E4)+' mm'))
-        sketchAlpha.setDatum(0,App.Units.Quantity(t0))
-        sketchAlpha.setDatum(1,App.Units.Quantity(str(Feuil.B5)+' mm'))
-        sketchAlpha.setDatum(2,App.Units.Quantity(t1))
-        sketchAlpha.setDatum(3,App.Units.Quantity(str(Feuil.C5)+' mm'))
-        sketchAlpha.setDatum(4,App.Units.Quantity(t2))
-        sketchAlpha.setDatum(5,App.Units.Quantity(str(Feuil.D5)+' mm'))
-        sketchAlpha.setDatum(6,App.Units.Quantity(t3))
-        sketchAlpha.setDatum(7,App.Units.Quantity(str(Feuil.E5)+' mm'))
-        sketchAlpha.setDatum(8,App.Units.Quantity(t0))
-        sketchAlpha.setDatum(9,App.Units.Quantity(str(Feuil.B6)+' mm'))
-        sketchAlpha.setDatum(10,App.Units.Quantity(t1))
-        sketchAlpha.setDatum(11,App.Units.Quantity(str(Feuil.C6)+' mm'))
-        sketchAlpha.setDatum(12,App.Units.Quantity(t2))
-        sketchAlpha.setDatum(13,App.Units.Quantity(str(Feuil.D6)+' mm'))
-        sketchAlpha.setDatum(14,App.Units.Quantity(t3))
-        sketchAlpha.setDatum(15,App.Units.Quantity(str(Feuil.E6)+' mm'))
-        sketchPoids.setDatum(0,App.Units.Quantity(t0))
-        sketchPoids.setDatum(1,App.Units.Quantity(str(Feuil.B8)+' mm'))
-        sketchPoids.setDatum(2,App.Units.Quantity(t1))
-        sketchPoids.setDatum(3,App.Units.Quantity(str(Feuil.C8)+' mm'))
-        sketchPoids.setDatum(4,App.Units.Quantity(t2))
-        sketchPoids.setDatum(5,App.Units.Quantity(str(Feuil.D8)+' mm'))
-        sketchPoids.setDatum(6,App.Units.Quantity(t3))
-        sketchPoids.setDatum(7,App.Units.Quantity(str(Feuil.E8)+' mm'))
-        sketchPoids.setDatum(8,App.Units.Quantity(t0))
-        sketchPoids.setDatum(9,App.Units.Quantity(str(Feuil.B9)+' mm'))
-        sketchPoids.setDatum(10,App.Units.Quantity(t1))
-        sketchPoids.setDatum(11,App.Units.Quantity(str(Feuil.C9)+' mm'))
-        sketchPoids.setDatum(12,App.Units.Quantity(t2))
-        sketchPoids.setDatum(13,App.Units.Quantity(str(Feuil.D9)+' mm'))
-        sketchPoids.setDatum(14,App.Units.Quantity(t3))
-        sketchPoids.setDatum(15,App.Units.Quantity(str(Feuil.E9)+' mm'))
-        sketchLong.setDatum(0,App.Units.Quantity(t0))
-        sketchLong.setDatum(1,App.Units.Quantity(str(Feuil.B10)+' mm'))
-        sketchLong.setDatum(2,App.Units.Quantity(t1))
-        sketchLong.setDatum(3,App.Units.Quantity(str(Feuil.C10)+' mm'))
-        sketchLong.setDatum(4,App.Units.Quantity(t2))
-        sketchLong.setDatum(5,App.Units.Quantity(str(Feuil.D10)+' mm'))
-        sketchLong.setDatum(6,App.Units.Quantity(t3))
-        sketchLong.setDatum(7,App.Units.Quantity(str(Feuil.E10)+' mm'))
-        sketchLong.setDatum(8,App.Units.Quantity(t0))
-        sketchLong.setDatum(9,App.Units.Quantity(str(Feuil.B11)+' mm'))
-        sketchLong.setDatum(10,App.Units.Quantity(t1))
-        sketchLong.setDatum(11,App.Units.Quantity(str(Feuil.C11)+' mm'))
-        sketchLong.setDatum(12,App.Units.Quantity(t2))
-        sketchLong.setDatum(13,App.Units.Quantity(str(Feuil.D11)+' mm'))
-        sketchLong.setDatum(14,App.Units.Quantity(t3))
-        sketchLong.setDatum(15,App.Units.Quantity(str(Feuil.E11)+' mm'))
-        sketchEpMaxX.setDatum(0,App.Units.Quantity(t0))
-        sketchEpMaxX.setDatum(1,App.Units.Quantity(str(Feuil.B12)+' mm'))
-        sketchEpMaxX.setDatum(2,App.Units.Quantity(t1))
-        sketchEpMaxX.setDatum(3,App.Units.Quantity(str(Feuil.C12)+' mm'))
-        sketchEpMaxX.setDatum(4,App.Units.Quantity(t2))
-        sketchEpMaxX.setDatum(5,App.Units.Quantity(str(Feuil.D12)+' mm'))
-        sketchEpMaxX.setDatum(6,App.Units.Quantity(t3))
-        sketchEpMaxX.setDatum(7,App.Units.Quantity(str(Feuil.E12)+' mm'))
-        sketchEpMaxX.setDatum(26,App.Units.Quantity(t0))
-        sketchEpMaxX.setDatum(27,App.Units.Quantity(str(Feuil.B13)+' mm'))
-        sketchEpMaxX.setDatum(28,App.Units.Quantity(t1))
-        sketchEpMaxX.setDatum(29,App.Units.Quantity(str(Feuil.C13)+' mm'))
-        sketchEpMaxX.setDatum(30,App.Units.Quantity(t2))
-        sketchEpMaxX.setDatum(31,App.Units.Quantity(str(Feuil.D13)+' mm'))
-        sketchEpMaxX.setDatum(32,App.Units.Quantity(t3))
-        sketchEpMaxX.setDatum(33,App.Units.Quantity(str(Feuil.E13)+' mm'))
-        sketchEpMaxY.setDatum(0,App.Units.Quantity(t0))
-        sketchEpMaxY.setDatum(1,App.Units.Quantity(str(Feuil.B14)+' mm'))
-        sketchEpMaxY.setDatum(2,App.Units.Quantity(t1))
-        sketchEpMaxY.setDatum(3,App.Units.Quantity(str(Feuil.C14)+' mm'))
-        sketchEpMaxY.setDatum(4,App.Units.Quantity(t2))
-        sketchEpMaxY.setDatum(5,App.Units.Quantity(str(Feuil.D14)+' mm'))
-        sketchEpMaxY.setDatum(6,App.Units.Quantity(t3))
-        sketchEpMaxY.setDatum(7,App.Units.Quantity(str(Feuil.E14)+' mm'))
-        sketchEpMaxY.setDatum(26,App.Units.Quantity(t0))
-        sketchEpMaxY.setDatum(27,App.Units.Quantity(str(Feuil.B15)+' mm'))
-        sketchEpMaxY.setDatum(28,App.Units.Quantity(t1))
-        sketchEpMaxY.setDatum(29,App.Units.Quantity(str(Feuil.C15)+' mm'))
-        sketchEpMaxY.setDatum(30,App.Units.Quantity(t2))
-        sketchEpMaxY.setDatum(31,App.Units.Quantity(str(Feuil.D15)+' mm'))
-        sketchEpMaxY.setDatum(32,App.Units.Quantity(t3))
-        sketchEpMaxY.setDatum(33,App.Units.Quantity(str(Feuil.E15)+' mm'))
-        sketchEpInflex.setDatum(0,App.Units.Quantity(t0))
-        sketchEpInflex.setDatum(1,App.Units.Quantity(str(Feuil.B16)+' mm'))
-        sketchEpInflex.setDatum(2,App.Units.Quantity(t1))
-        sketchEpInflex.setDatum(3,App.Units.Quantity(str(Feuil.C16)+' mm'))
-        sketchEpInflex.setDatum(4,App.Units.Quantity(t2))
-        sketchEpInflex.setDatum(5,App.Units.Quantity(str(Feuil.D16)+' mm'))
-        sketchEpInflex.setDatum(6,App.Units.Quantity(t3))
-        sketchEpInflex.setDatum(7,App.Units.Quantity(str(Feuil.E16)+' mm'))
-        sketchEpInflex.setDatum(26,App.Units.Quantity(t0))
-        sketchEpInflex.setDatum(27,App.Units.Quantity(str(Feuil.B17)+' mm'))
-        sketchEpInflex.setDatum(28,App.Units.Quantity(t1))
-        sketchEpInflex.setDatum(29,App.Units.Quantity(str(Feuil.C17)+' mm'))
-        sketchEpInflex.setDatum(30,App.Units.Quantity(t2))
-        sketchEpInflex.setDatum(31,App.Units.Quantity(str(Feuil.D17)+' mm'))
-        sketchEpInflex.setDatum(32,App.Units.Quantity(t3))
-        sketchEpInflex.setDatum(33,App.Units.Quantity(str(Feuil.E17)+' mm'))
-        sketchEpLast.setDatum(0,App.Units.Quantity(tt0))
-        sketchEpLast.setDatum(1,App.Units.Quantity(str(Feuil.B18)+' mm'))
-        sketchEpLast.setDatum(2,App.Units.Quantity(tt1))
-        sketchEpLast.setDatum(3,App.Units.Quantity(str(Feuil.C18)+' mm'))
-        sketchEpLast.setDatum(4,App.Units.Quantity(tt2))
-        sketchEpLast.setDatum(5,App.Units.Quantity(str(Feuil.D18)+' mm'))
-        sketchEpLast.setDatum(6,App.Units.Quantity(tt3))
-        sketchEpLast.setDatum(7,App.Units.Quantity(str(Feuil.E18)+' mm'))
-        sketchEpLast.setDatum(26,App.Units.Quantity(tt0))
-        sketchEpLast.setDatum(27,App.Units.Quantity(str(Feuil.B19)+' mm'))
-        sketchEpLast.setDatum(28,App.Units.Quantity(tt1))
-        sketchEpLast.setDatum(29,App.Units.Quantity(str(Feuil.C19)+' mm'))
-        sketchEpLast.setDatum(30,App.Units.Quantity(tt2))
-        sketchEpLast.setDatum(31,App.Units.Quantity(str(Feuil.D19)+' mm'))
-        sketchEpLast.setDatum(32,App.Units.Quantity(tt3))
-        sketchEpLast.setDatum(33,App.Units.Quantity(str(Feuil.E19)+' mm'))
+        sketchTheta_entree.setDatum(6,App.Units.Quantity(t3))
+        sketchTheta_entree.setDatum(7,App.Units.Quantity(str(Feuil.E3)+' mm'))
+        sketchTheta_sortie.setDatum(0,App.Units.Quantity(t0))
+        sketchTheta_sortie.setDatum(1,App.Units.Quantity(str(Feuil.B4)+' mm'))
+        sketchTheta_sortie.setDatum(2,App.Units.Quantity(t1))
+        sketchTheta_sortie.setDatum(3,App.Units.Quantity(str(Feuil.C4)+' mm'))
+        sketchTheta_sortie.setDatum(4,App.Units.Quantity(t2))
+        sketchTheta_sortie.setDatum(5,App.Units.Quantity(str(Feuil.D4)+' mm'))
+        sketchTheta_sortie.setDatum(6,App.Units.Quantity(t3))
+        sketchTheta_sortie.setDatum(7,App.Units.Quantity(str(Feuil.E4)+' mm'))
+        sketchAlpha_entree.setDatum(0,App.Units.Quantity(t0))
+        sketchAlpha_entree.setDatum(1,App.Units.Quantity(str(Feuil.B5)+' mm'))
+        sketchAlpha_entree.setDatum(2,App.Units.Quantity(t1))
+        sketchAlpha_entree.setDatum(3,App.Units.Quantity(str(Feuil.C5)+' mm'))
+        sketchAlpha_entree.setDatum(4,App.Units.Quantity(t2))
+        sketchAlpha_entree.setDatum(5,App.Units.Quantity(str(Feuil.D5)+' mm'))
+        sketchAlpha_entree.setDatum(6,App.Units.Quantity(t3))
+        sketchAlpha_entree.setDatum(7,App.Units.Quantity(str(Feuil.E5)+' mm'))
+        sketchAlpha_sortie.setDatum(0,App.Units.Quantity(t0))
+        sketchAlpha_sortie.setDatum(1,App.Units.Quantity(str(Feuil.B6)+' mm'))
+        sketchAlpha_sortie.setDatum(2,App.Units.Quantity(t1))
+        sketchAlpha_sortie.setDatum(3,App.Units.Quantity(str(Feuil.C6)+' mm'))
+        sketchAlpha_sortie.setDatum(4,App.Units.Quantity(t2))
+        sketchAlpha_sortie.setDatum(5,App.Units.Quantity(str(Feuil.D6)+' mm'))
+        sketchAlpha_sortie.setDatum(6,App.Units.Quantity(t3))
+        sketchAlpha_sortie.setDatum(7,App.Units.Quantity(str(Feuil.E6)+' mm'))
+        sketchPoids_entree.setDatum(0,App.Units.Quantity(t0))
+        sketchPoids_entree.setDatum(1,App.Units.Quantity(str(Feuil.B8)+' mm'))
+        sketchPoids_entree.setDatum(2,App.Units.Quantity(t1))
+        sketchPoids_entree.setDatum(3,App.Units.Quantity(str(Feuil.C8)+' mm'))
+        sketchPoids_entree.setDatum(4,App.Units.Quantity(t2))
+        sketchPoids_entree.setDatum(5,App.Units.Quantity(str(Feuil.D8)+' mm'))
+        sketchPoids_entree.setDatum(6,App.Units.Quantity(t3))
+        sketchPoids_entree.setDatum(7,App.Units.Quantity(str(Feuil.E8)+' mm'))
+        sketchPoids_sortie.setDatum(0,App.Units.Quantity(t0))
+        sketchPoids_sortie.setDatum(1,App.Units.Quantity(str(Feuil.B9)+' mm'))
+        sketchPoids_sortie.setDatum(2,App.Units.Quantity(t1))
+        sketchPoids_sortie.setDatum(3,App.Units.Quantity(str(Feuil.C9)+' mm'))
+        sketchPoids_sortie.setDatum(4,App.Units.Quantity(t2))
+        sketchPoids_sortie.setDatum(5,App.Units.Quantity(str(Feuil.D9)+' mm'))
+        sketchPoids_sortie.setDatum(6,App.Units.Quantity(t3))
+        sketchPoids_sortie.setDatum(7,App.Units.Quantity(str(Feuil.E9)+' mm'))
+        sketchLong_entree.setDatum(0,App.Units.Quantity(t0))
+        sketchLong_entree.setDatum(1,App.Units.Quantity(str(Feuil.B10)+' mm'))
+        sketchLong_entree.setDatum(2,App.Units.Quantity(t1))
+        sketchLong_entree.setDatum(3,App.Units.Quantity(str(Feuil.C10)+' mm'))
+        sketchLong_entree.setDatum(4,App.Units.Quantity(t2))
+        sketchLong_entree.setDatum(5,App.Units.Quantity(str(Feuil.D10)+' mm'))
+        sketchLong_entree.setDatum(6,App.Units.Quantity(t3))
+        sketchLong_entree.setDatum(7,App.Units.Quantity(str(Feuil.E10)+' mm'))
+        sketchLong_sortie.setDatum(0,App.Units.Quantity(t0))
+        sketchLong_sortie.setDatum(1,App.Units.Quantity(str(Feuil.B11)+' mm'))
+        sketchLong_sortie.setDatum(2,App.Units.Quantity(t1))
+        sketchLong_sortie.setDatum(3,App.Units.Quantity(str(Feuil.C11)+' mm'))
+        sketchLong_sortie.setDatum(4,App.Units.Quantity(t2))
+        sketchLong_sortie.setDatum(5,App.Units.Quantity(str(Feuil.D11)+' mm'))
+        sketchLong_sortie.setDatum(6,App.Units.Quantity(t3))
+        sketchLong_sortie.setDatum(7,App.Units.Quantity(str(Feuil.E11)+' mm'))
+        sketchEpMaxXEx.setDatum(0,App.Units.Quantity(t0))
+        sketchEpMaxXEx.setDatum(1,App.Units.Quantity(str(Feuil.B12)+' mm'))
+        sketchEpMaxXEx.setDatum(2,App.Units.Quantity(t1))
+        sketchEpMaxXEx.setDatum(3,App.Units.Quantity(str(Feuil.C12)+' mm'))
+        sketchEpMaxXEx.setDatum(4,App.Units.Quantity(t2))
+        sketchEpMaxXEx.setDatum(5,App.Units.Quantity(str(Feuil.D12)+' mm'))
+        sketchEpMaxXEx.setDatum(6,App.Units.Quantity(t3))
+        sketchEpMaxXEx.setDatum(7,App.Units.Quantity(str(Feuil.E12)+' mm'))
+        sketchEpMaxXIn.setDatum(0,App.Units.Quantity(t0))
+        sketchEpMaxXIn.setDatum(1,App.Units.Quantity(str(Feuil.B13)+' mm'))
+        sketchEpMaxXIn.setDatum(2,App.Units.Quantity(t1))
+        sketchEpMaxXIn.setDatum(3,App.Units.Quantity(str(Feuil.C13)+' mm'))
+        sketchEpMaxXIn.setDatum(4,App.Units.Quantity(t2))
+        sketchEpMaxXIn.setDatum(5,App.Units.Quantity(str(Feuil.D13)+' mm'))
+        sketchEpMaxXIn.setDatum(6,App.Units.Quantity(t3))
+        sketchEpMaxXIn.setDatum(7,App.Units.Quantity(str(Feuil.E13)+' mm'))
+        sketchEpMaxYEx.setDatum(0,App.Units.Quantity(t0))
+        sketchEpMaxYEx.setDatum(1,App.Units.Quantity(str(Feuil.B14)+' mm'))
+        sketchEpMaxYEx.setDatum(2,App.Units.Quantity(t1))
+        sketchEpMaxYEx.setDatum(3,App.Units.Quantity(str(Feuil.C14)+' mm'))
+        sketchEpMaxYEx.setDatum(4,App.Units.Quantity(t2))
+        sketchEpMaxYEx.setDatum(5,App.Units.Quantity(str(Feuil.D14)+' mm'))
+        sketchEpMaxYEx.setDatum(6,App.Units.Quantity(t3))
+        sketchEpMaxYEx.setDatum(7,App.Units.Quantity(str(Feuil.E14)+' mm'))
+        sketchEpMaxYIn.setDatum(0,App.Units.Quantity(t0))
+        sketchEpMaxYIn.setDatum(1,App.Units.Quantity(str(Feuil.B15)+' mm'))
+        sketchEpMaxYIn.setDatum(2,App.Units.Quantity(t1))
+        sketchEpMaxYIn.setDatum(3,App.Units.Quantity(str(Feuil.C15)+' mm'))
+        sketchEpMaxYIn.setDatum(4,App.Units.Quantity(t2))
+        sketchEpMaxYIn.setDatum(5,App.Units.Quantity(str(Feuil.D15)+' mm'))
+        sketchEpMaxYIn.setDatum(6,App.Units.Quantity(t3))
+        sketchEpMaxYIn.setDatum(7,App.Units.Quantity(str(Feuil.E15)+' mm'))
+        sketchEpInflexEx.setDatum(0,App.Units.Quantity(t0))
+        sketchEpInflexEx.setDatum(1,App.Units.Quantity(str(Feuil.B16)+' mm'))
+        sketchEpInflexEx.setDatum(2,App.Units.Quantity(t1))
+        sketchEpInflexEx.setDatum(3,App.Units.Quantity(str(Feuil.C16)+' mm'))
+        sketchEpInflexEx.setDatum(4,App.Units.Quantity(t2))
+        sketchEpInflexEx.setDatum(5,App.Units.Quantity(str(Feuil.D16)+' mm'))
+        sketchEpInflexEx.setDatum(6,App.Units.Quantity(t3))
+        sketchEpInflexEx.setDatum(7,App.Units.Quantity(str(Feuil.E16)+' mm'))
+        sketchEpInflexIn.setDatum(0,App.Units.Quantity(t0))
+        sketchEpInflexIn.setDatum(1,App.Units.Quantity(str(Feuil.B17)+' mm'))
+        sketchEpInflexIn.setDatum(2,App.Units.Quantity(t1))
+        sketchEpInflexIn.setDatum(3,App.Units.Quantity(str(Feuil.C17)+' mm'))
+        sketchEpInflexIn.setDatum(4,App.Units.Quantity(t2))
+        sketchEpInflexIn.setDatum(5,App.Units.Quantity(str(Feuil.D17)+' mm'))
+        sketchEpInflexIn.setDatum(6,App.Units.Quantity(t3))
+        sketchEpInflexIn.setDatum(7,App.Units.Quantity(str(Feuil.E17)+' mm'))
+        sketchEpLastEx.setDatum(0,App.Units.Quantity(tt0))
+        sketchEpLastEx.setDatum(1,App.Units.Quantity(str(Feuil.B18)+' mm'))
+        sketchEpLastEx.setDatum(2,App.Units.Quantity(tt1))
+        sketchEpLastEx.setDatum(3,App.Units.Quantity(str(Feuil.C18)+' mm'))
+        sketchEpLastEx.setDatum(4,App.Units.Quantity(tt2))
+        sketchEpLastEx.setDatum(5,App.Units.Quantity(str(Feuil.D18)+' mm'))
+        sketchEpLastEx.setDatum(6,App.Units.Quantity(tt3))
+        sketchEpLastEx.setDatum(7,App.Units.Quantity(str(Feuil.E18)+' mm'))
+        sketchEpLastIn.setDatum(0,App.Units.Quantity(tt0))
+        sketchEpLastIn.setDatum(1,App.Units.Quantity(str(Feuil.B19)+' mm'))
+        sketchEpLastIn.setDatum(2,App.Units.Quantity(tt1))
+        sketchEpLastIn.setDatum(3,App.Units.Quantity(str(Feuil.C19)+' mm'))
+        sketchEpLastIn.setDatum(4,App.Units.Quantity(tt2))
+        sketchEpLastIn.setDatum(5,App.Units.Quantity(str(Feuil.D19)+' mm'))
+        sketchEpLastIn.setDatum(6,App.Units.Quantity(tt3))
+        sketchEpLastIn.setDatum(7,App.Units.Quantity(str(Feuil.E19)+' mm'))
         App.ActiveDocument.recompute()
         debug("sauveTableur - fin")
         return
@@ -817,14 +825,22 @@ class beltrami:
         docPilote = App.ActiveDocument.getObject("Pilote")
         Feuil= App.ActiveDocument.getObject("Tableau_pilote")
         LoiEpaisseur=[]
-        sketchEpMaxX=App.ActiveDocument.addObject('Sketcher::SketchObject','EpMaxX')
-        docPilote.addObject(sketchEpMaxX)
-        sketchEpMaxY=App.ActiveDocument.addObject('Sketcher::SketchObject','EpMaxY')
-        docPilote.addObject(sketchEpMaxY)
-        sketchEpInflex=App.ActiveDocument.addObject('Sketcher::SketchObject','EpInflex')
-        docPilote.addObject(sketchEpInflex)
-        sketchEpLast=App.ActiveDocument.addObject('Sketcher::SketchObject','EpLast')
-        docPilote.addObject(sketchEpLast)
+        sketchEpMaxXEx=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpMaxXEx')
+        docPilote.addObject(sketchEpMaxXEx)
+        sketchEpMaxXIn=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpMaxXIn')
+        docPilote.addObject(sketchEpMaxXIn)
+        sketchEpMaxYEx=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpMaxYEx')
+        docPilote.addObject(sketchEpMaxYEx)
+        sketchEpMaxYIn=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpMaxYIn')
+        docPilote.addObject(sketchEpMaxYIn)
+        sketchEpInflexEx=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpInflexEx')
+        docPilote.addObject(sketchEpInflexEx)
+        sketchEpInflexIn=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpInflexIn')
+        docPilote.addObject(sketchEpInflexIn)
+        sketchEpLastEx=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpLastEx')
+        docPilote.addObject(sketchEpLastEx)
+        sketchEpLastIn=App.ActiveDocument.addObject('Sketcher::SketchObject','skEpLastIn')
+        docPilote.addObject(sketchEpLastIn)
      #   les abscisses des esquisses sont fonction de t*100, t variant de 0 à 100 mm dans FreeCAD
         t0=Feuil.B1*100.
         t1=Feuil.C1*100.
@@ -873,99 +889,99 @@ class beltrami:
     #
     #   Loi déterminant l'épaisseur maximum en X pour l'extrados
     # 
-        Pt0=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[0]))
-        Pt1=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[1]))
-        Pt2=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[2]))
-        Pt3=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[3]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxX, Pt0, "PtEx0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxX, Pt1, "PtEx1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxX, Pt2, "PtEx2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxX, Pt3, "PtEx3")
-        self.planBS(sketchEpMaxX,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpMaxXEx.addGeometry(Part.Point(LoiEpaisseur[0]))
+        Pt1=sketchEpMaxXEx.addGeometry(Part.Point(LoiEpaisseur[1]))
+        Pt2=sketchEpMaxXEx.addGeometry(Part.Point(LoiEpaisseur[2]))
+        Pt3=sketchEpMaxXEx.addGeometry(Part.Point(LoiEpaisseur[3]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxXEx, Pt0, "PtEx0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxXEx, Pt1, "PtEx1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxXEx, Pt2, "PtEx2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxXEx, Pt3, "PtEx3")
+        self.planBS(sketchEpMaxXEx,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'épaisseur maximum en Y pour l'extrados
     # 
-        Pt0=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[4]))
-        Pt1=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[5]))
-        Pt2=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[6]))
-        Pt3=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[7]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxY, Pt0, "PtEx0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxY, Pt1, "PtEx1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxY, Pt2, "PtEx2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxY, Pt3, "PtEx3")
-        self.planBS(sketchEpMaxY,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpMaxYEx.addGeometry(Part.Point(LoiEpaisseur[4]))
+        Pt1=sketchEpMaxYEx.addGeometry(Part.Point(LoiEpaisseur[5]))
+        Pt2=sketchEpMaxYEx.addGeometry(Part.Point(LoiEpaisseur[6]))
+        Pt3=sketchEpMaxYEx.addGeometry(Part.Point(LoiEpaisseur[7]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxYEx, Pt0, "PtEx0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxYEx, Pt1, "PtEx1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxYEx, Pt2, "PtEx2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxYEx, Pt3, "PtEx3")
+        self.planBS(sketchEpMaxYEx,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'inflexion en X pour l'extrados
     # 
-        Pt0=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[8]))
-        Pt1=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[9]))
-        Pt2=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[10]))
-        Pt3=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[11]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflex, Pt0, "PtEx0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflex, Pt1, "PtEx1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflex, Pt2, "PtEx2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflex, Pt3, "PtEx3")
-        self.planBS(sketchEpInflex,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpInflexEx.addGeometry(Part.Point(LoiEpaisseur[8]))
+        Pt1=sketchEpInflexEx.addGeometry(Part.Point(LoiEpaisseur[9]))
+        Pt2=sketchEpInflexEx.addGeometry(Part.Point(LoiEpaisseur[10]))
+        Pt3=sketchEpInflexEx.addGeometry(Part.Point(LoiEpaisseur[11]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflexEx, Pt0, "PtEx0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflexEx, Pt1, "PtEx1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflexEx, Pt2, "PtEx2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflexEx, Pt3, "PtEx3")
+        self.planBS(sketchEpInflexEx,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant le dernier pt en X pour l'extrados
     # 
-        Pt0=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[12]))
-        Pt1=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[13]))
-        Pt2=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[14]))
-        Pt3=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[15]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpLast, Pt0, "PtEx0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpLast, Pt1, "PtEx1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLast, Pt2, "PtEx2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLast, Pt3, "PtEx3")
-        self.planBS(sketchEpLast,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpLastEx.addGeometry(Part.Point(LoiEpaisseur[12]))
+        Pt1=sketchEpLastEx.addGeometry(Part.Point(LoiEpaisseur[13]))
+        Pt2=sketchEpLastEx.addGeometry(Part.Point(LoiEpaisseur[14]))
+        Pt3=sketchEpLastEx.addGeometry(Part.Point(LoiEpaisseur[15]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpLastEx, Pt0, "PtEx0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpLastEx, Pt1, "PtEx1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLastEx, Pt2, "PtEx2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLastEx, Pt3, "PtEx3")
+        self.planBS(sketchEpLastEx,Pt0, Pt1, Pt2, Pt3)
     #
-    #   Loi déterminant l'épaisseur maximum en X pour l'intrados
-    # 
-        Pt0=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[16]))
-        Pt1=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[17]))
-        Pt2=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[18]))
-        Pt3=sketchEpMaxX.addGeometry(Part.Point(LoiEpaisseur[19]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxX, Pt0, "PtIn0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxX, Pt1, "PtIn1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxX, Pt2, "PtIn2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxX, Pt3, "PtIn3")
-        self.planBS(sketchEpMaxX,Pt0, Pt1, Pt2, Pt3)
+    #  Loi déterminant l'épaisseur maximum en X pour l'intrados
+    #
+        Pt0=sketchEpMaxXIn.addGeometry(Part.Point(LoiEpaisseur[16]))
+        Pt1=sketchEpMaxXIn.addGeometry(Part.Point(LoiEpaisseur[17]))
+        Pt2=sketchEpMaxXIn.addGeometry(Part.Point(LoiEpaisseur[18]))
+        Pt3=sketchEpMaxXIn.addGeometry(Part.Point(LoiEpaisseur[19]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxXIn, Pt0, "PtIn0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxXIn, Pt1, "PtIn1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxXIn, Pt2, "PtIn2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxXIn, Pt3, "PtIn3")
+        self.planBS(sketchEpMaxXIn,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'épaisseur maximum en Y pour l'intrados
     # 
-        Pt0=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[20]))
-        Pt1=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[21]))
-        Pt2=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[22]))
-        Pt3=sketchEpMaxY.addGeometry(Part.Point(LoiEpaisseur[23]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxY, Pt0, "PtIn0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxY, Pt1, "PtIn1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxY, Pt2, "PtIn2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxY, Pt3, "PtIn3")
-        self.planBS(sketchEpMaxY,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpMaxYIn.addGeometry(Part.Point(LoiEpaisseur[20]))
+        Pt1=sketchEpMaxYIn.addGeometry(Part.Point(LoiEpaisseur[21]))
+        Pt2=sketchEpMaxYIn.addGeometry(Part.Point(LoiEpaisseur[22]))
+        Pt3=sketchEpMaxYIn.addGeometry(Part.Point(LoiEpaisseur[23]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpMaxYIn, Pt0, "PtIn0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpMaxYIn, Pt1, "PtIn1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpMaxYIn, Pt2, "PtIn2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpMaxYIn, Pt3, "PtIn3")
+        self.planBS(sketchEpMaxYIn,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant l'inflexion en X pour l'intrados
     # 
-        Pt0=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[24]))
-        Pt1=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[25]))
-        Pt2=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[26]))
-        Pt3=sketchEpInflex.addGeometry(Part.Point(LoiEpaisseur[27]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflex, Pt0, "PtIn0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflex, Pt1, "PtIn1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflex, Pt2, "PtIn2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflex, Pt3, "PtIn3")
-        self.planBS(sketchEpInflex,Pt0, Pt1, Pt2, Pt3)
+        Pt0=sketchEpInflexIn.addGeometry(Part.Point(LoiEpaisseur[24]))
+        Pt1=sketchEpInflexIn.addGeometry(Part.Point(LoiEpaisseur[25]))
+        Pt2=sketchEpInflexIn.addGeometry(Part.Point(LoiEpaisseur[26]))
+        Pt3=sketchEpInflexIn.addGeometry(Part.Point(LoiEpaisseur[27]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpInflexIn, Pt0, "PtIn0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpInflexIn, Pt1, "PtIn1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpInflexIn, Pt2, "PtIn2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpInflexIn, Pt3, "PtIn3")
+        self.planBS(sketchEpInflexIn,Pt0, Pt1, Pt2, Pt3)
     #
     #   Loi déterminant le dernier pt en X pour l'intrados
     # 
-        Pt0=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[28]))
-        Pt1=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[29]))
-        Pt2=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[30]))
-        Pt3=sketchEpLast.addGeometry(Part.Point(LoiEpaisseur[31]))
-        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpLast, Pt0, "PtIn0")
-        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpLast, Pt1, "PtIn1")
-        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLast, Pt2, "PtIn2")
-        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLast, Pt3, "PtIn3")
-        self.planBS(sketchEpLast,Pt0, Pt1, Pt2, Pt3)    
+        Pt0=sketchEpLastIn.addGeometry(Part.Point(LoiEpaisseur[28]))
+        Pt1=sketchEpLastIn.addGeometry(Part.Point(LoiEpaisseur[29]))
+        Pt2=sketchEpLastIn.addGeometry(Part.Point(LoiEpaisseur[30]))
+        Pt3=sketchEpLastIn.addGeometry(Part.Point(LoiEpaisseur[31]))
+        (Pt0x,Pt0y)=self.immobilisePoint(sketchEpLastIn, Pt0, "PtIn0")
+        (Pt1x,Pt1y)=self.immobilisePoint(sketchEpLastIn, Pt1, "PtIn1")
+        (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLastIn, Pt2, "PtIn2")
+        (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLastIn, Pt3, "PtIn3")
+        self.planBS(sketchEpLastIn,Pt0, Pt1, Pt2, Pt3)    
         App.ActiveDocument.recompute()
         debug("initEpaisseur - fin")
         return
@@ -984,54 +1000,55 @@ class beltrami:
     #
         EpMaxXEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXEx")
         docPilote.addObject(EpMaxXEx)
-        Discretize.Discretization(EpMaxXEx, (App.ActiveDocument.getObject("EpMaxX"),"Edge1"))
+        Discretize.Discretization(EpMaxXEx, (App.ActiveDocument.getObject("skEpMaxXEx"),"Edge1"))
         EpMaxXEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxXEx.ViewObject)
         EpMaxXEx.ViewObject.PointSize = 3
         EpMaxXIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxXIn")
         docPilote.addObject(EpMaxXIn)
-        Discretize.Discretization(EpMaxXIn, (App.ActiveDocument.getObject("EpMaxX"),"Edge2"))
+        Discretize.Discretization(EpMaxXIn, (App.ActiveDocument.getObject("skEpMaxXIn"),"Edge1"))
         EpMaxXIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxXIn.ViewObject)
         EpMaxXIn.ViewObject.PointSize = 3
         EpMaxYEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYEx")
         docPilote.addObject(EpMaxYEx)
-        Discretize.Discretization(EpMaxYEx, (App.ActiveDocument.getObject("EpMaxY"),"Edge1"))
+        Discretize.Discretization(EpMaxYEx, (App.ActiveDocument.getObject("skEpMaxYEx"),"Edge1"))
         EpMaxYEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxYEx.ViewObject)
         EpMaxYEx.ViewObject.PointSize = 3
         EpMaxYIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpMaxYIn")
         docPilote.addObject(EpMaxYIn)
-        Discretize.Discretization(EpMaxYIn, (App.ActiveDocument.getObject("EpMaxY"),"Edge2"))
+        Discretize.Discretization(EpMaxYIn, (App.ActiveDocument.getObject("skEpMaxYIn"),"Edge1"))
         EpMaxYIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpMaxYIn.ViewObject)
         EpMaxYIn.ViewObject.PointSize = 3
         EpInflexEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexEx")
         docPilote.addObject(EpInflexEx)
-        Discretize.Discretization(EpInflexEx, (App.ActiveDocument.getObject("EpInflex"),"Edge1"))
+        Discretize.Discretization(EpInflexEx, (App.ActiveDocument.getObject("skEpInflexEx"),"Edge1"))
         EpInflexEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpInflexEx.ViewObject)
         EpInflexEx.ViewObject.PointSize = 3
         EpInflexIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpInflexIn")
         docPilote.addObject(EpInflexIn)
-        Discretize.Discretization(EpInflexIn, (App.ActiveDocument.getObject("EpInflex"),"Edge2"))
+        Discretize.Discretization(EpInflexIn, (App.ActiveDocument.getObject("skEpInflexIn"),"Edge1"))
         EpInflexIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpInflexIn.ViewObject)
         EpInflexIn.ViewObject.PointSize = 3
         EpLastEx = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastEx")
         docPilote.addObject(EpLastEx)
-        Discretize.Discretization(EpLastEx, (App.ActiveDocument.getObject("EpLast"),"Edge1"))
+        Discretize.Discretization(EpLastEx, (App.ActiveDocument.getObject("skEpLastEx"),"Edge1"))
         EpLastEx.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpLastEx.ViewObject)
         EpLastEx.ViewObject.PointSize = 3
         EpLastIn = App.ActiveDocument.addObject("Part::FeaturePython", "EpLastIn")
         docPilote.addObject(EpLastIn)
-        Discretize.Discretization(EpLastIn, (App.ActiveDocument.getObject("EpLast"),"Edge2"))
+        Discretize.Discretization(EpLastIn, (App.ActiveDocument.getObject("skEpLastIn"),"Edge1"))
         EpLastIn.Number=fp.Nfilets
         Discretize.ViewProviderDisc(EpLastIn.ViewObject)
         EpLastIn.ViewObject.PointSize = 3       
     #   création du sketch en x-y, x représentant la corde du profil et y son épaisseur pour chacun des filets
         self.sketchDiscEpaisseur(fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn)
+        App.ActiveDocument.recompute()
         debug("traceEpaisseur - fin")
         return
     def sketchDiscEpaisseur(self,fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn):
@@ -1094,6 +1111,7 @@ class beltrami:
             (Ddl11x,Ddl11y)=self.immobilisePoint(sketch, Pt11, "Ep"+I+"i1") #48
             (Ddl12x,Ddl12y)=self.immobilisePoint(sketch, Pt12, "Ep"+I+"i2") #50
             (Ddl13x,Ddl13y)=self.immobilisePoint(sketch, Pt13, "Ep"+I+"i3") #52
+            (Ddl14x,Ddl14y)=self.immobilisePoint(sketch, Pt14, "Ep"+I+"i4") #54
     #       On calcul les points sur le profil d'épaisseur extrados
 #            EpaisseurDiscretization(fpe, (App.ActiveDocument.getObject("LoiEpaisseur"+I),"Edge1"))
             Discretize.Discretization(fpe, (App.ActiveDocument.getObject("LoiEpaisseur"+I),"Edge1"))
@@ -1169,27 +1187,31 @@ class beltrami:
     def sauveEpaisseur(self,fp):
         debug('sauveEpaisseur')
         # Sauve dans Parametres les contraintes des sketch du plan Epaisseur après une modification par l'usager
-        EpMaxX=App.ActiveDocument.getObject("EpMaxX")        
-        EpMaxY=App.ActiveDocument.getObject("EpMaxY")
-        EpInflex=App.ActiveDocument.getObject("EpInflex")
-        EpLast=App.ActiveDocument.getObject("EpLast")
+        skEpMaxXEx=App.ActiveDocument.getObject("skEpMaxXEx") 
+        skEpMaxXIn=App.ActiveDocument.getObject("skEpMaxXIn")
+        skEpMaxYEx=App.ActiveDocument.getObject("skEpMaxYEx")
+        skEpMaxYIn=App.ActiveDocument.getObject("skEpMaxYIn")
+        skEpInflexEx=App.ActiveDocument.getObject("skEpInflexEx")
+        skEpInflexIn=App.ActiveDocument.getObject("skEpInflexIn")
+        skEpLastEx=App.ActiveDocument.getObject("skEpLastEx")
+        skEpLastIn=App.ActiveDocument.getObject("skEpLastIn")
         LoiEpaisseur=[]
     #   (t,ÉpaisseurMaxXExtrados, r)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxX.Constraints[i].Value,EpMaxX.Constraints[i+1].Value,100.))
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpMaxXEx.Constraints[i].Value,skEpMaxXEx.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurMaxYExtrados, r)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxY.Constraints[i].Value,EpMaxY.Constraints[i+1].Value,100.))    
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpMaxYEx.Constraints[i].Value,skEpMaxYEx.Constraints[i+1].Value,100.))    
     #   (t,ÉpaisseurInflexionExtrados)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpInflex.Constraints[i].Value,EpInflex.Constraints[i+1].Value,100.))
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpInflexEx.Constraints[i].Value,skEpInflexEx.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurLastExtrados)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpLast.Constraints[i].Value,EpLast.Constraints[i+1].Value,100.))
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpLastEx.Constraints[i].Value,skEpLastEx.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurMaxXIntrados, r)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxX.Constraints[i+26].Value,EpMaxX.Constraints[i+27].Value,100.))
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpMaxXIn.Constraints[i].Value,skEpMaxXIn.Constraints[i+1].Value,100.))
     #   (t,ÉpaisseurMaxYIntrados, r)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpMaxY.Constraints[i+26].Value,EpMaxY.Constraints[i+27].Value,100.))    
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpMaxYIn.Constraints[i].Value,skEpMaxYIn.Constraints[i+1].Value,100.))    
     #   (t,ÉpaisseurInflexionIntrados)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpInflex.Constraints[i+26].Value,EpInflex.Constraints[i+27].Value,100.))    
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpInflexIn.Constraints[i].Value,skEpInflexIn.Constraints[i+1].Value,100.))    
     #   (t,ÉpaisseurLastIntrados)
-        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(EpLast.Constraints[i+26].Value,EpLast.Constraints[i+27].Value,100.))
+        for i in range(0,8,2):LoiEpaisseur.append(App.Vector(skEpLastIn.Constraints[i].Value,skEpLastIn.Constraints[i+1].Value,100.))
         fp.Epaisseur=LoiEpaisseur
         App.ActiveDocument.recompute()
         debug('sauveEpaisseur - fin')
@@ -1284,7 +1306,7 @@ class beltrami:
     def initCascade(self,fp):
         debug("initCascade") 
     #
-    #   Routine pour créer les splines à 4 pôles(0,1,2,3) qui pilotent
+    #   Routine pour créer les splines à 4 pôles(0,1,2,3) qui pilotent pour l'âme
     #   les variables évolutant selon la coordonnée normalisée t de la ceinture au plafond :
     #  
     #   sketchTheta : position angulaire à l'entrée et à la sortie
@@ -1292,24 +1314,32 @@ class beltrami:
     #   sketchPoids : poids (rayon) d'influence des pôles à l'entrée et à la sortie
     #   sketchLong  : longueur entre les pôles d'entrée et de sortie ( coord. norm. s)
         LoiAlpha=[]
-        sketchTheta=App.ActiveDocument.addObject('Sketcher::SketchObject','Theta')
-        sketchTheta.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
-#        sketchTheta.Label='Theta'
-        sketchAlpha=App.ActiveDocument.addObject('Sketcher::SketchObject','Alpha')
-        sketchAlpha.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
-#        sketchAlpha.Label='Alpha'
-        sketchPoids=App.ActiveDocument.addObject('Sketcher::SketchObject','Poids')
-        sketchPoids.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
-#        sketchPoids.Label='Poids'
-        sketchLong=App.ActiveDocument.addObject('Sketcher::SketchObject','Long')
-        sketchLong.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
-#        sketchLong.Label='Long'
+        sketchTheta_entree=App.ActiveDocument.addObject('Sketcher::SketchObject','skTheta_entree')
+        sketchTheta_entree.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchTheta_sortie=App.ActiveDocument.addObject('Sketcher::SketchObject','skTheta_sortie')
+        sketchTheta_sortie.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchAlpha_entree=App.ActiveDocument.addObject('Sketcher::SketchObject','skAlpha_entree')
+        sketchAlpha_entree.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchAlpha_sortie=App.ActiveDocument.addObject('Sketcher::SketchObject','skAlpha_sortie')
+        sketchAlpha_sortie.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchPoids_entree=App.ActiveDocument.addObject('Sketcher::SketchObject','skPoids_entree')
+        sketchPoids_entree.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchPoids_sortie=App.ActiveDocument.addObject('Sketcher::SketchObject','skPoids_sortie')
+        sketchPoids_sortie.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchLong_entree=App.ActiveDocument.addObject('Sketcher::SketchObject','skLong_entree')
+        sketchLong_entree.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
+        sketchLong_sortie=App.ActiveDocument.addObject('Sketcher::SketchObject','skLong_sortie')
+        sketchLong_sortie.Placement = App.Placement(App.Vector(0.000000,0.000000,0.000000),App.Rotation(0.5,0.5,0.5,0.5))
         Feuil= App.ActiveDocument.getObject("Tableau_pilote")
         docPilote = App.ActiveDocument.getObject("Pilote")
-        docPilote.addObject(sketchTheta)
-        docPilote.addObject(sketchAlpha)
-        docPilote.addObject(sketchPoids)
-        docPilote.addObject(sketchLong)
+        docPilote.addObject(sketchTheta_entree)
+        docPilote.addObject(sketchTheta_sortie)
+        docPilote.addObject(sketchAlpha_entree)
+        docPilote.addObject(sketchAlpha_sortie)
+        docPilote.addObject(sketchPoids_entree)
+        docPilote.addObject(sketchPoids_sortie)
+        docPilote.addObject(sketchLong_entree)
+        docPilote.addObject(sketchLong_sortie)
     #   Pour la représentation dans FreeCAD t varie de 0 à 100 mm de la ceinture au plafond.
         t0=Feuil.B1*100.
         t1=Feuil.C1*100.
@@ -1352,103 +1382,103 @@ class beltrami:
         t1=LoiAlpha[1].z
         t2=LoiAlpha[2].z
         t3=LoiAlpha[3].z
-        Te0=sketchTheta.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[0].x,0)))
-        Te1=sketchTheta.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[1].x,0)))
-        Te2=sketchTheta.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[2].x,0)))
-        Te3=sketchTheta.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[3].x,0)))
-        (Te0x,Te0y)=self.immobilisePoint(sketchTheta, Te0, "Te0")
-        (Te1x,Te1y)=self.immobilisePoint(sketchTheta, Te1, "Te1")
-        (Te2x,Te2y)=self.immobilisePoint(sketchTheta, Te2, "Te2")
-        (Te3x,Te3y)=self.immobilisePoint(sketchTheta, Te3, "Te3")
+        Te0=sketchTheta_entree.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[0].x,0)))
+        Te1=sketchTheta_entree.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[1].x,0)))
+        Te2=sketchTheta_entree.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[2].x,0)))
+        Te3=sketchTheta_entree.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[3].x,0)))
+        (Te0x,Te0y)=self.immobilisePoint(sketchTheta_entree, Te0, "Te0")
+        (Te1x,Te1y)=self.immobilisePoint(sketchTheta_entree, Te1, "Te1")
+        (Te2x,Te2y)=self.immobilisePoint(sketchTheta_entree, Te2, "Te2")
+        (Te3x,Te3y)=self.immobilisePoint(sketchTheta_entree, Te3, "Te3")
     #   au bord de fuite
-        Ts0=sketchTheta.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[0].y,0)))
-        Ts1=sketchTheta.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[1].y,0)))
-        Ts2=sketchTheta.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[2].y,0)))
-        Ts3=sketchTheta.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[3].y,0)))
-        (Ts0x,Ts0y)=self.immobilisePoint(sketchTheta, Ts0, "Ts0")
-        (Ts1x,Ts1y)=self.immobilisePoint(sketchTheta, Ts1, "Ts1")
-        (Ts2x,Ts2y)=self.immobilisePoint(sketchTheta, Ts2, "Ts2")
-        (Ts3x,Ts3y)=self.immobilisePoint(sketchTheta, Ts3, "Ts3")
+        Ts0=sketchTheta_sortie.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[0].y,0)))
+        Ts1=sketchTheta_sortie.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[1].y,0)))
+        Ts2=sketchTheta_sortie.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[2].y,0)))
+        Ts3=sketchTheta_sortie.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[3].y,0)))
+        (Ts0x,Ts0y)=self.immobilisePoint(sketchTheta_sortie, Ts0, "Ts0")
+        (Ts1x,Ts1y)=self.immobilisePoint(sketchTheta_sortie, Ts1, "Ts1")
+        (Ts2x,Ts2y)=self.immobilisePoint(sketchTheta_sortie, Ts2, "Ts2")
+        (Ts3x,Ts3y)=self.immobilisePoint(sketchTheta_sortie, Ts3, "Ts3")
     #   Construction des Bspline
-        (BSte,ceinte,plfte)=self.planBS(sketchTheta,Te0,Te1,Te2,Te3)   # BORD D'ATTAQUE
-        (BSts,ceints,plfts)=self.planBS(sketchTheta,Ts0,Ts1,Ts2,Ts3)   # BORD DE FUITE       
+        (BSte,ceinte,plfte)=self.planBS(sketchTheta_entree,Te0,Te1,Te2,Te3)   # BORD D'ATTAQUE
+        (BSts,ceints,plfts)=self.planBS(sketchTheta_sortie,Ts0,Ts1,Ts2,Ts3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
     #
     #   Loi d'alpha 
     #
     #   au bord d'attaque
-        Ae0=sketchAlpha.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].x,0)))
-        Ae1=sketchAlpha.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].x,0)))
-        Ae2=sketchAlpha.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].x,0)))
-        Ae3=sketchAlpha.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].x,0)))
-        (Ae0x,Ae0y)=self.immobilisePoint(sketchAlpha, Ae0, "Ae0")
-        (Ae1x,Ae1y)=self.immobilisePoint(sketchAlpha, Ae1, "Ae1")
-        (Ae2x,Ae2y)=self.immobilisePoint(sketchAlpha, Ae2, "Ae2")
-        (Ae3x,Ae3y)=self.immobilisePoint(sketchAlpha, Ae3, "Ae3")
+        Ae0=sketchAlpha_entree.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].x,0)))
+        Ae1=sketchAlpha_entree.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].x,0)))
+        Ae2=sketchAlpha_entree.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].x,0)))
+        Ae3=sketchAlpha_entree.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].x,0)))
+        (Ae0x,Ae0y)=self.immobilisePoint(sketchAlpha_entree, Ae0, "Ae0")
+        (Ae1x,Ae1y)=self.immobilisePoint(sketchAlpha_entree, Ae1, "Ae1")
+        (Ae2x,Ae2y)=self.immobilisePoint(sketchAlpha_entree, Ae2, "Ae2")
+        (Ae3x,Ae3y)=self.immobilisePoint(sketchAlpha_entree, Ae3, "Ae3")
     #   au bord de fuite
-        As0=sketchAlpha.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].x,0)))
-        As1=sketchAlpha.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].x,0)))
-        As2=sketchAlpha.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].x,0)))
-        As3=sketchAlpha.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].x,0)))
-        (As0x,As0y)=self.immobilisePoint(sketchAlpha, As0, "As0")
-        (As1x,As1y)=self.immobilisePoint(sketchAlpha, As1, "As1")
-        (As2x,As2y)=self.immobilisePoint(sketchAlpha, As2, "As2")
-        (As3x,As3y)=self.immobilisePoint(sketchAlpha, As3, "As3")
+        As0=sketchAlpha_sortie.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].x,0)))
+        As1=sketchAlpha_sortie.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].x,0)))
+        As2=sketchAlpha_sortie.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].x,0)))
+        As3=sketchAlpha_sortie.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].x,0)))
+        (As0x,As0y)=self.immobilisePoint(sketchAlpha_sortie, As0, "As0")
+        (As1x,As1y)=self.immobilisePoint(sketchAlpha_sortie, As1, "As1")
+        (As2x,As2y)=self.immobilisePoint(sketchAlpha_sortie, As2, "As2")
+        (As3x,As3y)=self.immobilisePoint(sketchAlpha_sortie, As3, "As3")
     #   Construction des Bspline
-        (BSae,ceinae,plfae)=self.planBS(sketchAlpha,Ae0,Ae1,Ae2,Ae3)   # BORD D'ATTAQUE
-        (BSas,ceinas,plfas)=self.planBS(sketchAlpha,As0,As1,As2,As3)   # BORD DE FUITE       
+        (BSae,ceinae,plfae)=self.planBS(sketchAlpha_entree,Ae0,Ae1,Ae2,Ae3)   # BORD D'ATTAQUE
+        (BSas,ceinas,plfas)=self.planBS(sketchAlpha_sortie,As0,As1,As2,As3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
     #
     #   Loi de poids 
     #
     #   au bord d'attaque
-        We0=sketchPoids.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].y,0)))
-        We1=sketchPoids.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].y,0)))
-        We2=sketchPoids.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].y,0)))
-        We3=sketchPoids.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].y,0)))
-        (We0x,We0y)=self.immobilisePoint(sketchPoids, We0, "We0")
-        (We1x,We1y)=self.immobilisePoint(sketchPoids, We1, "We1")
-        (We2x,We2y)=self.immobilisePoint(sketchPoids, We2, "We2")
-        (We3x,We3y)=self.immobilisePoint(sketchPoids, We3, "We3")
+        We0=sketchPoids_entree.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].y,0)))
+        We1=sketchPoids_entree.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].y,0)))
+        We2=sketchPoids_entree.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].y,0)))
+        We3=sketchPoids_entree.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].y,0)))
+        (We0x,We0y)=self.immobilisePoint(sketchPoids_entree, We0, "We0")
+        (We1x,We1y)=self.immobilisePoint(sketchPoids_entree, We1, "We1")
+        (We2x,We2y)=self.immobilisePoint(sketchPoids_entree, We2, "We2")
+        (We3x,We3y)=self.immobilisePoint(sketchPoids_entree, We3, "We3")
     #   au bord de fuite 
-        Ws0=sketchPoids.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].y,0)))
-        Ws1=sketchPoids.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].y,0)))
-        Ws2=sketchPoids.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].y,0)))
-        Ws3=sketchPoids.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].y,0)))
-        (Ws0x,Ws0y)=self.immobilisePoint(sketchPoids, Ws0, "Ws0")
-        (Ws1x,Ws1y)=self.immobilisePoint(sketchPoids, Ws1, "Ws1")
-        (Ws2x,Ws2y)=self.immobilisePoint(sketchPoids, Ws2, "Ws2")
-        (Ws3x,Ws3y)=self.immobilisePoint(sketchPoids, Ws3, "Ws3")
+        Ws0=sketchPoids_sortie.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].y,0)))
+        Ws1=sketchPoids_sortie.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].y,0)))
+        Ws2=sketchPoids_sortie.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].y,0)))
+        Ws3=sketchPoids_sortie.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].y,0)))
+        (Ws0x,Ws0y)=self.immobilisePoint(sketchPoids_sortie, Ws0, "Ws0")
+        (Ws1x,Ws1y)=self.immobilisePoint(sketchPoids_sortie, Ws1, "Ws1")
+        (Ws2x,Ws2y)=self.immobilisePoint(sketchPoids_sortie, Ws2, "Ws2")
+        (Ws3x,Ws3y)=self.immobilisePoint(sketchPoids_sortie, Ws3, "Ws3")
     #   Construction des Bspline
-        (BSWe,ceinwe,plfwe)=self.planBS(sketchPoids,We0,We1,We2,We3)   # BORD D'ATTAQUE
+        (BSWe,ceinwe,plfwe)=self.planBS(sketchPoids_entree,We0,We1,We2,We3)   # BORD D'ATTAQUE
         App.ActiveDocument.recompute()
-        (BSWs,ceinws,plfws)=self.planBS(sketchPoids,Ws0,Ws1,Ws2,Ws3)   # BORD DE FUITE       
+        (BSWs,ceinws,plfws)=self.planBS(sketchPoids_sortie,Ws0,Ws1,Ws2,Ws3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
     #
     #   Loi des Longueurs 
     #
     #   au bord d'attaque
-        Le0=sketchLong.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].z,0)))
-        Le1=sketchLong.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].z,0)))
-        Le2=sketchLong.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].z,0)))
-        Le3=sketchLong.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].z,0)))
-        (Le0x,Le0y)=self.immobilisePoint(sketchLong, Le0, "Le0")
-        (Le1x,Le1y)=self.immobilisePoint(sketchLong, Le1, "Le1")
-        (Le2x,Le2y)=self.immobilisePoint(sketchLong, Le2, "Le2")
-        (Le3x,Le3y)=self.immobilisePoint(sketchLong, Le3, "Le3")
+        Le0=sketchLong_entree.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[4].z,0)))
+        Le1=sketchLong_entree.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[6].z,0)))
+        Le2=sketchLong_entree.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[8].z,0)))
+        Le3=sketchLong_entree.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[10].z,0)))
+        (Le0x,Le0y)=self.immobilisePoint(sketchLong_entree, Le0, "Le0")
+        (Le1x,Le1y)=self.immobilisePoint(sketchLong_entree, Le1, "Le1")
+        (Le2x,Le2y)=self.immobilisePoint(sketchLong_entree, Le2, "Le2")
+        (Le3x,Le3y)=self.immobilisePoint(sketchLong_entree, Le3, "Le3")
     #   au bord de fuite 
-        Ls0=sketchLong.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].z,0)))
-        Ls1=sketchLong.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].z,0)))
-        Ls2=sketchLong.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].z,0)))
-        Ls3=sketchLong.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].z,0)))
-        (Ls0x,Ls0y)=self.immobilisePoint(sketchLong, Ls0, "Ls0")
-        (Ls1x,Ls1y)=self.immobilisePoint(sketchLong, Ls1, "Ls1")
-        (Ls2x,Ls2y)=self.immobilisePoint(sketchLong, Ls2, "Ls2")
-        (Ls3x,Ls3y)=self.immobilisePoint(sketchLong, Ls3, "Ls3")
+        Ls0=sketchLong_sortie.addGeometry(Part.Point(App.Vector(t0,LoiAlpha[5].z,0)))
+        Ls1=sketchLong_sortie.addGeometry(Part.Point(App.Vector(t1,LoiAlpha[7].z,0)))
+        Ls2=sketchLong_sortie.addGeometry(Part.Point(App.Vector(t2,LoiAlpha[9].z,0)))
+        Ls3=sketchLong_sortie.addGeometry(Part.Point(App.Vector(t3,LoiAlpha[11].z,0)))
+        (Ls0x,Ls0y)=self.immobilisePoint(sketchLong_sortie, Ls0, "Ls0")
+        (Ls1x,Ls1y)=self.immobilisePoint(sketchLong_sortie, Ls1, "Ls1")
+        (Ls2x,Ls2y)=self.immobilisePoint(sketchLong_sortie, Ls2, "Ls2")
+        (Ls3x,Ls3y)=self.immobilisePoint(sketchLong_sortie, Ls3, "Ls3")
     #   Construction des Bspline
-        (BSLe,ceinle,plfle)=self.planBS(sketchLong,Le0,Le1,Le2,Le3)   # BORD D'ATTAQUE
+        (BSLe,ceinle,plfle)=self.planBS(sketchLong_entree,Le0,Le1,Le2,Le3)   # BORD D'ATTAQUE
         App.ActiveDocument.recompute()
-        (BSLs,ceinls,plfls)=self.planBS(sketchLong,Ls0,Ls1,Ls2,Ls3)   # BORD DE FUITE       
+        (BSLs,ceinls,plfls)=self.planBS(sketchLong_sortie,Ls0,Ls1,Ls2,Ls3)   # BORD DE FUITE       
         App.ActiveDocument.recompute()
         debug('initCascade - fin')
         return
@@ -1467,14 +1497,14 @@ class beltrami:
         #
         Te = App.ActiveDocument.addObject("Part::FeaturePython","Theta_entree")
         docPilote.addObject(Te)
-        Discretize.Discretization(Te, (App.ActiveDocument.getObject("Theta"),"Edge1"))
+        Discretize.Discretization(Te, (App.ActiveDocument.getObject("skTheta_entree"),"Edge1"))
         Te.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Te.ViewObject)
         Te.ViewObject.PointSize = 3
         Te.recompute()
         Ts = App.ActiveDocument.addObject("Part::FeaturePython","Theta_sortie")
         docPilote.addObject(Ts)        
-        Discretize.Discretization(Ts, (App.ActiveDocument.getObject("Theta"),"Edge2"))
+        Discretize.Discretization(Ts, (App.ActiveDocument.getObject("skTheta_sortie"),"Edge1"))
         Ts.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ts.ViewObject)
         Ts.ViewObject.PointSize = 3
@@ -1484,14 +1514,14 @@ class beltrami:
         #
         Ae = App.ActiveDocument.addObject("Part::FeaturePython","Alpha_entree")
         docPilote.addObject(Ae)
-        Discretize.Discretization(Ae, (App.ActiveDocument.getObject("Alpha"),"Edge1"))
+        Discretize.Discretization(Ae, (App.ActiveDocument.getObject("skAlpha_entree"),"Edge1"))
         Ae.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ae.ViewObject)
         Ae.ViewObject.PointSize = 3
         Ae.recompute()
         As = App.ActiveDocument.addObject("Part::FeaturePython","Alpha_sortie")
         docPilote.addObject(As)
-        Discretize.Discretization(As, (App.ActiveDocument.getObject("Alpha"),"Edge2"))
+        Discretize.Discretization(As, (App.ActiveDocument.getObject("skAlpha_sortie"),"Edge1"))
         As.Number=fp.Nfilets
         Discretize.ViewProviderDisc(As.ViewObject)
         As.ViewObject.PointSize = 3
@@ -1501,14 +1531,14 @@ class beltrami:
         #
         We = App.ActiveDocument.addObject("Part::FeaturePython","Poids_entree")
         docPilote.addObject(We)
-        Discretize.Discretization(We, (App.ActiveDocument.getObject("Poids"),"Edge1"))
+        Discretize.Discretization(We, (App.ActiveDocument.getObject("skPoids_entree"),"Edge1"))
         We.Number=fp.Nfilets
         Discretize.ViewProviderDisc(We.ViewObject)
         We.ViewObject.PointSize = 3
         We.recompute()
         Ws = App.ActiveDocument.addObject("Part::FeaturePython","Poids_sortie")
         docPilote.addObject(Ws)
-        Discretize.Discretization(Ws, (App.ActiveDocument.getObject("Poids"),"Edge2"))
+        Discretize.Discretization(Ws, (App.ActiveDocument.getObject("skPoids_sortie"),"Edge1"))
         Ws.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ws.ViewObject)
         Ws.ViewObject.PointSize = 3
@@ -1519,14 +1549,14 @@ class beltrami:
         #   au bord d'attaque
         Le = App.ActiveDocument.addObject("Part::FeaturePython","Long_entree")
         docPilote.addObject(Le)
-        Discretize.Discretization(Le, (App.ActiveDocument.getObject("Long"),"Edge1"))
+        Discretize.Discretization(Le, (App.ActiveDocument.getObject("skLong_entree"),"Edge1"))
         Le.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Le.ViewObject)
         Le.ViewObject.PointSize = 3
         Le.recompute()
         Ls = App.ActiveDocument.addObject("Part::FeaturePython","Long_sortie")
         docPilote.addObject(Ls)
-        Discretize.Discretization(Ls, (App.ActiveDocument.getObject("Long"),"Edge2"))
+        Discretize.Discretization(Ls, (App.ActiveDocument.getObject("skLong_sortie"),"Edge1"))
         Ls.Number=fp.Nfilets
         Discretize.ViewProviderDisc(Ls.ViewObject)
         Ls.ViewObject.PointSize = 3
@@ -1704,17 +1734,36 @@ class beltrami:
     def sauveCascade(self,fp):
     #   Sauve les nouvelles limites du sketchAngles 
         debug('sauveCascade')
-        sketchTheta=App.ActiveDocument.Theta
-        sketchAlpha=App.ActiveDocument.Alpha
-        sketchPoids=App.ActiveDocument.Poids
-        sketchLong=App.ActiveDocument.Long
-        # for contrainte in range(1,32,2) : sketchAngles.toggleDriving(contrainte)
+        sketchTheta_entree=App.ActiveDocument.skTheta_entree
+        sketchTheta_sortie=App.ActiveDocument.skTheta_sortie
+        sketchAlpha_entree=App.ActiveDocument.skAlpha_entree
+        sketchAlpha_sortie=App.ActiveDocument.skAlpha_sortie
+        sketchPoids_entree=App.ActiveDocument.skPoids_entree
+        sketchPoids_sortie=App.ActiveDocument.skPoids_sortie
+        sketchLong_entree=App.ActiveDocument.skLong_entree
+        sketchLong_sortie=App.ActiveDocument.skLong_sortie
 #       Sauvegarde du résultat
+#
+#       fp.Alpha ou LoiAlpha
+#
+#       1   B3  B4  B1
+#       2   C3  C4  C1
+#       3   D3  D4  D1
+#       4   E3  E4  E1
+#       5   B5  B8  B10
+#       6   B6  B9  B11
+#       7   C5  C8  C10
+#       8   C6  C9  C11
+#       9   D5  D8  D10
+#       10  D6  D9  D11
+#       11  E5  E8  E10
+#       12  R6  E9  E11
+#
         LoiAlpha=[]
-        for i in range(0,8,2): LoiAlpha.append(App.Vector(sketchTheta.getDatum(i+1),sketchTheta.getDatum(i+9),sketchTheta.getDatum(i)))
+        for i in range(0,8,2): LoiAlpha.append(App.Vector(sketchTheta_entree.getDatum(i+1),sketchTheta_sortie.getDatum(i+1),sketchTheta_entree.getDatum(i)))
         for i in range(0,8,2) : 
-            LoiAlpha.append(App.Vector(sketchAlpha.getDatum(i+1),sketchPoids.getDatum(i+1),sketchLong.getDatum(i+1)))
-            LoiAlpha.append(App.Vector(sketchAlpha.getDatum(i+9),sketchPoids.getDatum(i+9),sketchLong.getDatum(i+9)))
+            LoiAlpha.append(App.Vector(sketchAlpha_entree.getDatum(i+1),sketchPoids_entree.getDatum(i+1),sketchLong_entree.getDatum(i+1)))
+            LoiAlpha.append(App.Vector(sketchAlpha_sortie.getDatum(i+1),sketchPoids_sortie.getDatum(i+1),sketchLong_sortie.getDatum(i+1)))
         fp.Alpha=LoiAlpha
         App.ActiveDocument.recompute()
         debug('sauveCascade - fin')
@@ -1859,6 +1908,7 @@ class beltrami:
             #   Création des surfaces
         fpSa=App.ActiveDocument.addObject("Part::FeaturePython","Ame") #add object to document
         approximate.Approximate(fpSa,docVoile3Da)
+#        fpSa.Parametrization='Curvilinear'
         # fpSa.recompute()
         # fpSa.Method="Smoothing Algorithm"
         # fpSa.CurvatureWeight = 9.00
@@ -1866,13 +1916,15 @@ class beltrami:
         docDomaine3D.addObject(fpSa)
         fpSe=App.ActiveDocument.addObject("Part::FeaturePython","Extrados") #add object to document
         approximate.Approximate(fpSe,docVoile3De)
-        # fpSe.recompute()
+#        fpSe.Parametrization='Curvilinear'
+       # fpSe.recompute()
         # fpSe.Method="Smoothing Algorithm"
         # fpSe.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSe.ViewObject)
         docDomaine3D.addObject(fpSe)
         fpSi=App.ActiveDocument.addObject("Part::FeaturePython","Intrados") #add object to document
         approximate.Approximate(fpSi,docVoile3Di)
+#        fpSi.Parametrization='Curvilinear'
         # fpSi.recompute()
         # fpSi.Method="Smoothing Algorithm"
         # fpSi.CurvatureWeight = 9.00
