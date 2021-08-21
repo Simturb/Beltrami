@@ -18,7 +18,6 @@ class modif():
             print('Il faut avoir lancé un tracé')
             return
         pM=fp.Proxy
-        pM.modif(fp)
         return
         
 Gui.addCommand('modif', modif()) 
