@@ -26,6 +26,18 @@ https://michelsabourin.scenari-community.org/SimTurbMeth/co/0_1_Methode_de_trace
 ## Examples
 Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examples provided.
 
+### Blades of Francis turbine
+![Image of Francis](https://github.com/Simturb/Beltrami/blob/main/Exemples/Francis.png)
+
+### Blades of Francis turbine
+![Image of Francis](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
+
+### Blades of centrifugal pump
+![Image of pump](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
+
+## Discussions,exchanges and support
+On FreeCAD forum
+https://forum.freecadweb.org/
 
 ## License  
 Beltrami workbench is released under the LGPL2.1+ license.
