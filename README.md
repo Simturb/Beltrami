@@ -29,8 +29,8 @@ Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examp
 ### Blades of Francis turbine
 ![Image of Francis](https://github.com/Simturb/Beltrami/blob/main/Exemples/Francis.png)
 
-### Blades of Francis turbine
-![Image of Francis](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
+### Blades of Kaplan turbine
+![Image of Kaplan](https://github.com/Simturb/Beltrami/blob/main/Exemples/Kaplan.png)
 
 ### Blades of centrifugal pump
 ![Image of pump](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
