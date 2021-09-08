@@ -37,7 +37,10 @@ Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examp
 
 ## Discussions,exchanges and support
 On FreeCAD forum
-https://forum.freecadweb.org/
+https://forum.freecadweb.org/viewtopic.php?f=8&t=62056
 
-## License  
-Beltrami workbench is released under the LGPL2.1+ license.
+## Licence  
+Beltrami workbench is released under the LGPL2.1+ licence.
+
+## Warning
+This Beltrami workbench is in ALPHA state as well as Curves WB on which it is based.
