@@ -226,6 +226,7 @@ class beltrami:
         self.modifVoile(fp)
         return
     def onChangedNfilets(self, fp):
+        debug = _utils.debug
         Gui.Selection.clearSelection()
         debug('onChangedNfilets')
         if(fp.Nfilets ==fp.preNfilets):
@@ -289,13 +290,6 @@ class beltrami:
         Ls = App.ActiveDocument.getObject("Long_sortie")
         Ls.Number = fp.Nfilets
         Ls.recompute()
-    #   Voile 3D
-        docVoile3Da = App.ActiveDocument.getObject("Voile3Da")
-        docVoile3De = App.ActiveDocument.getObject("Voile3De")
-        docVoile3Di = App.ActiveDocument.getObject("Voile3Di")
-        fpSA=App.ActiveDocument.getObject("Ame")
-        fpSE=App.ActiveDocument.getObject("Extrados")
-        fpSI=App.ActiveDocument.getObject("Intrados")
     #
     #   pour fp.Nfilets > fp.preNfilets
     #
@@ -316,7 +310,7 @@ class beltrami:
                 Discretize.ViewProviderDisc(fpM.ViewObject)
                 fpM.ViewObject.PointSize = 3
                 fpM.recompute()
-        #   Plan épaisseurs
+            #   Plan épaisseurs
             self.sketchDiscEpaisseur(fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn)
         #   Plans des longueurs et de la cascade
             self.sketchDiscCascade(fp, Te, Ts, Ae, As, We, Ws, Le, Ls)
@@ -397,21 +391,29 @@ class beltrami:
                 App.ActiveDocument.removeObject("Voile3Da"+I)
                 App.ActiveDocument.removeObject("Voile3De"+I)
                 App.ActiveDocument.removeObject("Voile3Di"+I)
-        # approximate.Approximate(fpSA,docVoile3Da)
-        # fpSA.Parametrization='Curvilinear'
-        # fpSA.ApproxTolerance = 0.01
-        # approximate.Approximate(fpSE,docVoile3De)
-        # fpSE.Parametrization='Curvilinear'
-        # fpSE.ApproxTolerance = 0.01
-        # approximate.Approximate(fpSI,docVoile3Di)
-        # fpSI.Parametrization='Curvilinear'
-        # fpSI.ApproxTolerance = 0.01
+        debug('calcul des surfaces des voiles')
+    #   Voile 3D
+        docVoile3Da = App.ActiveDocument.getObject("Voile3Da")
+        docVoile3De = App.ActiveDocument.getObject("Voile3De")
+        docVoile3Di = App.ActiveDocument.getObject("Voile3Di")
+        fpSA=App.ActiveDocument.getObject("Ame")
+        fpSE=App.ActiveDocument.getObject("Extrados")
+        fpSI=App.ActiveDocument.getObject("Intrados")
+#        App.ActiveDocument.recompute()
+        debug(docVoile3Da.Content)
         fpSA.PointObject=docVoile3Da
+        fpSA.LastIndex=fp.Nfilets-1
+#        fpSA.recompute()
         fpSE.PointObject=docVoile3De
+        fpSE.LastIndex=fp.Nfilets-1
+#        fpSE.recompute()
         fpSI.PointObject=docVoile3Di
+        fpSI.LastIndex=fp.Nfilets-1
+#        fpSI.recompute()
         App.activeDocument().recompute(None,True,True)
         fp.preNfilets=fp.Nfilets
         debug('onChangedNfilets - fin')
+        debug = _utils.doNothing
         return
     def __setstate__(self, state):
         debug('setstate')
@@ -1141,6 +1143,7 @@ class beltrami:
         debug("traceEpaisseur - fin")
         return
     def sketchDiscEpaisseur(self,fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn):
+        debug = _utils.debug
         debug('sketchDiscEpaisseur')
         docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseurs')
         debug('fp.preNfilets= '+str(fp.preNfilets))
@@ -1664,6 +1667,7 @@ class beltrami:
         debug('traceCascade - fin')
         return
     def sketchDiscCascade(self,fp, Te, Ts, Ae, As, We, Ws, Le, Ls):
+        debug = _utils.debug
         debug("sketchDiscCascade")
         docPlanCascade = App.ActiveDocument.getObject("Plan_Cascade")
         docPlanLongueurs = App.ActiveDocument.getObject("Plan_Longueurs")
@@ -2098,6 +2102,7 @@ class beltrami:
         #
         # Filets.... contient les Discretize_Edge de chaque plan
         #
+        debug = _utils.debug
         debug('modifVoile')
     #   Récupération des groupes pour classement
     #   Domaine3D
@@ -2173,7 +2178,8 @@ class beltrami:
             Voile3DDiscretization.calcul(fpVA, FiletM, FiletCA, fp.Npts)
             Voile3DDiscretization.calcul(fpVI, FiletM, FiletCI, fp.Npts)
             Voile3DDiscretization.calcul(fpVE, FiletM, FiletCE, fp.Npts)
-        debug('voile3D - fin '+str(App.ActiveDocument.Objects.__len__()))
+        App.ActiveDocument.recompute()
+        debug('modifVoile - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
       
 
