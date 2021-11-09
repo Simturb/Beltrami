@@ -1,5 +1,3 @@
-
-
 # -*- coding: utf-8 -*-
 
 __title__ = "Beltrami"
@@ -7,30 +5,6 @@ __author__ = "Michel Sabourin (sabm01)"
 __license__ = "https://michelsabourin.scenari-community.org/SimTurb/co/1siteWeb_1.html"
 __doc__ = "https://michelsabourin.scenari-community.org/SimTurbMeth/co/GenerationProfil3D.html"
 
-
-"""
-import Beltrami as B
-fp=App.ActiveDocument.addObject("App::FeaturePython","Parametres")
-pM=B.Beltrami(fp)
-
-
-fp=App.ActiveDocument.getObject('Parametres')
-pM=fp.Proxy
-
-
-for o in App.ActiveDocument.Objects: print(o.Name)
-
-
-
-
-129
-13
-129
-33
--1
--65
--25
-"""
 import os
 import FreeCAD as App
 import FreeCADGui as Gui 
@@ -40,11 +14,8 @@ from freecad.Curves import IsoCurve as iso
 from freecad.Curves import Discretize
 from freecad.Curves import approximate
 from freecad.Curves import _utils
-#from freecad.Curves import ICONPATH
 #debug = _utils.debug
 debug = _utils.doNothing
-
-
 
 def get_module_path():
     """ Returns the current module path.
@@ -64,7 +35,7 @@ class beltrami:
     #
     #   Création des listes pour sauvegarder l'information
     #
-        fp.addProperty("App::PropertyFloat","Version","Base","Numero de version").Version=0.04
+        fp.addProperty("App::PropertyFloat","Version","Base","Numéro de version").Version=0.05
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(6,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets","Base","Nombre de filets précédents").preNfilets=0
@@ -72,7 +43,7 @@ class beltrami:
         fp.addProperty("App::PropertyIntegerConstraint","Sens","Base","Rotation(1:anti-horaire, -1:horaire)").Sens=(-1,-1,1,2)
         fp.addProperty("App::PropertyBool","Modifiable","Base","Vrai pour modification").Modifiable=False
         fp.addProperty("App::PropertyBool","Init","Base","Vrai pour modification").Init=True
-        fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de pole en t").Def_t=4
+        fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de poles en t").Def_t=4
         fp.Proxy=self
         fp.setEditorMode("Version",1)
         fp.setEditorMode("Label",1)
@@ -161,7 +132,6 @@ class beltrami:
             self.modifCascade(fp, fp.Nfilets)
             self.modifVoile(fp)
         debug('onChanged - fin')
-#        debug = _utils.doNothing
         return 
     def onChangedNpts(self, fp):
         for i in range(fp.Nfilets):
@@ -230,9 +200,6 @@ class beltrami:
         if(fp.Nfilets ==fp.preNfilets):
             debug('onChangedNfilets - fin')
             return
-    #
-    #   pour Nfilets > ou > que preNfilets
-    #
     #   Plan méridien
         docPlanMeridien=App.ActiveDocument.getObject('Plan_Meridien')
         IsoCurve=App.ActiveDocument.getObject('IsoCurve')
@@ -307,6 +274,7 @@ class beltrami:
                 fpM.Number=fp.Npts
                 Discretize.ViewProviderDisc(fpM.ViewObject)
                 fpM.ViewObject.PointSize = 3
+                if fp.preNfilets > 0 :fpM.Visibility=App.ActiveDocument.getObject('FiletM'+str(i)).Visibility
                 fpM.recompute()
             #   Plan épaisseurs
             self.sketchDiscEpaisseur(fp, EpMaxXEx, EpMaxXIn, EpMaxYEx, EpMaxYIn, EpInflexEx, EpInflexIn, EpLastEx, EpLastIn)
@@ -399,11 +367,11 @@ class beltrami:
         fpSI=App.ActiveDocument.getObject("Intrados")
         debug(docVoile3Da.Content)
         fpSA.PointObject=docVoile3Da
-        fpSA.LastIndex=fp.Nfilets-1
+#        fpSA.LastIndex=fp.Nfilets-1
         fpSE.PointObject=docVoile3De
-        fpSE.LastIndex=fp.Nfilets-1
+#        fpSE.LastIndex=fp.Nfilets-1
         fpSI.PointObject=docVoile3Di
-        fpSI.LastIndex=fp.Nfilets-1
+#        fpSI.LastIndex=fp.Nfilets-1
         App.activeDocument().recompute(None,True,True)
         fp.preNfilets=fp.Nfilets
         debug('onChangedNfilets - fin')
@@ -786,6 +754,7 @@ class beltrami:
         LoiMeridien.append(App.Vector(495.17,-138.42,0))
         LoiMeridien.append(App.Vector(511.50,-86.32,0))
         fp.addProperty("App::PropertyVectorList","Meridien","Plan 1 - Meridien","Vecteurs des points").Meridien=LoiMeridien
+        fp.setEditorMode("Meridien",1)
         sketch=App.ActiveDocument.addObject('Sketcher::SketchObject','Meridien')
         docIU=App.ActiveDocument.getObject("Interface_usager")
         docIU.addObject(sketch)
@@ -962,7 +931,8 @@ class beltrami:
         LoiEpaisseur.append(App.Vector(tt1, Feuil.C19, 0))
         LoiEpaisseur.append(App.Vector(tt2, Feuil.D19, 0))
         LoiEpaisseur.append(App.Vector(tt3, Feuil.E19, 0))
-        fp.addProperty("App::PropertyVectorList","Epaisseur","Plan 2 - Epaisseur","Vecteurs des points").Epaisseur=LoiEpaisseur
+        fp.addProperty("App::PropertyVectorList","Epaisseur","Plan 2 - Epaisseur","Loi des épaisseurs").Epaisseur=LoiEpaisseur
+        fp.setEditorMode("Epaisseur",1)
     #
     #   Loi déterminant l'épaisseur maximum en X pour l'extrados
     # 
@@ -1059,14 +1029,6 @@ class beltrami:
         (Pt2x,Pt2y)=self.immobilisePoint(sketchEpLastIn, Pt2, "PtIn2")
         (Pt3x,Pt3y)=self.immobilisePoint(sketchEpLastIn, Pt3, "PtIn3")
         self.planBS(sketchEpLastIn,Pt0, Pt1, Pt2, Pt3) 
-        # sketchEpMaxXEx.recompute()
-        # sketchEpMaxXIn.recompute()
-        # sketchEpMaxYEx.recompute()
-        # sketchEpMaxYIn.recompute()
-        # sketchEpInflexEx.recompute()
-        # sketchEpInflexIn.recompute()
-        # sketchEpLastEx.recompute()
-        # sketchEpLastIn.recompute()
         debug("initEpaisseur - fin")
         return
     def traceEpaisseur(self,fp):
@@ -1152,6 +1114,7 @@ class beltrami:
             debug(I)
     #   Création du sketch extrados
             sketch_e=App.ActiveDocument.addObject('Sketcher::SketchObject','skLoiEpaisseur'+I+'e')
+            if fp.preNfilets > 0 :sketch_e.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'e').Visibility
             docPlanEpaisseur.addObject(sketch_e)            
             fpe = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'e')
             docPlanEpaisseur.addObject(fpe)
@@ -1204,10 +1167,12 @@ class beltrami:
             DiscEp_s(fpes, fpe, fp.Npts, eLast)
             ViewProviderDisc(fpes.ViewObject)
             fpes.ViewObject.PointSize = 3 
+            if fp.preNfilets > 0 :fpes.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'es').Visibility
             debug('fpes.Points')
             debug(fpes.Points)
     #   Création du sketch intrados
             sketch_i=App.ActiveDocument.addObject('Sketcher::SketchObject','skLoiEpaisseur'+I+'i')
+            if fp.preNfilets > 0 :sketch_i.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'i').Visibility
             docPlanEpaisseur.addObject(sketch_i) 
             fpi = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'i')
             docPlanEpaisseur.addObject(fpi)
@@ -1254,6 +1219,7 @@ class beltrami:
             DiscEp_s(fpis,fpi, fp.Npts, iLast)
             ViewProviderDisc(fpis.ViewObject)
             fpis.ViewObject.PointSize = 3 
+            if fp.preNfilets > 0 :fpis.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'is').Visibility
             debug('fpis.Points')
             debug(fpis.Points)
         debug('sketchDiscEpaisseur - fin')
@@ -1454,7 +1420,8 @@ class beltrami:
         LoiAlpha.append(App.Vector(Feuil.E5,Feuil.E8,Feuil.E10))
         LoiAlpha.append(App.Vector(Feuil.E6,Feuil.E9,Feuil.E11))
     #   Sauvegarde du résultat
-        fp.addProperty("App::PropertyVectorList","Alpha","Plan 3 - Cascade","Distribution des Angles").Alpha=LoiAlpha
+        fp.addProperty("App::PropertyVectorList","Alpha","Plan 3 - Cascade","Distribution des positions angulaires et angles").Alpha=LoiAlpha
+        fp.setEditorMode("Alpha",1)
     #
     #
     #   Construction des sketchs et des bsplines entrée et sortie pour tous les pilotes.
@@ -1687,6 +1654,7 @@ class beltrami:
             fpAa.addProperty("App::PropertyVector","a3","Contraintes","Position(u,v)").a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Ts.Points[i].z),0)
 #           sketchA pour contenir le Bspline de la cascade 
             sketchA=self.CascadeSketch(fpAa,I)
+            if fp.preNfilets > 0 :sketchA.Visibility=App.ActiveDocument.getObject('Cascade'+str(i)).Visibility
             docPlanCascade.addObject(sketchA)
         #
         #   Discretisation du filet voile 2D de la cascade A
@@ -1704,6 +1672,7 @@ class beltrami:
             DiscCa_s(fpAs, fpAa, fp.Npts, i)
             ViewProviderDisc(fpAs.ViewObject)
             fpAs.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpAs.Visibility=App.ActiveDocument.getObject('FiletCAs'+str(i)).Visibility
             fpAs.recompute()
             App.ActiveDocument.recompute()
             v_s=[]
@@ -1720,18 +1689,22 @@ class beltrami:
             DiscCl_s(fpLa, fpAs, fp.Npts, i)          
             ViewProviderDisc(fpLa.ViewObject)
             fpLa.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpLa.Visibility=App.ActiveDocument.getObject('FiletCLa'+str(i)).Visibility
+
                 #       extrados
             fpLe = App.ActiveDocument.addObject("Part::FeaturePython",'FiletCLe'+I)
             docPlanLongueurs.addObject(fpLe)
-            DiscCle_s(fpLe, fpAs, fp.Npts, i)
+            DiscCle_s(fpLe, fpAs, fp.Npts, fp.Sens, i)
             ViewProviderDisc(fpLe.ViewObject)
             fpLe.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpLe.Visibility=App.ActiveDocument.getObject('FiletCLe'+str(i)).Visibility
                 #       intrados
             fpLi = App.ActiveDocument.addObject("Part::FeaturePython",'FiletCLi'+I)
             docPlanLongueurs.addObject(fpLi)
-            DiscCli_s(fpLi, fpAs, fp.Npts, i)
+            DiscCli_s(fpLi, fpAs, fp.Npts, fp.Sens, i)
             ViewProviderDisc(fpLi.ViewObject)
             fpLi.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpLi.Visibility=App.ActiveDocument.getObject('FiletCLi'+str(i)).Visibility
         #
         #
         # Les informations pour les points discretisés pour Cascade
@@ -1743,6 +1716,7 @@ class beltrami:
             DiscCe_s(fpAe, fpAs, fpLe, fp.Npts, i)
             ViewProviderDisc(fpAe.ViewObject)
             fpAe.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpAe.Visibility=App.ActiveDocument.getObject('FiletCAe'+str(i)).Visibility
         #       intrados
             fpAi = App.ActiveDocument.addObject("Part::FeaturePython","FiletCAi"+I)
 #            fpAi.Label='FiletCAi'+I           
@@ -1750,6 +1724,7 @@ class beltrami:
             DiscCi_s(fpAi, fpAs, fpLi, fp.Npts, i)
             ViewProviderDisc(fpAi.ViewObject)
             fpAi.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpAi.Visibility=App.ActiveDocument.getObject('FiletCAi'+str(i)).Visibility
             i+=1
             I=str(i+1)
 #        App.ActiveDocument.recompute()
@@ -1770,7 +1745,7 @@ class beltrami:
             I=str(i+1)
             FiletMeridien=App.ActiveDocument.getObject('FiletM'+I)
             debug(FiletMeridien.Name)
-            fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
+#            fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
             #   Calcul de Usmax pour chaque filet qui dépend de Npts    
             Usmax=self.CascadeUsmax(i)
             #   m-à-j des données de "FiletCAa"+I
@@ -1810,10 +1785,12 @@ class beltrami:
             fpLa = App.ActiveDocument.getObject('FiletCLa'+I)
             fpLa.recompute()
                 #       extrados
-            fpLe = App.ActiveDocument.getObject('FiletCLe'+I)          
+            fpLe = App.ActiveDocument.getObject('FiletCLe'+I)
+            fpLe.Sens=fp.Sens
             fpLe.recompute()
                 #       intrados
             fpLi = App.ActiveDocument.getObject('FiletCLi'+I)
+            fpLi.Sens=fp.Sens
             fpLi.recompute()
         #
         #
@@ -2458,16 +2435,21 @@ class DiscCl_s:
         return
         
 class DiscCli_s:
-    def __init__(self, fpLi, fpAs, Npts, i):
+    def __init__(self, fpLi, fpAs, Npts, Sens, i):
+        debug('DiscCli_s.init')
         fpLi.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLi.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
+        fpLi.addProperty("App::PropertyIntegerConstraint","Sens","Parameter","Rotation(1:anti-horaire, -1:horaire)").Sens=Sens
         fpLi.addProperty("App::PropertyFloatList", "ni_j", "Discretization", "Loi épaisseur intrados").ni_j
         fpLi.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLi.Proxy=self
         self.execute(fpLi)
+        debug('DiscCli_s.init - fin')
         return
     def execute(self,fpLi):
         debug('DiscCli_s.execute')
+        debug('fpLi.Npts = '+str(fpLi.Npts))
+        debug('fpLi.Sens = '+str(fpLi.Sens))
         nseg=fpLi.Npts-1
         m_s=fpLi.fp_origine.m_s
         n_s=fpLi.fp_origine.n_s
@@ -2482,13 +2464,11 @@ class DiscCli_s:
         pLi=App.Vector(0,m_s[j],n_s[j])            
         LoiLongueursi.append(pLi)
     #
-    #   Calcul des faces extrados et intrados dans le plan cascade L
+    #   Calcul de la faces intrados dans le plan cascade L
     #   
-        signe_face=-1
-        if (n_s[nseg]-n_s[0])>0:signe_face=1
         for j in range(1,fpLi.Npts):
         #   execute de la géométrie dans le plan de cascade L
-            nij=n_s[j]-signe_face*Ei_s[j]
+            nij=n_s[j] + fpLi.Sens * Ei_s[j]
             ni_j.append(nij)
             pLi=App.Vector(0,m_s[j],nij)
             LoiLongueursi.append(pLi)
@@ -2502,12 +2482,14 @@ class DiscCli_s:
         if (prop == "Npts"):
             debug('on effectue le changement')
             self.execute(fpLi)
+        debug('DiscCli_s.onChanged - fin')
         return
         
 class DiscCle_s:
-    def __init__(self, fpLe, fpAs, Npts, i):
+    def __init__(self, fpLe, fpAs, Npts, Sens,i):
         fpLe.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLe.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
+        fpLe.addProperty("App::PropertyIntegerConstraint","Sens","Parameter","Rotation(1:anti-horaire, -1:horaire)").Sens=Sens
         fpLe.addProperty("App::PropertyFloatList", "ne_j", "Discretization", "Loi épaisseur extrados").ne_j
         fpLe.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLe.Proxy=self
@@ -2529,12 +2511,10 @@ class DiscCle_s:
         pLe=App.Vector(0,m_s[j],n_s[j])
         LoiLongueurse.append(pLe)
     #
-    #   Calcul des faces extrados et intrados dans le plan cascade L
+    #   Calcul de la face extrados dans le plan cascade L
     #   
-        signe_face=-1
-        if (n_s[nseg]-n_s[0])>0:signe_face=1
         for j in range(1,fpLe.Npts):
-            nej=n_s[j]-signe_face*Ee_s[j]
+            nej=n_s[j] + fpLe.Sens*Ee_s[j]
             ne_j.append(nej)
             pLe=App.Vector(0.,m_s[j],nej)
             LoiLongueurse.append(pLe)
