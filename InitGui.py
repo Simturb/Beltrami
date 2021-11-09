@@ -2,7 +2,7 @@ import FreeCAD
 
 class BeltramiWB (Workbench):
     def __init__(self):
-        self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/Resources/Icons/Beltrami_workbench_icon.svg"
+        self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/Resources/icons/Beltrami_workbench_icon.svg"
         self.__class__.MenuText="Beltrami"
         self.__class__.ToolTip="Tracé d'un aubage 3D"
         return
