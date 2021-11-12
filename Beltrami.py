@@ -2114,18 +2114,21 @@ class beltrami:
             fpVA.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
             ViewProviderDisc(fpVA.ViewObject)
             fpVA.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpVA.Visibility=App.ActiveDocument.getObject('Voile3Da'+str(i)).Visibility
             docVoile3Da.addObject(fpVA)
             fpVE = App.ActiveDocument.addObject("Part::FeaturePython","Voile3De"+I)
             fpVE.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points")
             fpVE.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
             ViewProviderDisc(fpVE.ViewObject)
             fpVE.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpVE.Visibility=App.ActiveDocument.getObject('Voile3De'+str(i)).Visibility
             docVoile3De.addObject(fpVE)
             fpVI = App.ActiveDocument.addObject("Part::FeaturePython","Voile3Di"+I)
             fpVI.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points")
             fpVI.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
             ViewProviderDisc(fpVI.ViewObject)
             fpVI.ViewObject.PointSize = 3
+            if fp.preNfilets > 0 :fpVI.Visibility=App.ActiveDocument.getObject('Voile3Di'+str(i)).Visibility
             docVoile3Di.addObject(fpVI)
         #   Calcul des 3 voiles A, E, I      
             FiletMeridien=App.ActiveDocument.getObject('FiletM'+I)
