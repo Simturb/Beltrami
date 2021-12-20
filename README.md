@@ -37,6 +37,7 @@ Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examp
 
 ## Discussions,exchanges and support
 Contact: simturbweb@gmail.com
+
 On FreeCAD forum
 https://forum.freecadweb.org/viewtopic.php?f=8&t=62056
 
