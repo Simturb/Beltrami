@@ -12,6 +12,7 @@
     <workbench>
       <classname>BeltramiWB</classname>
       <subdirectory>./</subdirectory>
+      <depend>Curves workbench</depend>
     </workbench>
   </content>
 
