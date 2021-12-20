@@ -36,9 +36,9 @@ Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examp
 ![Image of pump](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
 
 ## Discussions,exchanges and support
+Contact: simturbweb@gmail.com
 On FreeCAD forum
 https://forum.freecadweb.org/viewtopic.php?f=8&t=62056
-Contact: simturbweb@gmail.com
 
 ## Licence  
 Beltrami workbench is released under the LGPL2.1+ licence.
