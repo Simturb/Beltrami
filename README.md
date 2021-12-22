@@ -1,20 +1,18 @@
-# FreeCAD Workbench Beltrami
-Design of turbine blade profile.
-![Image of Beltrami](https://github.com/Simturb/Beltrami/blob/main/Resources/repository-open-graph-beltrami.png)
+## FreeCAD Beltrami Workbench
+Design a turbine blade profile.
+![Image of Beltrami](Resources/repository-open-graph-beltrami.png)
 
-## How to use Beltrami
+## Usage
 You always start from an existing design. Then you just have to modify it.
 You can start from the original design nested in Beltrami or load an example that comes close to your goal.
 
 ## Documentation
 User manual can be found here: https://michelsabourin.scenari-community.org/Outils/Manuel%20utilisateur%20de%20l'atelier%20Beltrami/co/0_Manuel_utilisateur.html
 
-All the documentation has been generated in french. However, your web browser translator works very well.
-MS Edge seems to have the best friendly translator.
+**Note:** All the documentation has been generated in French. However, your web browser translator works very well. MS Edge seems to have the best friendly translator.
 
 
-
-![Image of Installation](https://github.com/Simturb/Beltrami/blob/main/Resources/Installation.png)
+![Image of Installation](Resources/Installation.png)
 
 
 ## Installation
@@ -26,23 +24,22 @@ https://michelsabourin.scenari-community.org/SimTurbMeth/co/0_1_Methode_de_trace
 ## Examples
 Under https://github.com/Simturb/Beltrami/tree/main/Examples your find few examples provided.
 
-### Blades of Francis turbine
+### Francis turbine blades
 ![Image of Francis](Examples/Francis.png)
 
-### Blades of Kaplan turbine
+### Kaplan turbine blades
 ![Image of Kaplan](Examples/Kaplan.png)
 
-### Blades of centrifugal pump
+### Centrifugal pump blades
 ![Image of pump](Examples/Pompe.png)
 
-## Discussions,exchanges and support
-Contact: simturbweb@gmail.com
+## Discussions, exchanges and support
 
-On FreeCAD forum
-https://forum.freecadweb.org/viewtopic.php?f=8&t=62056
+* Email contact: simturbweb@gmail.com
+* Dedicated FreeCAD [forum thread](https://forum.freecadweb.org/viewtopic.php?f=8&t=62056)
 
-## Licence  
-Beltrami workbench is released under the LGPL2.1+ licence.
+## Licence
+Beltrami workbench is released under the LGPL2.1+ licence. See [LICENSE](LICENSE) file.
 
 ## Warning
-This Beltrami workbench is in ALPHA state as well as Curves WB on which it is based.
+This Beltrami workbench is in ALPHA state along with the [Curves WB](https://github.com/tomate44/CurvesWB/) on which it is based.
