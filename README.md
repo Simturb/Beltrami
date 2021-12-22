@@ -24,16 +24,16 @@ https://michelsabourin.scenari-community.org/Beltrami%20-%20Manuel_utilisateur/c
 https://michelsabourin.scenari-community.org/SimTurbMeth/co/0_1_Methode_de_trace.html
 
 ## Examples
-Under https://github.com/Simturb/Beltrami/tree/main/Exemples your find few examples provided.
+Under https://github.com/Simturb/Beltrami/tree/main/Examples your find few examples provided.
 
 ### Blades of Francis turbine
-![Image of Francis](https://github.com/Simturb/Beltrami/blob/main/Exemples/Francis.png)
+![Image of Francis](Examples/Francis.png)
 
 ### Blades of Kaplan turbine
-![Image of Kaplan](https://github.com/Simturb/Beltrami/blob/main/Exemples/Kaplan.png)
+![Image of Kaplan](Examples/Kaplan.png)
 
 ### Blades of centrifugal pump
-![Image of pump](https://github.com/Simturb/Beltrami/blob/main/Exemples/Pompe.png)
+![Image of pump](Examples/Pompe.png)
 
 ## Discussions,exchanges and support
 Contact: simturbweb@gmail.com
