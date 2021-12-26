@@ -6,8 +6,8 @@ from freecad.Curves import _utils
 debug = _utils.doNothing
 class modif():
     def GetResources(self):
-        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/Resources/Icons/modif.svg", # the name of a svg file available in the resources
-                'Accel' : "Shift+S", # a default shortcut (optional)
+        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/Resources/icons/modif.svg", # the name of a svg file available in the resources
+                'Accel' : "Shift+U", # a default shortcut (optional)
                 'MenuText': "Mettre à jour le tracé - Profile update",
                 'ToolTip' : "Mise-à-jour - Update"}
     

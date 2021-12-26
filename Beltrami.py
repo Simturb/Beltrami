@@ -37,7 +37,7 @@ class beltrami:
     #
         fp.addProperty("App::PropertyString","Version","Base","Numéro de version").Version="1.0.6"
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
-        fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(6,2,65,1)
+        fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(6,3,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets","Base","Nombre de filets précédents").preNfilets=0
         fp.addProperty("App::PropertyIntegerConstraint","Npts","Base","Nombre de points par filet").Npts=(9,9,1025,8)
         fp.addProperty("App::PropertyIntegerConstraint","Sens","Base","Rotation(1:anti-horaire, -1:horaire)").Sens=(-1,-1,1,2)
@@ -190,8 +190,8 @@ class beltrami:
             fpAi=App.ActiveDocument.getObject("FiletCAi"+I)
             fpAi.Npts=fp.Npts
             fpAi.recompute()
-            debug("FiletCAi"+I+" traité")
             App.ActiveDocument.recompute()
+            debug("FiletCAi"+I+" traité")
         self.modifVoile(fp)
         return
     def onChangedNfilets(self, fp):
@@ -208,52 +208,68 @@ class beltrami:
     #   Traitement du plan des épaisseurs
         EpMaxXEx = App.ActiveDocument.getObject( "EpMaxXEx") 
         EpMaxXEx.Number=fp.Nfilets
+        debug("EpMaxXEx.recompute()")
         EpMaxXEx.recompute()
         EpMaxXIn = App.ActiveDocument.getObject( "EpMaxXIn") 
         EpMaxXIn.Number=fp.Nfilets
+        debug("EpMaxXIn.recompute()")
         EpMaxXIn.recompute()
         EpMaxYEx = App.ActiveDocument.getObject( "EpMaxYEx") 
         EpMaxYEx.Number=fp.Nfilets
+        debug("EpMaxYEx.recompute()")
         EpMaxYEx.recompute()
         EpMaxYIn = App.ActiveDocument.getObject( "EpMaxYIn") 
         EpMaxYIn.Number=fp.Nfilets
+        debug("EpMaxYIn.recompute()")
         EpMaxYIn.recompute()
         EpInflexEx = App.ActiveDocument.getObject( "EpInflexEx") 
         EpInflexEx.Number=fp.Nfilets
+        debug("EpInflexEx.recompute()")
         EpInflexEx.recompute()
         EpInflexIn = App.ActiveDocument.getObject( "EpInflexIn") 
         EpInflexIn.Number=fp.Nfilets
+        debug("EpInflexIn.recompute()")
         EpInflexIn.recompute()
         EpLastEx = App.ActiveDocument.getObject( "EpLastEx") 
         EpLastEx.Number=fp.Nfilets
+        debug("EpLastEx.recompute()")
         EpLastEx.recompute()
         EpLastIn = App.ActiveDocument.getObject( "EpLastIn") 
         EpLastIn.Number=fp.Nfilets
+        debug("EpLastIn.recompute()")
         EpLastIn.recompute()
     #   pour les fonctions pilotes
         Te = App.ActiveDocument.getObject("Theta_entree")
         Te.Number = fp.Nfilets
+        debug("Te.recompute()")
         Te.recompute()
         Ts = App.ActiveDocument.getObject("Theta_sortie")
         Ts.Number = fp.Nfilets
+        debug("Ts.recompute()")
         Ts.recompute()
         Ae = App.ActiveDocument.getObject("Alpha_entree")
         Ae.Number = fp.Nfilets
+        debug("Ae.recompute()")
         Ae.recompute()
         As = App.ActiveDocument.getObject("Alpha_sortie")
         As.Number = fp.Nfilets
+        debug("As.recompute()")
         As.recompute()
         We = App.ActiveDocument.getObject("Poids_entree")
         We.Number = fp.Nfilets
+        debug("We.recompute()")
         We.recompute()
         Ws = App.ActiveDocument.getObject("Poids_sortie")
         Ws.Number = fp.Nfilets
+        debug("Ws.recompute()")
         Ws.recompute()
         Le = App.ActiveDocument.getObject("Long_entree")
         Le.Number = fp.Nfilets
+        debug("Le.recompute()")
         Le.recompute()
         Ls = App.ActiveDocument.getObject("Long_sortie")
         Ls.Number = fp.Nfilets
+        debug("Ls.recompute()")
         Ls.recompute()
     #
     #   pour fp.Nfilets > fp.preNfilets
@@ -374,6 +390,7 @@ class beltrami:
 #        fpSI.LastIndex=fp.Nfilets-1
         App.activeDocument().recompute(None,True,True)
         fp.preNfilets=fp.Nfilets
+        Gui.Selection.addSelection(App.ActiveDocument.Name,'Parametres')
         debug('onChangedNfilets - fin')
         return
     def __setstate__(self, state):
@@ -452,7 +469,7 @@ class beltrami:
         sketch.addConstraint(conList)
         sketch.exposeInternalGeometry(BS)
         sketch.recompute()
-        return (BS,L1,L2)        
+        return (BS,L1,L2) 
 #
 #
 #       Routines tableur
@@ -1531,14 +1548,6 @@ class beltrami:
         (BSLe,ceinle,plfle)=self.planBS(sketchLong_entree,Le0,Le1,Le2,Le3)   # BORD D'ATTAQUE
         App.ActiveDocument.recompute()
         (BSLs,ceinls,plfls)=self.planBS(sketchLong_sortie,Ls0,Ls1,Ls2,Ls3)   # BORD DE FUITE       
-        # sketchTheta_entree.recompute()
-        # sketchTheta_sortie.recompute()
-        # sketchAlpha_entree.recompute()
-        # sketchAlpha_sortie.recompute()
-        # sketchPoids_entree.recompute()
-        # sketchPoids_sortie.recompute()
-        # sketchLong_entree.recompute()
-        # sketchLong_sortie.recompute()
         App.ActiveDocument.recompute()
         debug('initCascade - fin')
         return
@@ -1727,7 +1736,7 @@ class beltrami:
             if fp.preNfilets > 0 :fpAi.Visibility=App.ActiveDocument.getObject('FiletCAi'+str(i)).Visibility
             i+=1
             I=str(i+1)
-#        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
         debug("sketchDiscCascade - fin")
         return   
     def modifCascade(self,fp,Nfilets):
@@ -1804,6 +1813,9 @@ class beltrami:
             fpAi.recompute()
             i+=1
             I=str(i+1)
+#            debug('fpAs.Shape.Compounds[0].Vertexes[k]')
+#            for k in range(fpAs.Npts): debug(fpAs.Shape.Compounds[0].Vertexes[k].Point)
+        debug('***recompute')
         App.ActiveDocument.recompute()
         debug('modifCascade- fin')
         return
@@ -1985,7 +1997,6 @@ class beltrami:
         approximate.Approximate(fpSa,docVoile3Da)
         fpSa.Parametrization='Curvilinear'
         fpSa.ApproxTolerance = 0.01
-#        fpSa.recompute()
         # fpSa.Method="Smoothing Algorithm"
         # fpSa.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSa.ViewObject)
@@ -1994,7 +2005,6 @@ class beltrami:
         approximate.Approximate(fpSe,docVoile3De)
         fpSe.Parametrization='Curvilinear'
         fpSe.ApproxTolerance = 0.01
-#        fpSe.recompute()
         # fpSe.Method="Smoothing Algorithm"
         # fpSe.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSe.ViewObject)
@@ -2007,7 +2017,6 @@ class beltrami:
         # fpSi.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSi.ViewObject)
         docDomaine3D.addObject(fpSi)
-#        fpSi.recompute()
         App.ActiveDocument.recompute()
         debug('voile3D - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
@@ -2272,6 +2281,7 @@ class DiscEp_s(Disc_s):
         debug('sX='+str(sX))
         (X,Y,Z)=self.extractionPoints(ListePoints)
         debug(X)
+        if (not np.all(np.diff(X) > 0)): App.Console.PrintWarning("X is not monotonically increasing \n")
         sY=np.interp(sX,X,Y)
         fpEp_s.Points=self.insertionPoints(sX,sY,Z)
         fpEp_s.Shape = Part.Compound([Part.Vertex(k) for k in fpEp_s.Points])
@@ -2325,6 +2335,10 @@ class DiscCa_s(Disc_s):
             u+=1000.*dm/pj.x
             m_s.append(m)
             u_s.append(u)       #u_s est ainsi calculé à partir d'un m fonction de s dans le plan méridien
+        debug('u_q= '+str(u_q))
+        debug('v_q= '+str(v_q))
+        debug('u_s= '+str(u_s))
+        if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning("u_q is not monotonically increasing \n")
         v_s=np.interp(u_s,u_q,v_q)  #v_s est maintenant associé à u_s 
         debug('v_s= '+str(v_s))
         n_s=[]
@@ -2383,10 +2397,12 @@ class DiscCa_s(Disc_s):
         fpAs.u_s=u_s
         Ee_s=[]
         Ee_ss=[]
+        if (not np.all(np.diff(Eex) > 0)): App.Console.PrintWarning("Eex is not monotonically increasing \n")
         Ee_s=np.interp(Lmns,Eex,Eey)
         Ei_s=[]
         Ei_ss=[]
         v_ss=[]
+        if (not np.all(np.diff(Eix) > 0)): App.Console.PrintWarning("Eix is not monotonically increasing \n")
         Ei_s=np.interp(Lmns,Eix,Eiy)
         for j in range(fpAs.Npts):
             Ee_ss.append(Ee_s[j])
@@ -2396,7 +2412,11 @@ class DiscCa_s(Disc_s):
         fpAs.Ee_s=Ee_ss
         fpAs.Ei_s=Ei_ss
         fpAs.Points=self.insertionPoints(t,u_s,v_s)
-        fpAs.Shape = Part.Compound([Part.Vertex(k) for k in fpAs.Points]) 
+        fpAs.Shape = Part.Compound([Part.Vertex(k) for k in fpAs.Points])
+        debug('v_s')
+        debug(v_s)
+#        debug('fpAs.Shape.Compounds[0].Vertexes[k]')
+#        for k in range(fpAs.Npts): debug(fpAs.Shape.Compounds[0].Vertexes[k].Point)
         debug('DiscCa_s.execute - fin')
         return
     def onChanged(self, fpAs, prop):
