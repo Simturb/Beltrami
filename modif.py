@@ -14,7 +14,7 @@ class modif():
     def Activated(self):
         debug('Activated - Modif')
         if (App.ActiveDocument==None): 
-            print('Il faut avoir lancé un tracé')
+            App.Console.PrintWarning('There is no existing profile to modify')
             return
         fp=App.ActiveDocument.getObject("Parametres")
         if not fp : 

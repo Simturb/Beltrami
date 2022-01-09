@@ -195,7 +195,7 @@ class beltrami:
         self.modifVoile(fp)
         return
     def onChangedNfilets(self, fp):
-        Gui.Selection.clearSelection()
+#        Gui.Selection.clearSelection()
         debug('onChangedNfilets')
         if(fp.Nfilets ==fp.preNfilets):
             debug('onChangedNfilets - fin')
@@ -383,14 +383,17 @@ class beltrami:
         fpSI=App.ActiveDocument.getObject("Intrados")
         debug(docVoile3Da.Content)
         fpSA.PointObject=docVoile3Da
+        fpSA.recompute()
 #        fpSA.LastIndex=fp.Nfilets-1
         fpSE.PointObject=docVoile3De
+        fpSE.recompute()
 #        fpSE.LastIndex=fp.Nfilets-1
         fpSI.PointObject=docVoile3Di
+        fpSI.recompute
 #        fpSI.LastIndex=fp.Nfilets-1
         App.activeDocument().recompute(None,True,True)
         fp.preNfilets=fp.Nfilets
-        Gui.Selection.addSelection(App.ActiveDocument.Name,'Parametres')
+#        Gui.Selection.addSelection(App.ActiveDocument.Name,'Parametres')
         debug('onChangedNfilets - fin')
         return
     def __setstate__(self, state):
@@ -2431,10 +2434,12 @@ class DiscCl_s:
         fpLa.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLa.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
         fpLa.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
+        fpLa.addProperty("App::PropertyVectorList",   "Points",    "Points âme",   "Points").Points
         fpLa.Proxy=self
         self.execute(fpLa)
         return
     def execute(self,fpLa):
+        debug('DiscCl_s.execute')
         m_s=fpLa.fp_origine.m_s
         n_s=fpLa.fp_origine.n_s
         Npts=fpLa.Npts
@@ -2447,8 +2452,9 @@ class DiscCl_s:
         for j in range(1,Npts):
             pLa=App.Vector(0,m_s[j],n_s[j])
             LoiLongueursa.append(pLa)
-        fpLa.addProperty("App::PropertyVectorList",   "Points",    "Points âme",   "Points").Points=LoiLongueursa
+        fpLa.Points=LoiLongueursa
         fpLa.Shape = Part.Compound([Part.Vertex(k) for k in fpLa.Points])
+        debug('DiscCl_s.execute - fin')
         return
     def onChanged(self, fpLa, prop):
         debug('DiscCl_s.onChanged propriété changée: '+prop)
@@ -2465,6 +2471,7 @@ class DiscCli_s:
         fpLi.addProperty("App::PropertyIntegerConstraint","Sens","Parameter","Rotation(1:anti-horaire, -1:horaire)").Sens=Sens
         fpLi.addProperty("App::PropertyFloatList", "ni_j", "Discretization", "Loi épaisseur intrados").ni_j
         fpLi.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
+        fpLi.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
         fpLi.Proxy=self
         self.execute(fpLi)
         debug('DiscCli_s.init - fin')
@@ -2496,7 +2503,7 @@ class DiscCli_s:
             pLi=App.Vector(0,m_s[j],nij)
             LoiLongueursi.append(pLi)
         fpLi.ni_j=ni_j
-        fpLi.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points=LoiLongueursi
+        fpLi.Points=LoiLongueursi
         fpLi.Shape = Part.Compound([Part.Vertex(k) for k in fpLi.Points])
         debug('DiscCli_s.execute - fin')
         return
@@ -2515,6 +2522,7 @@ class DiscCle_s:
         fpLe.addProperty("App::PropertyIntegerConstraint","Sens","Parameter","Rotation(1:anti-horaire, -1:horaire)").Sens=Sens
         fpLe.addProperty("App::PropertyFloatList", "ne_j", "Discretization", "Loi épaisseur extrados").ne_j
         fpLe.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
+        fpLe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
         fpLe.Proxy=self
         self.execute(fpLe)
         return
@@ -2542,7 +2550,7 @@ class DiscCle_s:
             pLe=App.Vector(0.,m_s[j],nej)
             LoiLongueurse.append(pLe)
         fpLe.ne_j=ne_j
-        fpLe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points=LoiLongueurse
+        fpLe.Points=LoiLongueurse
         fpLe.Shape = Part.Compound([Part.Vertex(k) for k in fpLe.Points])
         debug('DiscCle_s.execute - fin')
         return
@@ -2560,6 +2568,7 @@ class DiscCe_s:
         fpAe.addProperty("App::PropertyLink", "fp_origine2",      "Discretization",   "Courbe discrétisée d'origine").fp_origine2 = fpLe
         fpAe.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
         fpAe.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
+        fpAe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
         fpAe.Proxy=self
         self.execute(fpAe)
         return
@@ -2585,7 +2594,7 @@ class DiscCe_s:
             ve_j.append(v_s[j]+(ne_j[j]-n_s[j])*1000./r_s[j])
             pAe=App.Vector(0,u_s[j],ve_j[j])
             LoiCascadee.append(pAe)
-        fpAe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points=LoiCascadee
+        fpAe.Points=LoiCascadee
         fpAe.Shape = Part.Compound([Part.Vertex(k) for k in fpAe.Points])
         debug('DiscCe_s.execute - fin')
         return
@@ -2602,6 +2611,7 @@ class DiscCi_s:
         fpAi.addProperty("App::PropertyLink", "fp_origine2",      "Discretization",   "Courbe discrétisée d'origine").fp_origine2 = fpLi
         fpAi.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
         fpAi.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
+        fpAi.addProperty("App::PropertyVectorList",   "Points",    "Points intrados",   "Points").Points
         fpAi.Proxy=self
         self.execute(fpAi)
         return
@@ -2621,7 +2631,7 @@ class DiscCi_s:
             vi_j.append(v_s[j]+(ni_j[j]-n_s[j])*1000./r_s[j])
             pAi=App.Vector(0,u_s[j],vi_j[j])
             LoiCascadei.append(pAi)
-        fpAi.addProperty("App::PropertyVectorList",   "Points",    "Points intrados",   "Points").Points=LoiCascadei
+        fpAi.Points=LoiCascadei
         fpAi.Shape = Part.Compound([Part.Vertex(k) for k in fpAi.Points])
         return
     def onChanged(self, fpAe, prop):
