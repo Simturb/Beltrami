@@ -12,6 +12,8 @@
     <workbench>
       <classname>BeltramiWB</classname>
       <subdirectory>./</subdirectory>
+      <tag>curves</tag>
+      <tag>nurbs</tag>
       <depend>Curves workbench</depend>
     </workbench>
   </content>
