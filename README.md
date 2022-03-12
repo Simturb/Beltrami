@@ -53,6 +53,7 @@ See the [Examples](https://github.com/Simturb/Beltrami/tree/main/Examples) secti
 * Email contact: simturbweb@gmail.com
 * Dedicated FreeCAD [forum thread](https://forum.freecadweb.org/viewtopic.php?f=8&t=62056)
 * Bugs: https://github.com/Simturb/Beltrami/issues (please discuss on the forum thread beforehand)
+* Dedicated YouTube channel/playlist [YouTube SimTurb/Beltrami](https://https://www.youtube.com/playlist?list=PLBEuUSiaphy0sQsR1XlUFJ3OMMKjDw_Wx)
 
 ## Licence
 
