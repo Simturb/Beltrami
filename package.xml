@@ -14,7 +14,7 @@
       <subdirectory>./</subdirectory>
       <tag>curves</tag>
       <tag>nurbs</tag>
-      <depend>Curves workbench</depend>
+      <depend>Curves</depend>
     </workbench>
   </content>
 
