@@ -6,12 +6,16 @@
   <maintainer email="simturbweb@gmail.com">Michel Sabourin (Sabm01)</maintainer>
   <license file="LICENSE">LGPLv2.1</license>
   <url type="repository" branch="main">https://github.com/Simturb/Beltrami</url>
+  <url type="bugtracker">https://github.com/Simturb/Beltrami/issues</url>
+  <url type="readme">https://github.com/Simturb/Beltrami/blob/main/README.md</url>
+  <url type="documentation">https://michelsabourin.scenari-community.org/Outils/Manuel%20utilisateur%20de%20l'atelier%20Beltrami/co/0_Manuel_utilisateur.html</url>
   <icon>Resources/icons/Beltrami_workbench_icon.svg</icon>
 
   <content>
     <workbench>
       <classname>BeltramiWB</classname>
       <subdirectory>./</subdirectory>
+      <freecadmin>0.19.3</freecadmin>
       <tag>curves</tag>
       <tag>nurbs</tag>
       <depend>Curves</depend>
