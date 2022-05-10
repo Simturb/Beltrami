@@ -1999,7 +1999,7 @@ class beltrami:
         fpSa=App.ActiveDocument.addObject("Part::FeaturePython","Ame") #add object to document
         approximate.Approximate(fpSa,docVoile3Da)
         fpSa.Parametrization='Curvilinear'
-        fpSa.ApproxTolerance = 0.01
+        fpSa.ApproxTolerance = 0.05
         # fpSa.Method="Smoothing Algorithm"
         # fpSa.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSa.ViewObject)
@@ -2007,7 +2007,7 @@ class beltrami:
         fpSe=App.ActiveDocument.addObject("Part::FeaturePython","Extrados") #add object to document
         approximate.Approximate(fpSe,docVoile3De)
         fpSe.Parametrization='Curvilinear'
-        fpSe.ApproxTolerance = 0.01
+        fpSe.ApproxTolerance = 0.05
         # fpSe.Method="Smoothing Algorithm"
         # fpSe.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSe.ViewObject)
@@ -2015,7 +2015,7 @@ class beltrami:
         fpSi=App.ActiveDocument.addObject("Part::FeaturePython","Intrados") #add object to document
         approximate.Approximate(fpSi,docVoile3Di)
         fpSi.Parametrization='Curvilinear'
-        fpSi.ApproxTolerance = 0.01
+        fpSi.ApproxTolerance = 0.05
         # fpSi.Method="Smoothing Algorithm"
         # fpSi.CurvatureWeight = 9.00
         approximate.ViewProviderApp(fpSi.ViewObject)
@@ -2160,7 +2160,7 @@ class beltrami:
             Voile3DDiscretization.calcul(fpVA, FiletM, FiletCA, fp.Npts)
             Voile3DDiscretization.calcul(fpVI, FiletM, FiletCI, fp.Npts)
             Voile3DDiscretization.calcul(fpVE, FiletM, FiletCE, fp.Npts)
-        App.ActiveDocument.recompute()
+#        App.ActiveDocument.recompute()
         debug('modifVoile - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
       

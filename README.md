@@ -11,7 +11,7 @@ You can start from the original design nested in Beltrami or load an example tha
 
 ## Documentation
 
-A user manual can be found [online](https://michelsabourin.scenari-community.org/Outils/Manuel%20utilisateur%20de%20l'atelier%20Beltrami/co/0_Manuel_utilisateur.html) 
+A user manual can be found [online](https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/Manuel_utilisateur.html) 
 
 **Note:** All the documentation has been generated in French. However, your web browser translator works very well. MS Edge seems to have the best friendly translator.
 
@@ -26,7 +26,7 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 
 Beltrami workbench is available for install via the FreeCAD [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
 
-For more details about the installation process reference the [manual](https://michelsabourin.scenari-community.org/Beltrami%20-%20Manuel_utilisateur/co/2_InstallationFreeCAD.html) 
+For more details about the installation process reference the [manual](https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/2_InstallationFreeCAD.html) 
 
 ## Theory
 
