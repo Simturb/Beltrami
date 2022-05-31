@@ -1274,6 +1274,18 @@ class beltrami:
             fpes.Last=EpLastEx.Points[i].y
             fpis.Last=EpLastIn.Points[i].y
         App.ActiveDocument.recompute()
+#       Boucle de vérification pour Warnings        
+        for i in range(fp.Nfilets):
+            I=str(i+1)
+            # Cascade
+            fpe=App.ActiveDocument.getObject("LoiEpaisseur"+I+"e")
+            fpi=App.ActiveDocument.getObject("LoiEpaisseur"+I+"i")
+            x=[]
+            for point in fpe.Points: x.append(point.x)
+            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning("*** x is not monotonically increasing (Loiepaisseur" +I +"e) *** \n")
+            x=[]
+            for point in fpi.Points: x.append(point.x)
+            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning("*** x is not monotonically increasing (Loiepaisseur" +I +"i) *** \n")
         debug("modifEpaisseur - fin")
         return
     def sauveEpaisseur(self,fp):
@@ -1820,6 +1832,14 @@ class beltrami:
 #            for k in range(fpAs.Npts): debug(fpAs.Shape.Compounds[0].Vertexes[k].Point)
         debug('***recompute')
         App.ActiveDocument.recompute()
+#       Boucle de vérification pour Warnings        
+        for i in range(Nfilets):
+            I=str(i+1)
+            # Cascade
+            fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
+            u_q=[]
+            for point in fpAa.Points: u_q.append(point.y)
+            if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning("*** u is not monotonically increasing (Cascade" +I +") *** \n")
         debug('modifCascade- fin')
         return
     def sauveCascade(self,fp):
@@ -2284,7 +2304,6 @@ class DiscEp_s(Disc_s):
         debug('sX='+str(sX))
         (X,Y,Z)=self.extractionPoints(ListePoints)
         debug(X)
-        if (not np.all(np.diff(X) > 0)): App.Console.PrintWarning("X is not monotonically increasing \n")
         sY=np.interp(sX,X,Y)
         fpEp_s.Points=self.insertionPoints(sX,sY,Z)
         fpEp_s.Shape = Part.Compound([Part.Vertex(k) for k in fpEp_s.Points])
@@ -2341,7 +2360,6 @@ class DiscCa_s(Disc_s):
         debug('u_q= '+str(u_q))
         debug('v_q= '+str(v_q))
         debug('u_s= '+str(u_s))
-        if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning("u_q is not monotonically increasing \n")
         v_s=np.interp(u_s,u_q,v_q)  #v_s est maintenant associé à u_s 
         debug('v_s= '+str(v_s))
         n_s=[]
