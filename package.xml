@@ -18,7 +18,7 @@
       <freecadmin>0.19.3</freecadmin>
       <tag>curves</tag>
       <tag>nurbs</tag>
-      <depend>Curves</depend>
+      <depend>Curves workbench</depend>
     </workbench>
   </content>
 
