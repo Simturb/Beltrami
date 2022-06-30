@@ -48,7 +48,7 @@ See the [Examples](https://github.com/Simturb/Beltrami/tree/main/Examples) secti
 
 ![Image of pump](Examples/Pompe.png)
 
-### Centrifugal Pump Blades
+### Radial Cascade Blade
 
 ![Image of radial Cascade blade](Examples/CascadeRadiale.png)
 
