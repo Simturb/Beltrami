@@ -2,7 +2,7 @@
 <package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
   <name>Beltrami</name>
   <description>A workbench for designing turbomachine blades.</description>
-  <version>1.0.6-alpha</version>
+  <version>1.0.7-alpha</version>
   <maintainer email="simturbweb@gmail.com">Michel Sabourin (Sabm01)</maintainer>
   <license file="LICENSE">LGPLv2.1</license>
   <url type="repository" branch="main">https://github.com/Simturb/Beltrami</url>
