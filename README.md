@@ -26,7 +26,7 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 
 Beltrami workbench is available for install via the FreeCAD [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
 
-For more details about the installation process reference the [manual](https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/2_InstallationFreeCAD.html) 
+For more details about the installation process reference the [manual](https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/2_InstallationFreeCAD_Ateliers.html) 
 
 ## Theory
 
