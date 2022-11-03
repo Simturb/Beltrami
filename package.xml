@@ -2,13 +2,13 @@
 <package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
   <name>Beltrami</name>
   <description>A workbench for designing turbomachine blades.</description>
-  <version>1.0.7-alpha</version>
+  <version>1.0.8-alpha</version>
   <maintainer email="simturbweb@gmail.com">Michel Sabourin (Sabm01)</maintainer>
   <license file="LICENSE">LGPLv2.1</license>
   <url type="repository" branch="main">https://github.com/Simturb/Beltrami</url>
   <url type="bugtracker">https://github.com/Simturb/Beltrami/issues</url>
   <url type="readme">https://github.com/Simturb/Beltrami/blob/main/README.md</url>
-  <url type="documentation">https://michelsabourin.scenari-community.org/Outils/Manuel%20utilisateur%20de%20l'atelier%20Beltrami/co/0_Manuel_utilisateur.html</url>
+  <url type="documentation">https://https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/Manuel_utilisateur.html</url>
   <icon>Resources/icons/Beltrami_workbench_icon.svg</icon>
 
   <content>
