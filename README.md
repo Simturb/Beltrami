@@ -66,3 +66,12 @@ Beltrami workbench is released under the LGPL2.1+ licence. See [LICENSE](LICENSE
 ## Warning
 
 This Beltrami workbench is in ALPHA state along with the [Curves WB](https://github.com/tomate44/CurvesWB/) on which it is based.
+
+## Release notes
+
+The release 1.0.8 : 
+- Implements surfaces with better tangent continuity at leading edge. 
+- Modifies slightly user interface (some names are changed)
+- Solves minor bugs
+- Optimises the structure of the code
+- Previous files are not compatible. From Interface_Usager, you simply have to transfer data from the sketch Meridien (12 2D points) and the spreadsheet Tableau_Pilote (copy-paste). And, of course transfer data from the FeaturePython Parametres.
