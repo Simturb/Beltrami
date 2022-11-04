@@ -15,7 +15,7 @@
     <workbench>
       <classname>BeltramiWB</classname>
       <subdirectory>./</subdirectory>
-      <freecadmin>0.19.3</freecadmin>
+      <freecadmin>0.20.1</freecadmin>
       <tag>curves</tag>
       <tag>nurbs</tag>
       <depend>Curves workbench</depend>

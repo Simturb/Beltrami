@@ -19,8 +19,8 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 
 ## Prerequisites
 
-* FreeCAD v0.19 and higher
-* FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.3 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
+* FreeCAD v0.2 and higher
+* FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.5.12 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
 
 ## Installation
 
@@ -75,3 +75,4 @@ The release 1.0.8 :
 - Solves minor bugs
 - Optimises the structure of the code
 - Previous files are not compatible. From Interface_Usager, you simply have to transfer data from the sketch Meridien (12 2D points) and the spreadsheet Tableau_Pilote (copy-paste). And, of course transfer data from the FeaturePython Parametres.
+- Be sure to update Curves WB
