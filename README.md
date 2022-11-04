@@ -19,7 +19,7 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 
 ## Prerequisites
 
-* FreeCAD v0.2 and higher
+* FreeCAD v0.20.1 and higher
 * FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.5.12 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
 
 ## Installation
