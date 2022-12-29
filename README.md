@@ -30,7 +30,7 @@ For more details about the installation process reference the [manual](https://m
 
 ## Theory
 
-Background on the theory behind Beltrami can be found in [this section of the manual](https://michelsabourin.scenari-community.org/SimTurbMeth/co/0_1_Methode_de_trace.html).
+Background on the theory behind Beltrami can be found in [this section of the manual](https://michelsabourin.scenari-community.org/SimTurbMeth/co/0__Methode_de_trace.html).
 
 ## Examples
 

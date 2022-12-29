@@ -60,7 +60,7 @@ class beltrami:
     def modif(self,fp):     # Ordre modif
         self.sauveTableur(fp)
         self.modifEpaisseur(fp)
-        self.sauveMeridien(fp)
+#        self.sauveMeridien(fp)
         self.modifCascade(fp)
         self.modifVoile(fp)
         return
