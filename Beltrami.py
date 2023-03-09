@@ -23,7 +23,7 @@ class beltrami:
     #
     #   Initialisation du FeaturePython Parametres
     #
-        fp.addProperty("App::PropertyString","Version","Base","Numéro de version").Version="1.0.8"
+        fp.addProperty("App::PropertyString","Version","Base","Numéro de version").Version="1.0.8.1"
         fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(6,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets","Base","Nombre de filets précédents").preNfilets=0
@@ -437,15 +437,12 @@ class beltrami:
     #
     #   Le bspline
     #
-        dx=Geo[Pt3].X-Geo[Pt0].X
-        dy=Geo[Pt3].Y-Geo[Pt0].Y
-    #   Poids local pour les pts de contrôle
-        rayon=0.1*math.sqrt(dx*dx+dy*dy)
+        rayon=1
     #
         C1=sketch.addGeometry(Part.Circle(v0,App.Vector(0,0,1),rayon),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C1,3,Pt0,1))
         C2=sketch.addGeometry(Part.Circle(v1,App.Vector(0,0,1),rayon),True)
-        sketch.addConstraint(Sketcher.Constraint('Radius',C1,rayon)) 
+        sketch.addConstraint(Sketcher.Constraint('Weight',C1,rayon)) 
         sketch.addConstraint(Sketcher.Constraint('Equal',C1,C2))
         sketch.addConstraint(Sketcher.Constraint('Coincident',C2,3,Pt1,1)) 
         C3=sketch.addGeometry(Part.Circle(v2,App.Vector(0,0,1),rayon),True)
@@ -469,6 +466,7 @@ class beltrami:
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C3,3,BS,2))
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C4,3,BS,3))
         sketch.addConstraint(conList)
+        del conList
         sketch.exposeInternalGeometry(BS)
         sketch.recompute()
         return (BS,L1,L2) 
@@ -532,31 +530,36 @@ class beltrami:
         Feuil.setAlias("D"+L, "AlS3")
         Feuil.setAlias("E"+L, "AlS4")
         L="7"
-        Feuil.set("B7", "mm")
-        Feuil.set("C7", "mm")
-        Feuil.set("D7", "mm")
-        Feuil.set("E7", "mm")
+        Feuil.set("B"+L, "-")
+        Feuil.set("C"+L, "-")
+        Feuil.set("D"+L, "-")
+        Feuil.set("E"+L, "-")
         L="8"
         Feuil.set("A"+L, "Poids_entree")
-        Feuil.set("B"+L, "100.0")
-        Feuil.set("C"+L, "100.0")
-        Feuil.set("D"+L, "100.0")
-        Feuil.set("E"+L, "100.0")
+        Feuil.set("B"+L, "1.0")
+        Feuil.set("C"+L, "1.0")
+        Feuil.set("D"+L, "1.0")
+        Feuil.set("E"+L, "1.0")
         Feuil.setAlias("B"+L, "PoE1")
         Feuil.setAlias("C"+L, "PoE2")
         Feuil.setAlias("D"+L, "PoE3")
         Feuil.setAlias("E"+L, "PoE4")
         L="9"
         Feuil.set("A"+L, "Poids_sortie")
-        Feuil.set("B"+L, "100.0")
-        Feuil.set("C"+L, "100.0")
-        Feuil.set("D"+L, "100.0")
-        Feuil.set("E"+L, "100.0")
+        Feuil.set("B"+L, "1.0")
+        Feuil.set("C"+L, "1.0")
+        Feuil.set("D"+L, "1.0")
+        Feuil.set("E"+L, "1.0")
         Feuil.setAlias("B"+L, "PoS1")
         Feuil.setAlias("C"+L, "PoS2")
         Feuil.setAlias("D"+L, "PoS3")
         Feuil.setAlias("E"+L, "PoS4")
         L="10"
+        Feuil.set("B"+L, "mm")
+        Feuil.set("C"+L, "mm")
+        Feuil.set("D"+L, "mm")
+        Feuil.set("E"+L, "mm")
+        L="11"      
         Feuil.set("A"+L, "Long_entree")
         Feuil.set("B"+L, "208.67")
         Feuil.set("C"+L, "286.6")
@@ -566,7 +569,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "LoE2")
         Feuil.setAlias("D"+L, "LoE3")
         Feuil.setAlias("E"+L, "LoE4")
-        L="11"
+        L="12"
         Feuil.set("A"+L, "Long_sortie")
         Feuil.set("B"+L, "208.67")
         Feuil.set("C"+L, "286.6")
@@ -578,7 +581,7 @@ class beltrami:
         Feuil.setAlias("E"+L, "LoS4")
 #       Loi d'épaisseur 6 noeuds, le premier fixe à (0,0)
 #       Extrados
-        L="12"
+        L="13"
         Feuil.set("A"+L, "EpEx1X")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -588,7 +591,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx1X2")
         Feuil.setAlias("D"+L, "EpEx1X3")
         Feuil.setAlias("E"+L, "EpEx1X4")
-        L="13"
+        L="14"
         Feuil.set("A"+L, "EpEx2X")
         Feuil.set("B"+L, "300.0")
         Feuil.set("C"+L, "300.0")
@@ -598,7 +601,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx2X2")
         Feuil.setAlias("D"+L, "EpEx2X3")
         Feuil.setAlias("E"+L, "EpEx2X4")
-        L="14"
+        L="15"
         Feuil.set("A"+L, "EpEx3X")
         Feuil.set("B"+L, "750.0")
         Feuil.set("C"+L, "750.0")
@@ -608,7 +611,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx3X2")
         Feuil.setAlias("D"+L, "EpEx3X3")
         Feuil.setAlias("E"+L, "EpEx3X4")
-        L="15"
+        L="16"
         Feuil.set("A"+L, "EpEx4X")
         Feuil.set("B"+L, "1000.0")
         Feuil.set("C"+L, "1000.0")
@@ -618,7 +621,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx4X2")
         Feuil.setAlias("D"+L, "EpEx4X3")
         Feuil.setAlias("E"+L, "EpEx4X4")
-        L="16"
+        L="17"
         Feuil.set("A"+L, "EpEx5X") #ne peut être modifié
         Feuil.set("B"+L, "1000.0")
         Feuil.set("C"+L, "1000.0")
@@ -628,8 +631,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx5X2")
         Feuil.setAlias("D"+L, "EpEx5X3")
         Feuil.setAlias("E"+L, "EpEx5X4")
-
-        L="17"
+        L="18"
         Feuil.set("A"+L, "EpEx1Y")
         Feuil.set("B"+L, "50.0")
         Feuil.set("C"+L, "50.0")
@@ -639,7 +641,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx1Y2")
         Feuil.setAlias("D"+L, "EpEx1Y3")
         Feuil.setAlias("E"+L, "EpEx1Y4")
-        L="18"
+        L="19"
         Feuil.set("A"+L, "EpEx2Y")
         Feuil.set("B"+L, "50.0")
         Feuil.set("C"+L, "50.0")
@@ -649,7 +651,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx2Y2")
         Feuil.setAlias("D"+L, "EpEx2Y3")
         Feuil.setAlias("E"+L, "EpEx2Y4")
-        L="19"
+        L="20"
         Feuil.set("A"+L, "EpEx3Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -659,7 +661,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx3Y2")
         Feuil.setAlias("D"+L, "EpEx3Y3")
         Feuil.setAlias("E"+L, "EpEx3Y4")
-        L="20"
+        L="21"
         Feuil.set("A"+L, "EpEx4Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -669,7 +671,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx4Y2")
         Feuil.setAlias("D"+L, "EpEx4Y3")
         Feuil.setAlias("E"+L, "EpEx4Y4")
-        L="21"
+        L="22"
         Feuil.set("A"+L, "EpEx5Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -679,7 +681,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpEx5Y2")
         Feuil.setAlias("D"+L, "EpEx5Y3")
         Feuil.setAlias("E"+L, "EpEx5Y4")
-        L="22"
+        L="23"
         Feuil.set("A"+L, "EpExLast")
         Feuil.set("B"+L, "0.85")
         Feuil.set("C"+L, "0.85")
@@ -690,7 +692,7 @@ class beltrami:
         Feuil.setAlias("D"+L, "EpExLast3")
         Feuil.setAlias("E"+L, "EpExLast4")
 #       Intrados
-        L="23"
+        L="24"
         Feuil.set("A"+L, "EpIn1X")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -700,7 +702,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn1X2")
         Feuil.setAlias("D"+L, "EpIn1X3")
         Feuil.setAlias("E"+L, "EpIn1X4")
-        L="24"
+        L="25"
         Feuil.set("A"+L, "EpIn2X")
         Feuil.set("B"+L, "300.0")
         Feuil.set("C"+L, "300.0")
@@ -710,7 +712,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn2X2")
         Feuil.setAlias("D"+L, "EpIn2X3")
         Feuil.setAlias("E"+L, "EpIn2X4")
-        L="25"
+        L="26"
         Feuil.set("A"+L, "EpIn3X")
         Feuil.set("B"+L, "750.0")
         Feuil.set("C"+L, "750.0")
@@ -720,7 +722,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn3X2")
         Feuil.setAlias("D"+L, "EpIn3X3")
         Feuil.setAlias("E"+L, "EpIn3X4")
-        L="26"
+        L="27"
         Feuil.set("A"+L, "EpIn4X")
         Feuil.set("B"+L, "1000.0")
         Feuil.set("C"+L, "1000.0")
@@ -730,7 +732,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn4X2")
         Feuil.setAlias("D"+L, "EpIn4X3")
         Feuil.setAlias("E"+L, "EpIn4X4")
-        L="27"
+        L="28"
         Feuil.set("A"+L, "EpIn5X") #ne peut être modifié
         Feuil.set("B"+L, "1000.0")
         Feuil.set("C"+L, "1000.0")
@@ -740,7 +742,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn5X2")
         Feuil.setAlias("D"+L, "EpIn5X3")
         Feuil.setAlias("E"+L, "EpIn5X4")
-        L="28"
+        L="29"
         Feuil.set("A"+L, "EpIn1Y")
         Feuil.set("B"+L, "50.0")
         Feuil.set("C"+L, "50.0")
@@ -750,7 +752,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn1Y2")
         Feuil.setAlias("D"+L, "EpIn1Y3")
         Feuil.setAlias("E"+L, "EpIn1Y4")
-        L="29"
+        L="30"
         Feuil.set("A"+L, "EpIn2Y")
         Feuil.set("B"+L, "50.0")
         Feuil.set("C"+L, "50.0")
@@ -760,7 +762,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn2Y2")
         Feuil.setAlias("D"+L, "EpIn2Y3")
         Feuil.setAlias("E"+L, "EpIn2Y4")
-        L="30"
+        L="31"
         Feuil.set("A"+L, "EpIn3Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -770,7 +772,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn3Y2")
         Feuil.setAlias("D"+L, "EpIn3Y3")
         Feuil.setAlias("E"+L, "EpIn3Y4")
-        L="31"
+        L="32"
         Feuil.set("A"+L, "EpIn4Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -780,7 +782,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn4Y2")
         Feuil.setAlias("D"+L, "EpIn4Y3")
         Feuil.setAlias("E"+L, "EpIn4Y4")
-        L="32"
+        L="33"
         Feuil.set("A"+L, "EpIn5Y")
         Feuil.set("B"+L, "0.0")
         Feuil.set("C"+L, "0.0")
@@ -790,7 +792,7 @@ class beltrami:
         Feuil.setAlias("C"+L, "EpIn5Y2")
         Feuil.setAlias("D"+L, "EpIn5Y3")
         Feuil.setAlias("E"+L, "EpIn5Y4")
-        L="33"
+        L="34"
         Feuil.set("A"+L, "EpInLast")
         Feuil.set("B"+L, "0.85")
         Feuil.set("C"+L, "0.85")
@@ -801,17 +803,19 @@ class beltrami:
         Feuil.setAlias("D"+L, "EpInLast3")
         Feuil.setAlias("E"+L, "EpInLast4")
 #
-        Feuil.setAlignment('B1:E33', 'center', 'keep')
-        Feuil.setBackground('B1:E1', (1.000000,1.000000,0.498039))
-        Feuil.setBackground('B3:E6', (0.666667,1.000000,0.498039))
-        Feuil.setBackground('B8:E11', (0.666667,1.000000,0.498039))
-        Feuil.setBackground('B12:E33', (0.666667,1.000000,1.000000))
-        Feuil.setBackground('B2:E2', (0.752941,0.752941,0.752941))
-        Feuil.setBackground('A2:A33', (0.752941,0.752941,0.752941))
-        Feuil.setBackground('B7:E7', (0.752941,0.752941,0.752941))
+        Feuil.setAlignment('B1:E34', 'center', 'keep')
+        Feuil.setBackground('B1:E1', (1.000000,1.000000,0.498039))  #jaune
+        Feuil.setBackground('B2:E2', (0.752941,0.752941,0.752941))  #gris
+        Feuil.setBackground('B3:E6', (0.666667,1.000000,0.498039))  #vert
+        Feuil.setBackground('B8:E12', (0.666667,1.000000,0.498039)) #vert
+        Feuil.setBackground('B10:E10', (0.752941,0.752941,0.752941))#gris
+        Feuil.setBackground('B13:E34', (0.666667,1.000000,1.000000))#bleu
+        Feuil.setBackground('A2:A34', (0.752941,0.752941,0.752941)) #gris
+        Feuil.setBackground('B7:E7', (0.752941,0.752941,0.752941))  #gris
         Feuil.setStyle('B2:E2', 'bold', 'add')
         Feuil.setStyle('B7:E7', 'bold', 'add')
-        Feuil.setStyle('A1:A33', 'bold', 'add')
+        Feuil.setStyle('B10:E10', 'bold', 'add')
+        Feuil.setStyle('A1:A34', 'bold', 'add')
         Feuil.recompute()
         return
     def sauveTableur(self,fp):
@@ -855,58 +859,58 @@ class beltrami:
 
         sketchTheta_entree.setDatum(0,App.Units.Quantity(t0))
 #       print('0= '+ str(t0))
-        sketchTheta_entree.setDatum(1,App.Units.Quantity(str(Feuil.ThE1)+' mm'))
+        sketchTheta_entree.setDatum(1,App.Units.Quantity(str(Feuil.ThE1)))
 #       print('1= '+str(Feuil.ThE1)+' mm'  )
         sketchTheta_entree.setDatum(2,App.Units.Quantity(t1))
 #       print('2= '+ str(t1))
-        sketchTheta_entree.setDatum(3,App.Units.Quantity(str(Feuil.ThE2)+' mm'))
+        sketchTheta_entree.setDatum(3,App.Units.Quantity(str(Feuil.ThE2)))
 #       print('3= '+str(Feuil.ThE2)+' mm'  )
         sketchTheta_entree.setDatum(4,App.Units.Quantity(t2))
 #       print('4= '+ str(t2))
-        sketchTheta_entree.setDatum(5,App.Units.Quantity(str(Feuil.ThE3)+' mm'))
+        sketchTheta_entree.setDatum(5,App.Units.Quantity(str(Feuil.ThE3)))
 #       print('5= '+str(Feuil.ThE3)+' mm'  )
         sketchTheta_entree.setDatum(6,App.Units.Quantity(t3))
-        sketchTheta_entree.setDatum(7,App.Units.Quantity(str(Feuil.ThE4)+' mm'))
+        sketchTheta_entree.setDatum(7,App.Units.Quantity(str(Feuil.ThE4)))
         sketchTheta_sortie.setDatum(0,App.Units.Quantity(t0))
-        sketchTheta_sortie.setDatum(1,App.Units.Quantity(str(Feuil.ThS1)+' mm'))
+        sketchTheta_sortie.setDatum(1,App.Units.Quantity(str(Feuil.ThS1)))
         sketchTheta_sortie.setDatum(2,App.Units.Quantity(t1))
-        sketchTheta_sortie.setDatum(3,App.Units.Quantity(str(Feuil.ThS2)+' mm'))
+        sketchTheta_sortie.setDatum(3,App.Units.Quantity(str(Feuil.ThS2)))
         sketchTheta_sortie.setDatum(4,App.Units.Quantity(t2))
-        sketchTheta_sortie.setDatum(5,App.Units.Quantity(str(Feuil.ThS3)+' mm'))
+        sketchTheta_sortie.setDatum(5,App.Units.Quantity(str(Feuil.ThS3)))
         sketchTheta_sortie.setDatum(6,App.Units.Quantity(t3))
-        sketchTheta_sortie.setDatum(7,App.Units.Quantity(str(Feuil.ThS4)+' mm'))
+        sketchTheta_sortie.setDatum(7,App.Units.Quantity(str(Feuil.ThS4)))
         sketchAlpha_entree.setDatum(0,App.Units.Quantity(t0))
-        sketchAlpha_entree.setDatum(1,App.Units.Quantity(str(Feuil.AlE1)+' mm'))
+        sketchAlpha_entree.setDatum(1,App.Units.Quantity(str(Feuil.AlE1)))
         sketchAlpha_entree.setDatum(2,App.Units.Quantity(t1))
-        sketchAlpha_entree.setDatum(3,App.Units.Quantity(str(Feuil.AlE2)+' mm'))
+        sketchAlpha_entree.setDatum(3,App.Units.Quantity(str(Feuil.AlE2)))
         sketchAlpha_entree.setDatum(4,App.Units.Quantity(t2))
-        sketchAlpha_entree.setDatum(5,App.Units.Quantity(str(Feuil.AlE3)+' mm'))
+        sketchAlpha_entree.setDatum(5,App.Units.Quantity(str(Feuil.AlE3)))
         sketchAlpha_entree.setDatum(6,App.Units.Quantity(t3))
-        sketchAlpha_entree.setDatum(7,App.Units.Quantity(str(Feuil.AlE4)+' mm'))
+        sketchAlpha_entree.setDatum(7,App.Units.Quantity(str(Feuil.AlE4)))
         sketchAlpha_sortie.setDatum(0,App.Units.Quantity(t0))
-        sketchAlpha_sortie.setDatum(1,App.Units.Quantity(str(Feuil.AlS1)+' mm'))
+        sketchAlpha_sortie.setDatum(1,App.Units.Quantity(str(Feuil.AlS1)))
         sketchAlpha_sortie.setDatum(2,App.Units.Quantity(t1))
-        sketchAlpha_sortie.setDatum(3,App.Units.Quantity(str(Feuil.AlS2)+' mm'))
+        sketchAlpha_sortie.setDatum(3,App.Units.Quantity(str(Feuil.AlS2)))
         sketchAlpha_sortie.setDatum(4,App.Units.Quantity(t2))
-        sketchAlpha_sortie.setDatum(5,App.Units.Quantity(str(Feuil.AlS3)+' mm'))
+        sketchAlpha_sortie.setDatum(5,App.Units.Quantity(str(Feuil.AlS3)))
         sketchAlpha_sortie.setDatum(6,App.Units.Quantity(t3))
-        sketchAlpha_sortie.setDatum(7,App.Units.Quantity(str(Feuil.AlS4)+' mm'))
+        sketchAlpha_sortie.setDatum(7,App.Units.Quantity(str(Feuil.AlS4)))
         sketchPoids_entree.setDatum(0,App.Units.Quantity(t0))
-        sketchPoids_entree.setDatum(1,App.Units.Quantity(str(Feuil.PoE1)+' mm'))
+        sketchPoids_entree.setDatum(1,App.Units.Quantity(str(Feuil.PoE1)))
         sketchPoids_entree.setDatum(2,App.Units.Quantity(t1))
-        sketchPoids_entree.setDatum(3,App.Units.Quantity(str(Feuil.PoE2)+' mm'))
+        sketchPoids_entree.setDatum(3,App.Units.Quantity(str(Feuil.PoE2)))
         sketchPoids_entree.setDatum(4,App.Units.Quantity(t2))
-        sketchPoids_entree.setDatum(5,App.Units.Quantity(str(Feuil.PoE3)+' mm'))
+        sketchPoids_entree.setDatum(5,App.Units.Quantity(str(Feuil.PoE3)))
         sketchPoids_entree.setDatum(6,App.Units.Quantity(t3))
-        sketchPoids_entree.setDatum(7,App.Units.Quantity(str(Feuil.PoE4)+' mm'))
+        sketchPoids_entree.setDatum(7,App.Units.Quantity(str(Feuil.PoE4)))
         sketchPoids_sortie.setDatum(0,App.Units.Quantity(t0))
-        sketchPoids_sortie.setDatum(1,App.Units.Quantity(str(Feuil.PoS1)+' mm'))
+        sketchPoids_sortie.setDatum(1,App.Units.Quantity(str(Feuil.PoS1)))
         sketchPoids_sortie.setDatum(2,App.Units.Quantity(t1))
-        sketchPoids_sortie.setDatum(3,App.Units.Quantity(str(Feuil.PoS2)+' mm'))
+        sketchPoids_sortie.setDatum(3,App.Units.Quantity(str(Feuil.PoS2)))
         sketchPoids_sortie.setDatum(4,App.Units.Quantity(t2))
-        sketchPoids_sortie.setDatum(5,App.Units.Quantity(str(Feuil.PoS3)+' mm'))
+        sketchPoids_sortie.setDatum(5,App.Units.Quantity(str(Feuil.PoS3)))
         sketchPoids_sortie.setDatum(6,App.Units.Quantity(t3))
-        sketchPoids_sortie.setDatum(7,App.Units.Quantity(str(Feuil.PoS4)+' mm'))
+        sketchPoids_sortie.setDatum(7,App.Units.Quantity(str(Feuil.PoS4)))
         sketchLong_entree.setDatum(0,App.Units.Quantity(t0))
         sketchLong_entree.setDatum(1,App.Units.Quantity(str(Feuil.LoE1)+' mm'))
         sketchLong_entree.setDatum(2,App.Units.Quantity(t1))
@@ -1693,22 +1697,22 @@ class beltrami:
     #
     #   Création des 5 poles du spline extrados et du poids de chacun
     #       point 0 extrados
-            r00=100.
+            r00=1
             Pt00=sketch_e.addGeometry(Part.Point(App.Vector(0., 0., r00)))
     #       point 1 extrados
-            r01=100.
+            r01=1
             Pt01=sketch_e.addGeometry(Part.Point(App.Vector(EpEx1X.Points[i].y, EpEx1Y.Points[i].y, r01 )))
     #       point 2 extrados
-            r02=100.
+            r02=1
             Pt02=sketch_e.addGeometry(Part.Point(App.Vector(EpEx2X.Points[i].y, EpEx2Y.Points[i].y, r02)))
     #       point 3 extrados            
-            r03=100.
+            r03=1
             Pt03=sketch_e.addGeometry(Part.Point(App.Vector(EpEx3X.Points[i].y, EpEx3Y.Points[i].y, r03)))
     #       point 4 extrados  
-            r04=100.
+            r04=1
             Pt04=sketch_e.addGeometry(Part.Point(App.Vector(EpEx4X.Points[i].y, EpEx4Y.Points[i].y, r04)))
     #       point 5 extrados  
-            r05=100.
+            r05=1
             Pt05=sketch_e.addGeometry(Part.Point(App.Vector(EpEx5X.Points[i].y, EpEx5Y.Points[i].y, r05)))
     #       Création du BSpline extrados
     #       print('Geo sketch_e ='+str(sketch_e.Geometry))
@@ -1750,22 +1754,22 @@ class beltrami:
             docPlanEpaisseur.addObject(fpi)
     #   Création des 5 poles du spline intrados et du poids de chacun
     #       point 0 intrados
-            r10=100.
+            r10=1
             Pt10=sketch_i.addGeometry(Part.Point(App.Vector(0., 0., r10)))
     #       point 1 intrados
-            r11=100.
+            r11=1
             Pt11=sketch_i.addGeometry(Part.Point(App.Vector(EpIn1X.Points[i].y, -EpIn1Y.Points[i].y, r11 )))
     #       point 2 intrados
-            r12=100.
+            r12=1
             Pt12=sketch_i.addGeometry(Part.Point(App.Vector(EpIn2X.Points[i].y, -EpIn2Y.Points[i].y, r12)))
     #       point 3 intrados            
-            r13=100.
+            r13=1
             Pt13=sketch_i.addGeometry(Part.Point(App.Vector(EpIn3X.Points[i].y, -EpIn3Y.Points[i].y, r13)))
     #       point 4 intrados 
-            r14=100.
+            r14=1
             Pt14=sketch_i.addGeometry(Part.Point(App.Vector(EpIn4X.Points[i].y, -EpIn4Y.Points[i].y, r14)))
     #       point 5 intrados 
-            r15=100.
+            r15=1
             Pt15=sketch_i.addGeometry(Part.Point(App.Vector(EpIn5X.Points[i].y, -EpIn5Y.Points[i].y, r15)))
     #       Création du BSpline intrados
     #       print('Geo sketch_i ='+str(sketch_i.Geometry))
@@ -1893,44 +1897,38 @@ class beltrami:
         v3=App.Vector(Geo[Pt3].X,Geo[Pt3].Y,0)
         v4=App.Vector(Geo[Pt4].X,Geo[Pt4].Y,0)
         v5=App.Vector(Geo[Pt5].X,Geo[Pt5].Y,0)
-        r0=100.
-        r1=100.
-        r2=100.
-        r3=100.
-        r4=100.
-        r5=100.
-#       print('v0= '+str(v0))
-#       print('v1= '+str(v1))
-#       print('v2= '+str(v2))
-#       print('v3= '+str(v3))
-#       print('v4= '+str(v4))
-#       print('v5= '+str(v4))
+        r0=1
+        r1=1
+        r2=1
+        r3=1
+        r4=1
+        r5=1
     #
     #   Les pôles du bspline
     #
         C0=sketch.addGeometry(Part.Circle(v0,App.Vector(0,0,1),r0),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C0,3,Pt0,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C0,r0)) 
+        sketch.addConstraint(Sketcher.Constraint('Weight',C0,r0)) 
     #    
         C1=sketch.addGeometry(Part.Circle(v1,App.Vector(0,0,1),r1),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C1,3,Pt1,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C1,r1))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C1,r1))
     #    
         C2=sketch.addGeometry(Part.Circle(v2,App.Vector(0,0,1),r2),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C2,3,Pt2,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C2,r2))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C2,r2))
     #    
         C3=sketch.addGeometry(Part.Circle(v3,App.Vector(0,0,1),r3),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C3,3,Pt3,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C3,r3))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C3,r3))
     #    
         C4=sketch.addGeometry(Part.Circle(v4,App.Vector(0,0,1),r4),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C4,3,Pt4,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C4,r4))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C4,r4))
 #    
         C5=sketch.addGeometry(Part.Circle(v5,App.Vector(0,0,1),r5),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C5,3,Pt5,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C5,r5))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C5,r5))
     #
         BS=sketch.addGeometry(Part.BSplineCurve([v0,v1,v2,v3,v4,v5],None,None,False,3,None,False),False)
        
@@ -1943,10 +1941,9 @@ class beltrami:
         conList1.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C4,4,BS,4))
         conList1.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C5,4,BS,5))
         sketch.addConstraint(conList1)
-        sketch.exposeInternalGeometry(BS)
-    #    
+        del conList1
+        sketch.exposeInternalGeometry(BS)  
 #       print("epaisseurBS - fin")
-        
         return (BS)
 #
 #
@@ -2396,26 +2393,22 @@ class beltrami:
     #
     #   Le bspline
     #
-        dx=Geo[Pt3].X-Geo[Pt0].X
-        dy=Geo[Pt3].Y-Geo[Pt0].Y
-    #   Poids local pour les pts de contrôle
-        rayon=0.1*math.sqrt(dx*dx+dy*dy)
     #
         C1=sketch.addGeometry(Part.Circle(v0,App.Vector(0,0,1),r0),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C1,3,Pt0,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C1,r0))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C1,r0))
         #
         C2=sketch.addGeometry(Part.Circle(v1,App.Vector(0,0,1),r1),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C2,3,Pt1,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C2,r1))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C2,r1))
         #
         C3=sketch.addGeometry(Part.Circle(v2,App.Vector(0,0,1),r2),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C3,3,Pt2,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C3,r2))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C3,r2))
         #
         C4=sketch.addGeometry(Part.Circle(v3,App.Vector(0,0,1),r3),True)
         sketch.addConstraint(Sketcher.Constraint('Coincident',C4,3,Pt3,1))
-        sketch.addConstraint(Sketcher.Constraint('Radius',C4,r3))
+        sketch.addConstraint(Sketcher.Constraint('Weight',C4,r3))
         #
         BS=sketch.addGeometry(Part.BSplineCurve([v0,v1,v2,v3],None,None,False,3,None,False),False)
         l1=Part.LineSegment(v0,v1)
@@ -2432,6 +2425,7 @@ class beltrami:
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C3,3,BS,2))
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',C4,3,BS,3))
         sketch.addConstraint(conList)
+        del conList
         sketch.exposeInternalGeometry(BS)
         sketch.recompute()
         return (BS,L1,L2)
@@ -2480,8 +2474,10 @@ class beltrami:
     #
         pt3=Part.Point(fpAa.a3)
         Pt3=sketchA.addGeometry(pt3)
+        r0=1.
+        r3=1.
     #   Génération du bspline et immobilisation des pts de contrôle pour Cascade
-        (BSA,L1,L2)=self.planBSCascade(sketchA,Pt0,Pt1,Pt2,Pt3,100.,fpAa.a1.y,fpAa.a2.y, 100.)
+        (BSA,L1,L2)=self.planBSCascade(sketchA,Pt0,Pt1,Pt2,Pt3,r0,fpAa.a1.y,fpAa.a2.y, r3)
         (Ddl1x,Ddl1y)=self.immobilisePoint(sketchA, Pt0, "CA"+I+"_0") 
         A1=sketchA.addConstraint(Sketcher.Constraint('Angle',L1,math.radians(fpAa.a1.x)))
         D1=sketchA.addConstraint(Sketcher.Constraint('Distance',L1,fpAa.a1.z))
