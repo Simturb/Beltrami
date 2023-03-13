@@ -17,6 +17,9 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 
 ![Image of Installation](Resources/Installation.png)
 
+Here is the video that presents the Beltrami workbench:
+https://youtu.be/O_abwUuA4Ec
+
 ## Prerequisites
 
 * FreeCAD v0.20.1 and higher
@@ -67,12 +70,19 @@ Beltrami workbench is released under the LGPL2.1+ licence. See [LICENSE](LICENSE
 
 This Beltrami workbench is in ALPHA state along with the [Curves WB](https://github.com/tomate44/CurvesWB/) on which it is based.
 
-## Release notes
+<details>
+  <summary>Release notes</summary>
 
-The release 1.0.8 : 
-- Implements surfaces with better tangent continuity at leading edge. 
-- Modifies slightly user interface (some names are changed)
-- Solves minor bugs
-- Optimises the structure of the code
-- Previous files are not compatible. From Interface_Usager, you simply have to transfer data from the sketch Meridien (12 2D points) and the spreadsheet Tableau_Pilote (copy-paste). And, of course transfer data from the FeaturePython Parametres.
-- Be sure to update Curves WB
+    ### Release 1.0.8.1 :
+    -Internal code for B-spline modified, Radius replaced by Weight, initial Weight is now 1 adimensional.
+    -Variables in Tableau_pilote displaced and modified accordingly, variables Poids_entree and Poids_sortie.
+
+    ### Release 1.0.8 : 
+    - Implements surfaces with better tangent continuity at leading edge. 
+    - Modifies slightly user interface (some names are changed)
+    - Solves minor bugs
+    - Optimises the structure of the code
+    - Previous files are not compatible. From Interface_Usager, you simply have to transfer data from the sketch Meridien (12 2D points) and the spreadsheet Tableau_Pilote (copy-paste). And, of course transfer data from the FeaturePython Parametres.
+    - Be sure to update Curves WB
+
+</details>
