@@ -4,7 +4,7 @@
   <description>A workbench for designing turbomachine blades.</description>
   <version>1.0.8-alpha</version>
   <maintainer email="simturbweb@gmail.com">Michel Sabourin (Sabm01)</maintainer>
-  <license file="LICENSE">LGPLv2.1</license>
+  <license file="LICENSE">LGPL-2.1-or-later</license>
   <url type="repository" branch="main">https://github.com/Simturb/Beltrami</url>
   <url type="bugtracker">https://github.com/Simturb/Beltrami/issues</url>
   <url type="readme">https://github.com/Simturb/Beltrami/blob/main/README.md</url>
