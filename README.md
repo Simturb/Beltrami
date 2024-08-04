@@ -80,7 +80,7 @@ With new release, reading of previous release generated file can present some bu
   
     ### Release 1.1 :
     Release 0.6.40 of CurvesWB allows to some bugs to popup: corrected.
-    For issue "Add support for translation of the strings", for the moment I removed the french translation. All is in English now. Code for translation are already incoporated. Waiting for translation files.
+    For issue "Add support for translation of the strings", for the moment I removed the French translation. All is in English now. Code for translation are already incorporated. Waiting for translation files.
 
     ### Release 1.0.8.1 :
     -Internal code for B-spline modified, Radius replaced by Weight, initial Weight is now 1 adimensional.
