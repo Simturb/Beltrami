@@ -15,6 +15,7 @@ from freecad.Curves import IsoCurve as iso
 from freecad.Curves import Discretize
 from freecad.Curves import approximate
 from freecad.Curves import interpolate
+translate=App.Qt.translate
    
 #Gui.activateWorkbench("SketcherWorkbench")
 
@@ -23,19 +24,20 @@ class beltrami:
     #
     #   Initialisation du FeaturePython Parametres
     #
-        fp.addProperty("App::PropertyString","Version","Base","Numéro de version").Version="1.0.8.1"
-        fp.addProperty("App::PropertyInteger","Naubes","Base","Nombre d'aubes").Naubes=13
-        fp.addProperty("App::PropertyIntegerConstraint","Nfilets","Base","Nombre de filets").Nfilets=(6,2,65,1)
-        fp.addProperty("App::PropertyIntegerConstraint","preNfilets","Base","Nombre de filets précédents").preNfilets=0
-        fp.addProperty("App::PropertyIntegerConstraint","Npts","Base","Nombre de points par filet").Npts=(9,9,1025,8)
-        fp.addProperty("App::PropertyIntegerConstraint","Sens","Base","Rotation(1:anti-horaire, -1:horaire)").Sens=(1,-1,1,2)
-        fp.addProperty("App::PropertyIntegerConstraint","CascadeRotation","Base","Rotation(1:rotation, -1:fixe)").CascadeRotation=(1,-1,1,2)
-        fp.addProperty("App::PropertyIntegerConstraint","SensCascade","Base","Rotation(1:anti-horaire, -1:horaire)").SensCascade=(1,-1,1,2)
-        fp.addProperty("App::PropertyBool","Modifiable","Base","Vrai pour modification").Modifiable=False
-        fp.addProperty("App::PropertyBool","Init","Base","Vrai pour modification").Init=True
-        fp.addProperty("App::PropertyInteger","Def_t","Base","Nombre de poles en t").Def_t=4
+        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.1"
+        fp.addProperty("App::PropertyInteger",          "Naubes",         "Base",translate("Beltrami","Number of blades")).Naubes=13
+        fp.addProperty("App::PropertyIntegerConstraint","Nfilets",        "Base",translate("Beltrami","Number of filets(steam lines)")).Nfilets=(6,2,65,1)
+        fp.addProperty("App::PropertyIntegerConstraint","preNfilets",     "Base","Nombre de filets précédents").preNfilets=0
+        fp.addProperty("App::PropertyIntegerConstraint","Npts",           "Base",translate("Beltrami","Number of points per filet")).Npts=(9,9,1025,8)
+        fp.addProperty("App::PropertyIntegerConstraint","Sens",           "Base",translate("Beltrami","Runner rotation(1:counterclockwise, -1:clockwise)")).Sens=(1,-1,1,2)
+        fp.addProperty("App::PropertyIntegerConstraint","CascadeRotation","Base",translate("Beltrami","Rotation(1:rotating cascade(rotor), -1:fix(stator))")).CascadeRotation=(1,-1,1,2)
+        fp.addProperty("App::PropertyIntegerConstraint","SensCascade",    "Base","Rotation(1:anti-horaire, -1:horaire)").SensCascade=(1,-1,1,2)
+        fp.addProperty("App::PropertyBool","Modifiable",                  "Base","Vrai pour modification").Modifiable=False
+        fp.addProperty("App::PropertyBool","Init",                        "Base","Vrai pour modification").Init=True
+        fp.addProperty("App::PropertyInteger","Def_t",                    "Base","Nombre de poles en t").Def_t=4
         fp.Proxy=self
-        fp.setEditorMode("Version",1)
+        self.Type='beltrami'
+        fp.setEditorMode("Release",1)
         fp.setEditorMode("Label",1)
         fp.setEditorMode("Modifiable",2)
         fp.setEditorMode("SensCascade",2)
@@ -60,7 +62,6 @@ class beltrami:
     def modif(self,fp):     # Ordre modif
         self.sauveTableur(fp)
         self.modifEpaisseur(fp)
-#        self.sauveMeridien(fp)
         self.modifCascade(fp)
         self.modifVoile(fp)
         return
@@ -81,36 +82,55 @@ class beltrami:
 #       Routines système FreeCAD
 #
 #
+
+#    def dumps(self):
+#        print('dumps')
+#        fp=App.ActiveDocument.getObject('Parametres')
+#        print(fp.PropertiesList)
+#        return self.Type
+        
+    def loads(self,state):
+#        print('loads')
+        self.Type=state
+        fp=App.ActiveDocument.getObject('Parametres')
+        fp.Modifiable=False
+#        print(fp.PropertiesList)
+        return
+        
     def onChanged(self, fp, prop):
 #        print('onChanged propriété changée: '+prop)
+#        print(fp.PropertiesList)
 #        print('Modifiable = '+str(fp.Modifiable))
         if fp.Init : return
         if (prop == "Init") : return
         if not fp.Modifiable :
             if('Up-to-date' in fp.State): 
                 fp.Modifiable=True
-        #       print('Statut modifiable changé = '+str(fp.Modifiable))
+#                print('Statut modifiable changé = '+str(fp.Modifiable))
         if not fp.Modifiable : return
-#       print('Modifiable = '+str(fp.Modifiable))
+#        print('Modifiable = '+str(fp.Modifiable))
         if (prop == "ExpressionEngine" or prop == "Proxy" or prop =="Visibility" or prop=="Label" or prop=="Shape" or prop=="Points" or prop=="Naubes"):
-    #       print('Avec ExpressionEngine,Proxy, Visibility, Label, Shape, Points: pas de calcul ')
+#            print('Avec ExpressionEngine,Proxy, Visibility, Label, Shape, Points: pas de calcul ')
             return
         if (prop == "Sens"):
-    #       print('Beltrami.onChanged '+prop)
+            fp.recompute()
+#            print('Beltrami.onChanged '+prop)
+#            print(fp.PropertiesList)
             fp.SensCascade=fp.Sens*fp.CascadeRotation
+
 #            App.ActiveDocument.Volume.purgeTouched()
             self.modifCascade(fp) 
             self.modifVoile(fp)
             App.ActiveDocument.recompute()
-    #       print('onChanged - fin')
+#            print('onChanged - fin')
             return
         if (prop == "CascadeRotation"):
-    #       print('Beltrami.onChanged '+prop)
+#            print('Beltrami.onChanged '+prop)
             fp.SensCascade=fp.Sens*fp.CascadeRotation
             self.modifCascade(fp) 
             self.modifVoile(fp)
             fp.recompute()
-    #       print('onChanged - fin')
+#            print('onChanged - fin')
             return
         if(prop == "Npts"):
 #            print('Beltrami.onChanged Npts')
@@ -395,13 +415,7 @@ class beltrami:
         fp.preNfilets=fp.Nfilets
 #       print('onChangedNfilets - fin')
         return
-    def __setstate__(self, state):
-#       print('setstate')
-        fp=App.ActiveDocument.getObject('Parametres')
-        fp.Modifiable=False
-#       print('Modifiable = '+str(fp.Modifiable))
-#       print('setstate - fin')
-        return 
+
 #
 #
 #       Routines génériques
@@ -1876,10 +1890,10 @@ class beltrami:
             fpi=App.ActiveDocument.getObject("LoiEpaisseur"+I+"i")
             x=[]
             for point in fpe.Points: x.append(point.x)
-            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning("*** x is not monotonically increasing (Loiepaisseur" +I +"e) *** \n")
+            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning(translate("Beltrami","*** x is not monotonically increasing (Loiepaisseur" +I +"e) ***")+ "\n")
             x=[]
             for point in fpi.Points: x.append(point.x)
-            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning("*** x is not monotonically increasing (Loiepaisseur" +I +"i) *** \n")
+            if (not np.all(np.diff(x) > 0)): App.Console.PrintWarning(translate("Beltrami","*** x is not monotonically increasing (Loiepaisseur" +I +"i) ***")+ "\n")
 #        print("modifEpaisseur - fin")
         return
 
@@ -2375,7 +2389,7 @@ class beltrami:
             fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
             u_q=[]
             for point in fpAa.Points: u_q.append(point.y)
-            if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning("*** u is not monotonically increasing (Cascade" +I +") *** \n")
+            if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning(translate("Beltrami","*** u is not monotonically increasing (Cascade" +I +") ***")+ "\n")
 #        print('modifCascade- fin')
         return
        
@@ -3131,14 +3145,14 @@ class DiscCa_s(Disc_s):
         fpAs.u_s=u_s
         Ee_s=[]
         Ee_ss=[]
-        if (not np.all(np.diff(Eex) > 0)): App.Console.PrintWarning("Eex is not monotonically increasing \n")
+        if (not np.all(np.diff(Eex) > 0)): App.Console.PrintWarning(translate("Beltrami","Eex is not monotonically increasing")+ "\n")
         cs=CubicSpline(Eex, Eey)
         Ee_s=cs(Lmns)
 #        Ee_s=np.interp(Lmns,Eex,Eey)
         Ei_s=[]
         Ei_ss=[]
         v_ss=[]
-        if (not np.all(np.diff(Eix) > 0)): App.Console.PrintWarning("Eix is not monotonically increasing \n")
+        if (not np.all(np.diff(Eix) > 0)): App.Console.PrintWarning(translate("Beltrami","Eix is not monotonically increasing")+ "\n")
         cs=CubicSpline(Eix, Eiy)
         Ei_s=cs(Lmns)
 #        Ei_s=np.interp(Lmns,Eix,Eiy)

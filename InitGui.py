@@ -1,16 +1,25 @@
 import FreeCAD
+#translate=FreeCAD.Qt.Translate
+
 
 class BeltramiWB (Workbench):
     def __init__(self):
         self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/Resources/icons/Beltrami_workbench_icon.svg"
         self.__class__.MenuText="Beltrami"
-        self.__class__.ToolTip="Tracé d'un aubage 3D"
+#        self.__class__.ToolTip=translate("Beltrami","3D blade profile")
+#        self.__class__.ToolTip="3D blade profile"
         return
-
+ 
     def Initialize(self):
+        def QT_TRANSLATE_NOOP(context, text):
+            return text
         import coldStart
         import modif
-        self.list = ["coldStart","modif"]
+        FreeCADGui.addLanguagePath(":/translations")
+        FreeCADGui.updateLocale()
+        
+        self.list = [QT_TRANSLATE_NOOP("Workbench","coldStart"),QT_TRANSLATE_NOOP("Workbench","modif")]
+#        self.list = ["coldStart","modif"]
         self.appendToolbar("Beltrami Commands",self.list) # creates a new toolbar with your commands
         self.appendMenu("Beltrami",self.list) # creates a new menu
 

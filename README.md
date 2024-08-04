@@ -22,8 +22,8 @@ https://youtu.be/O_abwUuA4Ec
 
 ## Prerequisites
 
-* FreeCAD v0.20.1 and higher
-* FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.5.12 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
+* FreeCAD v0.21.2 and higher
+* FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.6.42 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
 
 ## Installation
 
@@ -51,6 +51,10 @@ See the [Examples](https://github.com/Simturb/Beltrami/tree/main/Examples) secti
 
 ![Image of pump](Examples/Pompe.png)
 
+### Turgo Turbine Blades
+
+![Image of Turgo Turbine Runner and blades](Examples/Turgo.png)
+
 ### Radial Cascade Blade
 
 ![Image of radial Cascade blade](Examples/CascadeRadiale.png)
@@ -69,9 +73,14 @@ Beltrami workbench is released under the LGPL2.1+ licence. See [LICENSE](LICENSE
 ## Warning
 
 This Beltrami workbench is in ALPHA state along with the [Curves WB](https://github.com/tomate44/CurvesWB/) on which it is based.
+With new release, reading of previous release generated file can present some bugs. To correct de situation, cold start a new file, import manually the coordinates in the Meridien sketch and do the same for variables in the Tableau_Pilote spreadsheet.
 
 <details>
   <summary>Release notes</summary>
+  
+    ### Release 1.1 :
+    Release 0.6.40 of CurvesWB allows to some bugs to popup: corrected.
+    For issue "Add support for translation of the strings", for the moment I removed the french translation. All is in English now. Code for translation are already incoporated. Waiting for translation files.
 
     ### Release 1.0.8.1 :
     -Internal code for B-spline modified, Radius replaced by Weight, initial Weight is now 1 adimensional.
