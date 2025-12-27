@@ -4,8 +4,10 @@
 import FreeCAD
 #translate=FreeCAD.Qt.Translate
 
+from FreeCAD import Gui
 
-class BeltramiWB (Workbench):
+
+class BeltramiWB (Gui.Workbench):
     def __init__(self):
         self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/freecad/Beltrami/Resources/Icons/Logo.svg"
         self.__class__.MenuText="Beltrami"
@@ -16,10 +18,10 @@ class BeltramiWB (Workbench):
     def Initialize(self):
         def QT_TRANSLATE_NOOP(context, text):
             return text
-        import ColdStart
-        import Modify
-        FreeCADGui.addLanguagePath(":/translations")
-        FreeCADGui.updateLocale()
+        import freecad.Beltrami.ColdStart
+        import freecad.Beltrami.Modify
+        Gui.addLanguagePath(":/translations")
+        Gui.updateLocale()
         
         self.list = [QT_TRANSLATE_NOOP("Workbench","coldStart"),QT_TRANSLATE_NOOP("Workbench","modif")]
 #        self.list = ["coldStart","modif"]

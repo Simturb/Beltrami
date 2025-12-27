@@ -3,7 +3,7 @@
 
 import FreeCAD as App
 import FreeCADGui as Gui
-import Beltrami 
+import freecad.Beltrami as Beltrami
 translate=App.Qt.translate 
 
 def QT_TRANSLATE_NOOP(context, text):
