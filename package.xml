@@ -17,8 +17,31 @@
     <!--[ Dependencies ]―――――――――――――――――――――――――――――――――――――――――――――――――――――-->
 
     <depend
+        version_gte = '1.16.0'
+        type = 'python'
+    >scipy</depend>
+
+    <depend
+        version_gte = '2.4.0'
+        type = 'python'
+    >numpy</depend>
+
+    <depend
+        version_gte = '0.6.42'
         type = 'addon'
     >Curves</depend>
+
+    <depend
+        type = 'internal'
+    >spreadsheet</depend>
+
+    <depend
+        type = 'internal'
+    >sketcher</depend>
+
+    <depend
+        type = 'internal'
+    >part</depend>
 
     <!--[ Info ]―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-->
 
