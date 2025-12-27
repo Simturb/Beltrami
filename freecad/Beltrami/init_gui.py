@@ -7,7 +7,7 @@ import FreeCAD
 
 class BeltramiWB (Workbench):
     def __init__(self):
-        self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/Resources/icons/Beltrami_workbench_icon.svg"
+        self.__class__.Icon=FreeCAD.getUserAppDataDir()+"Mod"+"/Beltrami/freecad/Beltrami/Resources/Icons/Logo.svg"
         self.__class__.MenuText="Beltrami"
 #        self.__class__.ToolTip=translate("Beltrami","3D blade profile")
 #        self.__class__.ToolTip="3D blade profile"
@@ -16,8 +16,8 @@ class BeltramiWB (Workbench):
     def Initialize(self):
         def QT_TRANSLATE_NOOP(context, text):
             return text
-        import coldStart
-        import modif
+        import ColdStart
+        import Modify
         FreeCADGui.addLanguagePath(":/translations")
         FreeCADGui.updateLocale()
         
