@@ -66,10 +66,6 @@ See the [Examples](https://github.com/Simturb/Beltrami/tree/main/Examples) secti
 * Bugs: https://github.com/Simturb/Beltrami/issues (please discuss on the forum thread beforehand)
 * Dedicated YouTube channel/playlist [YouTube SimTurb/Beltrami](https://www.youtube.com/playlist?list=PLBEuUSiaphy0sQsR1XlUFJ3OMMKjDw_Wx)
 
-## Licence
-
-Beltrami workbench is released under the LGPL2.1+ licence. See [LICENSE](LICENSE) file.
-
 ## Warning
 
 This Beltrami workbench is in ALPHA state along with the [Curves WB](https://github.com/tomate44/CurvesWB/) on which it is based.
