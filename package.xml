@@ -14,22 +14,7 @@
     <version>1.2.0</version>
     <date>2025-12-29</date>
 
-    <!--[ Dependencies ]―――――――――――――――――――――――――――――――――――――――――――――――――――――-->
-
-    <depend
-        version_gte = '1.16.0'
-        type = 'python'
-    >scipy</depend>
-
-    <depend
-        version_gte = '2.4.0'
-        type = 'python'
-    >numpy</depend>
-
-    <depend
-        version_gte = '0.6.42'
-        type = 'addon'
-    >Curves</depend>
+    <!--[ Dependencies : Internal ]――――――――――――――――――――――――――――――――――――――――――-->
 
     <depend
         type = 'internal'
@@ -43,6 +28,25 @@
         type = 'internal'
     >part</depend>
 
+    <!--[ Dependencies : Addons ]――――――――――――――――――――――――――――――――――――――――――――-->
+
+    <depend
+        version_gte = '0.6.42'
+        type = 'addon'
+    >Curves</depend>
+
+    <!--[ Dependencies : Python ]――――――――――――――――――――――――――――――――――――――――――――-->
+
+    <depend
+        version_gte = '1.16.0'
+        type = 'python'
+    >scipy</depend>
+
+    <depend
+        version_gte = '2.4.0'
+        type = 'python'
+    >numpy</depend>
+    
     <!--[ Info ]―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――-->
 
     <description>Workbench for designing Turbomachine blades.</description>
@@ -105,4 +109,3 @@
 
 
 </package>
-
