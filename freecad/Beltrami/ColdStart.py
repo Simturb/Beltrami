@@ -3,7 +3,7 @@
 
 import FreeCAD as App
 import FreeCADGui as Gui
-import Beltrami 
+import freecad.Beltrami.Beltrami as Beltrami
 translate=App.Qt.translate 
 
 def QT_TRANSLATE_NOOP(context, text):
@@ -12,7 +12,7 @@ def QT_TRANSLATE_NOOP(context, text):
 class coldStart():
 
     def GetResources(self):
-        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/Resources/icons/coldStart.svg", # the name of a svg file available in the resources
+        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/freecad/Beltrami/Resources/Icons/ColdStart.svg", # the name of a svg file available in the resources
                 'Accel' : "Shift+S", # a default shortcut (optional)
                 'MenuText': QT_TRANSLATE_NOOP("coldStart","Cold start for a new blade"),
                 'ToolTip' : QT_TRANSLATE_NOOP("coldStart","A new blade")}

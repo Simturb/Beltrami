@@ -20,17 +20,6 @@ A user manual can be found [online](https://michelsabourin.scenari-community.org
 Here is the video that presents the Beltrami workbench:
 https://youtu.be/O_abwUuA4Ec
 
-## Prerequisites
-
-* FreeCAD v0.21.2 and higher
-* FreeCAD [Curves workbench](https://github.com/tomate44/CurvesWB/) version 0.6.42 or higher. Available via the [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
-
-## Installation
-
-Beltrami workbench is available for install via the FreeCAD [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
-
-For more details about the installation process reference the [manual](https://michelsabourin.scenari-community.org/Outils/Manuel_utilisateur/co/2_0_Installation.html).
-
 ## Theory
 
 Background on the theory behind Beltrami can be found in [this section of the manual](https://michelsabourin.scenari-community.org/SimTurbMeth/co/0__Methode_de_trace.html).

@@ -3,7 +3,7 @@
 
 import FreeCAD as App
 import FreeCADGui as Gui
-import Beltrami 
+import freecad.Beltrami as Beltrami
 translate=App.Qt.translate 
 
 def QT_TRANSLATE_NOOP(context, text):
@@ -11,7 +11,7 @@ def QT_TRANSLATE_NOOP(context, text):
 
 class modif():
     def GetResources(self):
-        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/Resources/icons/modif.svg", # the name of a svg file available in the resources
+        return {'Pixmap'  : App.getUserAppDataDir()+"Mod" + "/Beltrami/freecad/Beltrami/Resources/Icons/Modify.svg", # the name of a svg file available in the resources
                 'Accel' : "Shift+U", # a default shortcut (optional)
                 'MenuText': QT_TRANSLATE_NOOP("modif","Edited profile update"),
                 'ToolTip' : QT_TRANSLATE_NOOP("modif","Update")}
