@@ -27,7 +27,7 @@ class beltrami:
     #
     #   Initialisation du FeaturePython Parametres
     #
-        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.2.0"
+        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.2.1"
         fp.addProperty("App::PropertyInteger",          "Naubes",         "Base",translate("Beltrami","Number of blades")).Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets",        "Base",translate("Beltrami","Number of filets(steam lines)")).Nfilets=(6,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets",     "Base","Nombre de filets précédents").preNfilets=0
@@ -3393,4 +3393,5 @@ class DiscCi_s:
             self.execute(fpAe)
 
         return
+
 
