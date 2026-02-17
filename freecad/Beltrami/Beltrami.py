@@ -27,7 +27,7 @@ class beltrami:
     #
     #   Initialisation du FeaturePython Parametres
     #
-        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.2.1"
+        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.3.1"
         fp.addProperty("App::PropertyInteger",          "Naubes",         "Base",translate("Beltrami","Number of blades")).Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets",        "Base",translate("Beltrami","Number of filets(steam lines)")).Nfilets=(6,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets",     "Base","Nombre de filets précédents").preNfilets=0
@@ -120,9 +120,10 @@ class beltrami:
 #            print('Beltrami.onChanged '+prop)
 #            print(fp.PropertiesList)
             fp.SensCascade=fp.Sens*fp.CascadeRotation
-
-#            App.ActiveDocument.Volume.purgeTouched()
-            self.modifCascade(fp) 
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
+            self.modifCascade(fp)
+            fpAs=App.ActiveDocument.getObject('FiletCAs1')
+#            print(fpAs.v_s)           
             self.modifVoile(fp)
             App.ActiveDocument.recompute()
 #            print('onChanged - fin')
@@ -130,6 +131,7 @@ class beltrami:
         if (prop == "CascadeRotation"):
 #            print('Beltrami.onChanged '+prop)
             fp.SensCascade=fp.Sens*fp.CascadeRotation
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
             self.modifCascade(fp) 
             self.modifVoile(fp)
             fp.recompute()
@@ -142,70 +144,73 @@ class beltrami:
 #            print('Beltrami.onChanged Npts - fin')
             return
         if(prop == "Nfilets"):
+#            print('Beltrami.onChanged Nfilets')
             self.onChangedNfilets(fp)
     #       print('onChanged - fin')
             return
 #        print('onChanged - fin')
         return 
     def onChangedNpts(self, fp):
-#        print("onChangedNpts")
+#        print("onChangedNpts",fp.Npts)
+        if fp.Npts < 9: return
+        if fp.Npts >1025: return
         for i in range(fp.Nfilets):
             I=str(i+1)
-    #       print('Pour le filet '+str(i))
+#            print('Pour le filet '+str(i))
             FiletMi=App.ActiveDocument.getObject("FiletM"+I)
             FiletMi.Number=fp.Npts
             FiletMi.recompute()
-    #       print('Filet méridien traité')
+#            print('Filet méridien traité')
             fpe=App.ActiveDocument.getObject("LoiEpaisseur"+I+"e")
             fpe.Number=fp.Npts
             fpe.recompute()
-    #       print("LoiEpaisseur"+I+"e traité")
+#            print("LoiEpaisseur"+I+"e traité")
             fpi=App.ActiveDocument.getObject("LoiEpaisseur"+I+"i")
             fpi.Number=fp.Npts
             fpi.recompute()
-    #       print("LoiEpaisseur"+I+"i traité")
+#            print("LoiEpaisseur"+I+"i traité")
             fpes=App.ActiveDocument.getObject("LoiEpaisseur"+I+"es")
             fpes.Npts=fp.Npts
             fpes.recompute()
-    #       print("LoiEpaisseur"+I+"es traité")
+#            print("LoiEpaisseur"+I+"es traité")
             fpis=App.ActiveDocument.getObject("LoiEpaisseur"+I+"is")
             fpis.Npts=fp.Npts
             fpis.recompute()
-    #       print("LoiEpaisseur"+I+"is traité")
+#            print("LoiEpaisseur"+I+"is traité")
             Ts=App.ActiveDocument.getObject("Theta_sortie")
             Usmax=self.CascadeUsmax(i)
             sketchA=App.ActiveDocument.getObject('Cascade'+I)
             sketchA.setDatum(24,App.Units.Quantity(str(Usmax)))
-    #       print('Usmax= '+str(Usmax))
+#            print('Usmax= '+str(Usmax))
             fpAa=App.ActiveDocument.getObject("FiletCAa"+I)
             fpAa.a3=App.Vector(Usmax,fp.SensCascade*1000.*math.radians(Ts.Points[i].z),0)
             fpAa.Number=fp.Npts
             fpAa.recompute()
-    #       print("FiletCAa"+I+" traité")
+#            print("FiletCAa"+I+" traité")
             fpAs=App.ActiveDocument.getObject("FiletCAs"+I)
             fpAs.Npts=fp.Npts
             fpAs.recompute()
-    #       print("FiletCAs"+I+" traité")
+#            print("FiletCAs"+I+" traité")
             fpLa=App.ActiveDocument.getObject("FiletCLa"+I)
             fpLa.Npts=fp.Npts
             fpLa.recompute()
-    #       print("FiletCLa"+I+" traité")
+ #           print("FiletCLa"+I+" traité")
             fpLe=App.ActiveDocument.getObject("FiletCLe"+I)
             fpLe.Npts=fp.Npts
             fpLe.recompute()
-    #       print("FiletCLe"+I+" traité")
+#            print("FiletCLe"+I+" traité")
             fpLi=App.ActiveDocument.getObject("FiletCLi"+I)
             fpLi.Npts=fp.Npts
             fpLi.recompute()
-    #       print("FiletCLi"+I+" traité")
+#            print("FiletCLi"+I+" traité")
             fpAe=App.ActiveDocument.getObject("FiletCAe"+I)
             fpAe.Npts=fp.Npts
             fpAe.recompute()
-    #       print("FiletCAe"+I+" traité")
+#            print("FiletCAe"+I+" traité")
             fpAi=App.ActiveDocument.getObject("FiletCAi"+I)
             fpAi.Npts=fp.Npts
             fpAi.recompute()
-    #
+#            print("FiletCAi"+I+" traité")
             fpVA=App.ActiveDocument.getObject("Points3Da"+I)
             fpVA.Number=fp.Npts
             fpVA.recompute()
@@ -222,16 +227,18 @@ class beltrami:
             fpVIE.Number=2*fp.Npts-1
             fpVIE.recompute()
 #            App.ActiveDocument.recompute()
-    #       print("FiletCAi"+I+" traité")
+ #           print("FiletCAi"+I+" traité")
         self.modifVoile(fp)
 #        self.modifSurf(fp)
 #        print("onChangedNpts - fin")
         return
     def onChangedNfilets(self, fp):
 #        Gui.Selection.clearSelection()
-#        print('onChangedNfilets')
+#        print('onChangedNfilets',fp.Nfilets)
+        if fp.Nfilets < 2: return
+        if fp.Nfilets >65: return
         if(fp.Nfilets ==fp.preNfilets):
-    #       print('onChangedNfilets - fin')
+#            print('onChangedNfilets - fin')
             return
     #   Plan méridien
         docPlanMeridien=App.ActiveDocument.getObject('Plan_Meridien')
@@ -351,6 +358,7 @@ class beltrami:
                 if fp.preNfilets > 0 :fpM.Visibility=App.ActiveDocument.getObject('FiletM'+str(i)).Visibility
                 fpM.recompute()
             #   Plan épaisseurs
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
             self.sketchDiscEpaisseur(fp, EpEx1X, EpEx2X, EpEx3X, EpEx4X, EpEx5X, EpEx1Y, EpEx2Y, EpEx3Y, EpEx4Y, EpEx5Y, EpExLast, EpIn1X, EpIn2X, EpIn3X, EpIn4X, EpIn5X, EpIn1Y, EpIn2Y, EpIn3Y, EpIn4Y, EpIn5Y, EpInLast)    
             self.modifEpaisseur(fp)
         #   Plans des longueurs et de la cascade
@@ -360,7 +368,7 @@ class beltrami:
     #   pour Nfilets < preNfilets
     #
         else: 
-#            print("pour Nfilets < preNfilets")
+#            print("pour Nfilets < preNfilets",fp.Nfilets, fp.preNfilets)
         #   plan méridien
             for i in range (fp.Nfilets):
                 I=str(i+1)
@@ -372,7 +380,7 @@ class beltrami:
 #            print("fin recompute méridien")
         #   plan des épaisseurs
             for i in range (fp.Nfilets):
-        #       print("for i in range (fp.Nfilets):")
+#                print("for i in range (fp.Nfilets):")
                 I=str(i+1)
         #       print(I)
                 App.ActiveDocument.getObject('LoiEpaisseur'+I+'e').recompute()
@@ -380,7 +388,7 @@ class beltrami:
                 App.ActiveDocument.getObject('LoiEpaisseur'+I+'i').recompute()
                 App.ActiveDocument.getObject("LoiEpaisseur"+I+"is").recompute()
             for i in range (fp.Nfilets,fp.preNfilets):
-        #       print("for i in range (fp.Nfilets,fp.preNfilets)")
+#                print("for i in range (fp.Nfilets,fp.preNfilets)")
                 I=str(i+1)
         #       print(I)
                 App.ActiveDocument.removeObject("skLoiEpaisseur"+I+"e")
@@ -412,11 +420,12 @@ class beltrami:
                 App.ActiveDocument.removeObject("Filet3Di"+I)
                 App.ActiveDocument.removeObject("Filet3Die"+I)
         #   Voile 3D
+#        print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
         self.modifVoile(fp)
-#       print('calcul des surfaces des voiles')
+#        print('calcul des surfaces des voiles')
     #   Voile 3D
         fp.preNfilets=fp.Nfilets
-#       print('onChangedNfilets - fin')
+#        print('onChangedNfilets - fin')
         return
 
 #
@@ -670,20 +679,20 @@ class beltrami:
         Feuil.setAlias("E"+L, "EpEx2Y4")
         L="20"
         Feuil.set("A"+L, "EpEx3Y")
-        Feuil.set("B"+L, "0.0")
-        Feuil.set("C"+L, "0.0")
-        Feuil.set("D"+L, "0.0")
-        Feuil.set("E"+L, "0.0")
+        Feuil.set("B"+L, "20.0")
+        Feuil.set("C"+L, "20.0")
+        Feuil.set("D"+L, "20.0")
+        Feuil.set("E"+L, "20.0")
         Feuil.setAlias("B"+L, "EpEx3Y1")
         Feuil.setAlias("C"+L, "EpEx3Y2")
         Feuil.setAlias("D"+L, "EpEx3Y3")
         Feuil.setAlias("E"+L, "EpEx3Y4")
         L="21"
         Feuil.set("A"+L, "EpEx4Y")
-        Feuil.set("B"+L, "0.0")
-        Feuil.set("C"+L, "0.0")
-        Feuil.set("D"+L, "0.0")
-        Feuil.set("E"+L, "0.0")
+        Feuil.set("B"+L, "10.0")
+        Feuil.set("C"+L, "10.0")
+        Feuil.set("D"+L, "10.0")
+        Feuil.set("E"+L, "10.0")
         Feuil.setAlias("B"+L, "EpEx4Y1")
         Feuil.setAlias("C"+L, "EpEx4Y2")
         Feuil.setAlias("D"+L, "EpEx4Y3")
@@ -700,10 +709,10 @@ class beltrami:
         Feuil.setAlias("E"+L, "EpEx5Y4")
         L="23"
         Feuil.set("A"+L, "EpExLast")
-        Feuil.set("B"+L, "0.85")
-        Feuil.set("C"+L, "0.85")
-        Feuil.set("D"+L, "0.85")
-        Feuil.set("E"+L, "0.85")
+        Feuil.set("B"+L, "1.0")
+        Feuil.set("C"+L, "1.0")
+        Feuil.set("D"+L, "1.0")
+        Feuil.set("E"+L, "1.0")
         Feuil.setAlias("B"+L, "EpExLast1")
         Feuil.setAlias("C"+L, "EpExLast2")
         Feuil.setAlias("D"+L, "EpExLast3")
@@ -781,20 +790,20 @@ class beltrami:
         Feuil.setAlias("E"+L, "EpIn2Y4")
         L="31"
         Feuil.set("A"+L, "EpIn3Y")
-        Feuil.set("B"+L, "0.0")
-        Feuil.set("C"+L, "0.0")
-        Feuil.set("D"+L, "0.0")
-        Feuil.set("E"+L, "0.0")
+        Feuil.set("B"+L, "20.0")
+        Feuil.set("C"+L, "20.0")
+        Feuil.set("D"+L, "20.0")
+        Feuil.set("E"+L, "20.0")
         Feuil.setAlias("B"+L, "EpIn3Y1")
         Feuil.setAlias("C"+L, "EpIn3Y2")
         Feuil.setAlias("D"+L, "EpIn3Y3")
         Feuil.setAlias("E"+L, "EpIn3Y4")
         L="32"
         Feuil.set("A"+L, "EpIn4Y")
-        Feuil.set("B"+L, "0.0")
-        Feuil.set("C"+L, "0.0")
-        Feuil.set("D"+L, "0.0")
-        Feuil.set("E"+L, "0.0")
+        Feuil.set("B"+L, "10.0")
+        Feuil.set("C"+L, "10.0")
+        Feuil.set("D"+L, "10.0")
+        Feuil.set("E"+L, "10.0")
         Feuil.setAlias("B"+L, "EpIn4Y1")
         Feuil.setAlias("C"+L, "EpIn4Y2")
         Feuil.setAlias("D"+L, "EpIn4Y3")
@@ -811,10 +820,10 @@ class beltrami:
         Feuil.setAlias("E"+L, "EpIn5Y4")
         L="34"
         Feuil.set("A"+L, "EpInLast")
-        Feuil.set("B"+L, "0.85")
-        Feuil.set("C"+L, "0.85")
-        Feuil.set("D"+L, "0.85")
-        Feuil.set("E"+L, "0.85")
+        Feuil.set("B"+L, "1.0")
+        Feuil.set("C"+L, "1.0")
+        Feuil.set("D"+L, "1.0")
+        Feuil.set("E"+L, "1.0")
         Feuil.setAlias("B"+L, "EpInLast1")
         Feuil.setAlias("C"+L, "EpInLast2")
         Feuil.setAlias("D"+L, "EpInLast3")
@@ -1683,28 +1692,29 @@ class beltrami:
 #       print("traceEpaisseur - fin")
         return
     def sketchDiscEpaisseur(self,fp, EpEx1X, EpEx2X, EpEx3X, EpEx4X, EpEx5X, EpEx1Y, EpEx2Y, EpEx3Y, EpEx4Y, EpEx5Y, EpExLast, EpIn1X, EpIn2X, EpIn3X, EpIn4X, EpIn5X, EpIn1Y, EpIn2Y, EpIn3Y, EpIn4Y, EpIn5Y,       EpInLast):
-#       print('sketchDiscEpaisseur')
+#        print('sketchDiscEpaisseur')
         docPlanEpaisseur=App.ActiveDocument.getObject('Plan_Epaisseurs')
-#       print('fp.preNfilets= '+str(fp.preNfilets))
+#        print('fp.preNfilets= '+str(fp.preNfilets))
         for i in range (fp.preNfilets):
-    #       print("for i in range (fp.preNfilets):")
+#            print("for i in range (fp.preNfilets):")
             I=str(i+1)
-    #       print(I)
+#            print(I)
             App.ActiveDocument.getObject('LoiEpaisseur'+I+'e').recompute()
             App.ActiveDocument.getObject("LoiEpaisseur"+I+"es").recompute()
             App.ActiveDocument.getObject('LoiEpaisseur'+I+'i').recompute()
             App.ActiveDocument.getObject("LoiEpaisseur"+I+"is").recompute()
-#       print('fp.Nfilets= '+str(fp.Nfilets))
+#        print('fp.Nfilets= '+str(fp.Nfilets))
+
         for i in range(fp.preNfilets,fp.Nfilets):
     #       print("for i in range(fp.preNfilets,fp.Nfilets):")
             I=str(i+1)
     #       print(I)
     #   Création du sketch extrados
             sketch_e=App.ActiveDocument.addObject('Sketcher::SketchObject','skLoiEpaisseur'+I+'e')
-            if fp.preNfilets > 0 :sketch_e.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'e').Visibility
+#            if fp.preNfilets > 0 :sketch_e.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'e').Visibility
             docPlanEpaisseur.addObject(sketch_e)            
             fpe = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'e')
-            fpe.Visibility=False
+#            fpe.Visibility=False
             docPlanEpaisseur.addObject(fpe)
     #       print(I)
     #
@@ -1747,8 +1757,9 @@ class beltrami:
             fpe.ParameterLast=1.
             fpe.Algorithm="Number"
             fpe.Number=fp.Npts
-            # Discretize.ViewProviderDisc(fpe.ViewObject)
-            # fpe.ViewObject.PointSize = 3
+            Discretize.ViewProviderDisc(fpe.ViewObject)
+            fpe.ViewObject.PointSize = 3
+
             fpe.recompute()
     #       On interpole les points pour qu'ils correspondent à la coordonnée s du plan meridien
             sX=[]
@@ -1758,16 +1769,16 @@ class beltrami:
             eLast=EpExLast.Points[i].y
             DiscEp_s(fpes, fpe, fp.Npts, eLast)
             ViewProviderDisc(fpes.ViewObject)
+
             fpes.ViewObject.PointSize = 3 
-            if fp.preNfilets > 0 :fpes.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'es').Visibility
+#            if fp.preNfilets > 0 :fpes.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'es').Visibility
     #       print('fpes.Points')
     #       print(fpes.Points)
     #   Création du sketch intrados
             sketch_i=App.ActiveDocument.addObject('Sketcher::SketchObject','skLoiEpaisseur'+I+'i')
-            if fp.preNfilets > 0 :sketch_i.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'i').Visibility
+#            if fp.preNfilets > 0 :sketch_i.Visibility=App.ActiveDocument.getObject('skLoiEpaisseur'+str(i)+'i').Visibility
             docPlanEpaisseur.addObject(sketch_i) 
-            fpi = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'i')
-            fpi.Visibility=False
+            fpi = App.ActiveDocument.addObject("Part::FeaturePython",'LoiEpaisseur'+I+'i')           
             docPlanEpaisseur.addObject(fpi)
     #   Création des 5 poles du spline intrados et du poids de chacun
     #       point 0 intrados
@@ -1804,8 +1815,9 @@ class beltrami:
             fpi.ParameterLast=1.
             fpi.Algorithm="Number"
             fpi.Number=fp.Npts
-            # Discretize.ViewProviderDisc(fpi.ViewObject)
-            # fpi.ViewObject.PointSize = 3
+            Discretize.ViewProviderDisc(fpi.ViewObject)
+            fpi.ViewObject.PointSize = 3
+
             fpi.recompute()
     #       On interpole les points pour qu'ils correspondent à la coordonnée s du plan meridien
             sX=[]
@@ -1816,10 +1828,21 @@ class beltrami:
             DiscEp_s(fpis,fpi, fp.Npts, iLast)
             ViewProviderDisc(fpis.ViewObject)
             fpis.ViewObject.PointSize = 3 
-            if fp.preNfilets > 0 :fpis.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'is').Visibility
+
+#            if fp.preNfilets > 0 :fpis.Visibility=App.ActiveDocument.getObject('LoiEpaisseur'+str(i)+'is').Visibility
     #       print('fpis.Points')
     #       print(fpis.Points)
-#       print('sketchDiscEpaisseur - fin')
+
+        for i in range(1,fp.Nfilets): #Boucle pour transmettre la visibilité
+            I=str(i+1)
+ #           print(I,i,'LoiEpaisseur',I,'e')
+            App.ActiveDocument.getObject('LoiEpaisseur'+I+'e').Visibility=App.ActiveDocument.getObject('LoiEpaisseur1e').Visibility
+            App.ActiveDocument.getObject("LoiEpaisseur"+I+"es").Visibility=App.ActiveDocument.getObject('LoiEpaisseur1es').Visibility
+            App.ActiveDocument.getObject('LoiEpaisseur'+I+'i').Visibility=App.ActiveDocument.getObject('LoiEpaisseur1i').Visibility
+            App.ActiveDocument.getObject("LoiEpaisseur"+I+"is").Visibility=App.ActiveDocument.getObject('LoiEpaisseur1is').Visibility
+            App.ActiveDocument.getObject('skLoiEpaisseur'+I+'e').Visibility=App.ActiveDocument.getObject('skLoiEpaisseur1e').Visibility
+            App.ActiveDocument.getObject('skLoiEpaisseur'+I+'i').Visibility=App.ActiveDocument.getObject('skLoiEpaisseur1i').Visibility          
+#        print('sketchDiscEpaisseur - fin')
         return
     def modifEpaisseur(self,fp):
     #
@@ -2205,7 +2228,7 @@ class beltrami:
 #       print('traceCascade - fin')
         return
     def sketchDiscCascade(self,fp, Te, Ts, Ae, As, We, Ws, Le, Ls):
-#       print("sketchDiscCascade")
+#        print("sketchDiscCascade")
         docPlanCascade = App.ActiveDocument.getObject("Plan_Cascade")
         docPlanLongueurs = App.ActiveDocument.getObject("Plan_Longueurs")
     #
@@ -2213,10 +2236,10 @@ class beltrami:
     #
 #       print('fp.preNfilets= '+str(fp.preNfilets))
 #        self.modifCascade(fp)
-#       print('fp.Nfilets= '+str(fp.Nfilets))
+#        print('fp.Nfilets= '+str(fp.Nfilets))
         for i in range(fp.preNfilets,fp.Nfilets):   #FiletMeridien in FiletsMeridien:   
             I=str(i+1)
-    #       print("for i in range(fp.preNfilets,fp.Nfilets)",I)
+ #           print("for i in range(fp.preNfilets,fp.Nfilets)",I)
         #
         #   Création fp fpAa qui contient l'information du Discretized_Edge du voile 2D
         #
@@ -2225,11 +2248,12 @@ class beltrami:
         #   Calcul de Usmax pour chaque filet qui dépend de Npts    
             Usmax=self.CascadeUsmax(i)
     #       print('Usmax= '+str(Usmax))
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
         # Les informations pour les points du BSpline pour Cascade
-            fpAa.addProperty("App::PropertyVector","a0","Contraintes","Position(u,v)").a0=App.Vector(0,fp.SensCascade*1000.*math.radians(Te.Points[i].z),0)
+            fpAa.addProperty("App::PropertyVector","a0","Contraintes","Position(u,v)").a0=App.Vector(0,fp.Sens*1000.*math.radians(Te.Points[i].z),0)
             fpAa.addProperty("App::PropertyVector","a1","Contraintes","Position(alpha,poids,long)").a1=App.Vector(fp.SensCascade*Ae.Points[i].z, We.Points[i].z, Le.Points[i].z)
             fpAa.addProperty("App::PropertyVector","a2","Contraintes","Position(alpha,poids,long)").a2=App.Vector(fp.SensCascade*As.Points[i].z, Ws.Points[i].z, Ls.Points[i].z)
-            fpAa.addProperty("App::PropertyVector","a3","Contraintes","Position(u,v)").a3=App.Vector(Usmax,fp.SensCascade*1000.*math.radians(Ts.Points[i].z),0)
+            fpAa.addProperty("App::PropertyVector","a3","Contraintes","Position(u,v)").a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Ts.Points[i].z),0)
 #           sketchA pour contenir le Bspline de la cascade 
             sketchA=self.CascadeSketch(fpAa,I)
             if fp.preNfilets > 0 :sketchA.Visibility=App.ActiveDocument.getObject('Cascade'+str(i)).Visibility
@@ -2239,20 +2263,21 @@ class beltrami:
         #
             Discretize.Discretization(fpAa, (App.ActiveDocument.getObject("Cascade"+I),"Edge1"))
             fpAa.Number=fp.Npts
-            # ViewProviderDisc(fpAa.ViewObject)
-            # fpAa.ViewObject.PointSize = 3
+            ViewProviderDisc(fpAa.ViewObject)
+            fpAa.ViewObject.PointSize = 3
             sketchA.recompute()
             fpAa.recompute()
         #   fpAs est comme fpAa mais avec une distribution suivant s du plan méridien
             fpAs = App.ActiveDocument.addObject("Part::FeaturePython","FiletCAs"+I)
             docPlanCascade.addObject(fpAs)
         #   Synchronisation des u,v avec l'abscisse s du plan meridien
-            DiscCa_s(fpAs, fpAa, fp.Npts, i)
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
+            DiscCa_s(fpAs, fpAa, fp, i)
             ViewProviderDisc(fpAs.ViewObject)
             fpAs.ViewObject.PointSize = 3
             if fp.preNfilets > 0 :fpAs.Visibility=App.ActiveDocument.getObject('FiletCAs'+str(i)).Visibility
-            fpAs.recompute()
-            App.ActiveDocument.recompute()
+#            fpAs.recompute()
+#           App.ActiveDocument.recompute()
             v_s=[]
             for point in fpAs.Points: v_s.append(point.z)
     #   Calcul de la discretisation de la cascade L
@@ -2272,14 +2297,14 @@ class beltrami:
                 #       extrados
             fpLe = App.ActiveDocument.addObject("Part::FeaturePython",'FiletCLe'+I)
             docPlanLongueurs.addObject(fpLe)
-            DiscCle_s(fpLe, fpAs, fp.Npts, fp.SensCascade, i)
+            DiscCle_s(fpLe, fpAs, fp.Npts, i)
             ViewProviderDisc(fpLe.ViewObject)
             fpLe.ViewObject.PointSize = 3
             if fp.preNfilets > 0 :fpLe.Visibility=App.ActiveDocument.getObject('FiletCLe'+str(i)).Visibility
                 #       intrados
             fpLi = App.ActiveDocument.addObject("Part::FeaturePython",'FiletCLi'+I)
             docPlanLongueurs.addObject(fpLi)
-            DiscCli_s(fpLi, fpAs, fp.Npts, fp.SensCascade, i)
+            DiscCli_s(fpLi, fpAs, fp.Npts, i)
             ViewProviderDisc(fpLi.ViewObject)
             fpLi.ViewObject.PointSize = 3
             if fp.preNfilets > 0 :fpLi.Visibility=App.ActiveDocument.getObject('FiletCLi'+str(i)).Visibility
@@ -2306,10 +2331,11 @@ class beltrami:
             i+=1
             I=str(i+1)
         App.ActiveDocument.recompute()
-#       print("sketchDiscCascade - fin")
+#        print("sketchDiscCascade - fin")
         return   
     def modifCascade(self,fp):
 #        print('modifCascade')
+#        print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
         Theta_entree = App.ActiveDocument.getObject("Theta_entree")
         Theta_sortie = App.ActiveDocument.getObject("Theta_sortie")
         Alpha_entree = App.ActiveDocument.getObject("Alpha_entree")
@@ -2320,27 +2346,27 @@ class beltrami:
         Long_sortie = App.ActiveDocument.getObject("Long_sortie")
         for i in range(fp.Nfilets):     #FiletMeridien in FiletsMeridien:
             I=str(i+1)
-    #       print("for i in range(fp.Nfilets): I=",I)
+#            print("for i in range(fp.Nfilets): I=",I)
             FiletMeridien=App.ActiveDocument.getObject('FiletM'+I)
-    #       print(FiletMeridien.Name)
+#            print(FiletMeridien.Name)
             #   Calcul de Usmax pour chaque filet qui dépend de Npts    
             Usmax=self.CascadeUsmax(i)
             #   m-à-j des données de "FiletCAa"+I
             fpAa = App.ActiveDocument.getObject("FiletCAa"+I)
             fpAa.a0=App.Vector(0,fp.Sens*1000.*math.radians(Theta_entree.Points[i].z),0)
-    #       print('fpAs.a..      *******')
-    #       print(Theta_entree.Points)
-    #       print(fpAa.a0)
+#            print('fpAs.a..      *******')
+#            print(Theta_entree.Points)
+#            print(fpAa.a0)
             fpAa.a1=App.Vector(fp.SensCascade*Alpha_entree.Points[i].z, Poids_entree.Points[i].z, Long_entree.Points[i].z)
-    #       print(fpAa.a1)
+#            print(fpAa.a1)
             fpAa.a2=App.Vector(fp.SensCascade*Alpha_sortie.Points[i].z, Poids_sortie.Points[i].z, Long_sortie.Points[i].z)
-    #       print(fpAa.a2)
+#            print(fpAa.a2)
             fpAa.a3=App.Vector(Usmax,fp.Sens*1000.*math.radians(Theta_sortie.Points[i].z),0)
-    #       print(fpAa.a3)
+#            print(fpAa.a3)
             fpAa.recompute()
         #   sketchA pour contenir la cascade 
             sketchA=App.ActiveDocument.getObject('Cascade'+I)
-    #       print(sketchA.Name)
+#            print(sketchA.Name)
             for j in sketchA.Constraints:
                 sketchA.setDatum(3,App.Units.Quantity(str(fpAa.a1.y))) #Poids_entree w1
                 sketchA.setDatum(5,App.Units.Quantity(str(fpAa.a2.y)))  #Poids_sortie w2
@@ -2354,7 +2380,9 @@ class beltrami:
             sketchA.recompute()
         #   fpAs est comme fpAa mais avec une distribution suivant s du plan méridien
             fpAs = App.ActiveDocument.getObject("FiletCAs"+I)
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
             fpAs.recompute()
+#            print(I, fpAs.v_s)
         #    
         # 
         #   Calcul des points dans le plan des longueurs m-n
@@ -2363,24 +2391,25 @@ class beltrami:
             fpLa.recompute()
                 #       extrados
             fpLe = App.ActiveDocument.getObject('FiletCLe'+I)
-            fpLe.SensCascade=fp.SensCascade
+#            fpLe.SensCascade=fp.SensCascade
             fpLe.recompute()
                 #       intrados
             fpLi = App.ActiveDocument.getObject('FiletCLi'+I)
-            fpLi.SensCascade=fp.SensCascade
+#            fpLi.SensCascade=fp.SensCascade
             fpLi.recompute()
         #
         #
         # Les informations pour les points discretisés pour Cascade
         #
+#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
         #       extrados                
             fpAe = App.ActiveDocument.getObject("FiletCAe"+I)
             fpAe.recompute()
         #       intrados
             fpAi = App.ActiveDocument.getObject("FiletCAi"+I)
             fpAi.recompute()
-            i+=1
-            I=str(i+1)
+#            i+=1
+#            I=str(i+1)
 #    #       print('fpAs.Shape.Compounds[0].Vertexes[k]')
 #            for k in range(fpAs.Npts): debug(fpAs.Shape.Compounds[0].Vertexes[k].Point)
 #       print('***recompute')
@@ -2393,6 +2422,9 @@ class beltrami:
             u_q=[]
             for point in fpAa.Points: u_q.append(point.y)
             if (not np.all(np.diff(u_q) > 0)): App.Console.PrintWarning(translate("Beltrami","*** u is not monotonically increasing (Cascade" +I +") ***")+ "\n")
+        for i in range(1,fp.Nfilets): #Boucle pour transmettre la visibilité
+            I=str(i+1)
+            App.ActiveDocument.getObject('FiletCAa'+I).Visibility=App.ActiveDocument.getObject('FiletCAa1').Visibility                  
 #        print('modifCascade- fin')
         return
        
@@ -2447,7 +2479,7 @@ class beltrami:
         sketch.recompute()
         return (BS,L1,L2)
     def CascadeUsmax(self,i):
-#       print('CascadeUsMax')
+#        print('CascadeUsMax')
     #
     #   Calcul des coordonnées (m,n)à partir de (u,v) de la discretisation
     # 
@@ -2459,12 +2491,12 @@ class beltrami:
 #       print("FiletMeridien.Points= "+str(FiletMeridien.Points))
     #   l'indice _s correspond à la coordonnée curviligne dans le plan méridien
         m_n=App.ActiveDocument.getObject("IsoCurve").Shape.Edges[i].Length
-#       print("m_n= "+str(m_n))
+#        print("m_n= "+str(m_n))
         dm=m_n/nseg
         u=0
         for pj in FiletMeridien.Points[1:]:
-            u+=1000.*dm/pj.x
-#       print('CascadeUsMax - fin')
+            u+=1000*dm/(pj.x)
+#        print('CascadeUsMax - fin u=',u)
         return (u)
     def CascadeSketch(self,fpAa,I):
 #       print('CascadeSketch')
@@ -2579,48 +2611,44 @@ class beltrami:
             fpFIE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Die"+I)
             docFilet3Die.addObject(fpFIE)
         #   préparation pour calculs
-            fpM=App.ActiveDocument.getObject('FiletM'+I)
-            fpCA=App.ActiveDocument.getObject('FiletCAs'+I)
-            fpCE=App.ActiveDocument.getObject('FiletCAe'+I)
-            fpCI=App.ActiveDocument.getObject('FiletCAi'+I)
-        #   Voile A    
-            DiscPoints3D(fpVA, fpM, fpCA, fp)
+            fpAs=App.ActiveDocument.getObject('FiletCAs'+I)
+            DiscPoints3Da(fpVA, fpAs) #création des points
+            DiscPoints3De(fpVE, fpAs) #création des points
+            DiscPoints3Di(fpVI, fpAs) #création des points
+            DiscPoints3Die(fpVIE, fpAs) #création des points
             ViewProviderDisc(fpVA.ViewObject)
             fpVA.ViewObject.PointSize = 3
-            interpolate.Interpolate(fpFA,fpVA)
-            interpolate.ViewProviderInterpolate(fpFA.ViewObject)
-        #   Voile E    
-            DiscPoints3D(fpVE, fpM, fpCE, fp)
             ViewProviderDisc(fpVE.ViewObject)
             fpVE.ViewObject.PointSize = 3
-            interpolate.Interpolate(fpFE,fpVE)
-            interpolate.ViewProviderInterpolate(fpFE.ViewObject)            
-        #   Voile I    
-            DiscPoints3D(fpVI, fpM, fpCI, fp)
             ViewProviderDisc(fpVI.ViewObject)
             fpVI.ViewObject.PointSize = 3
-            interpolate.Interpolate(fpFI,fpVI)
-            interpolate.ViewProviderInterpolate(fpFI.ViewObject)              
-        #   Voile IE    
-            DiscPoints3Die(fpVIE, fpM, fpCI, fpCE, fp)
             ViewProviderDisc(fpVIE.ViewObject)
             fpVIE.ViewObject.PointSize = 3
-            interpolate.Interpolate(fpFIE,fpVIE)
-            interpolate.ViewProviderInterpolate(fpFIE.ViewObject) 
+#            print("Filet3Da"+I, " créé!")
+            interpolate.Interpolate(fpFA,fpVA) #création du filet
+            interpolate.ViewProviderInterpolate(fpFA.ViewObject)
+            interpolate.Interpolate(fpFE,fpVE) #création du filet
+            interpolate.ViewProviderInterpolate(fpFE.ViewObject)
+            interpolate.Interpolate(fpFI,fpVI) #création du filet
+            interpolate.ViewProviderInterpolate(fpFI.ViewObject)
+            interpolate.Interpolate(fpFIE,fpVIE) #création du filet
+            interpolate.ViewProviderInterpolate(fpFIE.ViewObject)
             App.ActiveDocument.recompute()
-            self.tanTransfer(fp, fpFIE, fpFI, fpFE)
+            self.tanTransfer(fpAs, fpFIE, fpFI, fpFE)
+        
 #        print('calculVoile - fin')
         return
-    def tanTransfer(self,fp,fpFIE,fpFI,fpFE):
+    def tanTransfer(self,fpAs,fpFIE,fpFI,fpFE):
         tanE=[]
         tanI=[]
         tanIE=fpFIE.Tangents
-        for i in range(fp.Npts):
-            j=fp.Npts-1-i
+#        print("fpFIE.Tangents= ",fpFIE.Tangents)
+        for i in range(fpAs.Npts):
+            j=fpAs.Npts-1-i
             x=-tanIE[j].x
             y=-tanIE[j].y
             z=-tanIE[j].z
-            tanE.append(tanIE[i-1+fp.Npts])
+            tanE.append(tanIE[i-1+fpAs.Npts])
             tanI.append(App.Vector(x,y,z))
         fpFI.Tangents=tanI
         fpFE.Tangents=tanE
@@ -2655,45 +2683,65 @@ class beltrami:
         App.ActiveDocument.SurfI.purgeTouched()
         App.ActiveDocument.SurfIE.NSections=[]
         App.ActiveDocument.SurfIE.purgeTouched()
-        visi=App.ActiveDocument.getObject("Filet3Da1").Visibility
+        visiPa=App.ActiveDocument.getObject("Points3Da1").Visibility
+        visiPe=App.ActiveDocument.getObject("Points3De1").Visibility
+        visiPi=App.ActiveDocument.getObject("Points3Di1").Visibility
+        visiPie=App.ActiveDocument.getObject("Points3Die1").Visibility
+        visiFa=App.ActiveDocument.getObject("Filet3Da1").Visibility
+        visiFe=App.ActiveDocument.getObject("Filet3De1").Visibility
+        visiFi=App.ActiveDocument.getObject("Filet3Di1").Visibility
+        visiFie=App.ActiveDocument.getObject("Filet3Die1").Visibility
     #   Creation et initialisation des séries de points 3D du voile
 #        print(fp.Nfilets, fp.preNfilets)
         for i in  range(fp.Nfilets):
 #            print('Mise-à-jour des points des voiles existants')
             I=str(i+1)
 #            print(I)
+            fpAs=App.ActiveDocument.getObject('FiletCAs'+I)
+#            print(I, fpAs.v_s)
+            Npts=fpAs.Npts
             if(int(I) > fp.preNfilets):
 #                print("if(int(I) > fp.preNfilets)", I, fp.preNfilets)
-                fpVA = App.ActiveDocument.addObject("Part::FeaturePython","Points3Da"+I)
+                fpVA = App.ActiveDocument.addObject("Part::FeaturePython",'Points3Da'+I)
                 docPoints3Da.addObject(fpVA)
-                fpVE = App.ActiveDocument.addObject("Part::FeaturePython","Points3De"+I)
+                fpFA=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Da"+I)
+                docFilet3Da.addObject(fpFA)
+                fpVE = App.ActiveDocument.addObject("Part::FeaturePython",'Points3De'+I)
                 docPoints3De.addObject(fpVE)
-                fpVI = App.ActiveDocument.addObject("Part::FeaturePython","Points3Di"+I)
+                fpFE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3De"+I)
+                docFilet3De.addObject(fpFE)
+                fpVI = App.ActiveDocument.addObject("Part::FeaturePython",'Points3Di'+I)
                 docPoints3Di.addObject(fpVI)
-                fpVIE = App.ActiveDocument.addObject("Part::FeaturePython","Points3Die"+I)
+                fpFI=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Di"+I)
+                docFilet3Di.addObject(fpFI)
+                fpVIE = App.ActiveDocument.addObject("Part::FeaturePython",'Points3Die'+I)
                 docPoints3Die.addObject(fpVIE)
-            #   préparation pour calculs
-                fpM=App.ActiveDocument.getObject('FiletM'+I)
-                fpCA=App.ActiveDocument.getObject('FiletCAs'+I)
-                fpCE=App.ActiveDocument.getObject('FiletCAe'+I)
-                fpCI=App.ActiveDocument.getObject('FiletCAi'+I)
-            #   Voile A    
-                DiscPoints3D(fpVA, fpM, fpCA, fp)
+                fpFIE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Die"+I)
+                docFilet3Die.addObject(fpFIE)
+#                print("Création des points ","fpAs.i=", fpAs.i)
+                DiscPoints3Da(fpVA, fpAs) #création des points
+                DiscPoints3De(fpVE, fpAs) #création des points
+                DiscPoints3Di(fpVI, fpAs) #création des points
+                DiscPoints3Die(fpVIE, fpAs) #création des points
                 ViewProviderDisc(fpVA.ViewObject)
                 fpVA.ViewObject.PointSize = 3
-            #   Voile E    
-                DiscPoints3D(fpVE, fpM, fpCE, fp)
                 ViewProviderDisc(fpVE.ViewObject)
-                fpVE.ViewObject.PointSize = 3          
-            #   Voile I    
-                DiscPoints3D(fpVI, fpM, fpCI, fp)
+                fpVE.ViewObject.PointSize = 3
                 ViewProviderDisc(fpVI.ViewObject)
-                fpVI.ViewObject.PointSize = 3            
-            #   Voile IE    
-                DiscPoints3Die(fpVIE, fpM, fpCI, fpCE, fp)
+                fpVI.ViewObject.PointSize = 3
                 ViewProviderDisc(fpVIE.ViewObject)
                 fpVIE.ViewObject.PointSize = 3
+#                print("Filet3Da"+I, " créé!")
+                interpolate.Interpolate(fpFA,fpVA) #création du filet
+                interpolate.ViewProviderInterpolate(fpFA.ViewObject)
+                interpolate.Interpolate(fpFE,fpVE) #création du filet
+                interpolate.ViewProviderInterpolate(fpFE.ViewObject)
+                interpolate.Interpolate(fpFI,fpVI) #création du filet
+                interpolate.ViewProviderInterpolate(fpFI.ViewObject)
+                interpolate.Interpolate(fpFIE,fpVIE) #création du filet
+                interpolate.ViewProviderInterpolate(fpFIE.ViewObject)
                 App.ActiveDocument.recompute()
+                self.tanTransfer(fpAs, fpFIE, fpFI, fpFE)
 #            print("else")
             fpVA = App.ActiveDocument.getObject('Points3Da'+I)
             fpVE = App.ActiveDocument.getObject('Points3De'+I)
@@ -2702,46 +2750,45 @@ class beltrami:
             fpFE = App.ActiveDocument.getObject('Filet3De'+I)
             fpFI = App.ActiveDocument.getObject('Filet3Di'+I)
             fpFIE = App.ActiveDocument.getObject('Filet3Die'+I)
+            
             if(i<fp.preNfilets):
+#                print("if(i < fp.preNfilets)", I, fp.preNfilets)
+#                print("Filet3Da"+I, " effacé!")
                 App.ActiveDocument.removeObject("Filet3Da"+I)
                 App.ActiveDocument.removeObject("Filet3De"+I)
                 App.ActiveDocument.removeObject("Filet3Di"+I)
                 App.ActiveDocument.removeObject("Filet3Die"+I)
-            fpFA=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Da"+I)
-            docFilet3Da.addObject(fpFA)
-            fpFE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3De"+I)
-            docFilet3De.addObject(fpFE)
-            fpFI=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Di"+I)
-            docFilet3Di.addObject(fpFI)
-            fpFIE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Die"+I)
-            docFilet3Die.addObject(fpFIE)
-            fpVA.Visibility=visi
-            fpVE.Visibility=visi
-            fpVI.Visibility=visi
-            fpVIE.Visibility=visi
-            fpFA.Visibility=visi
-            fpFE.Visibility=visi
-            fpFI.Visibility=visi
-            fpFIE.Visibility=visi
-            fpVA.Number=fp.Npts
-#            fpVA.recompute()
-            interpolate.Interpolate(fpFA,fpVA)
-            interpolate.ViewProviderInterpolate(fpFA.ViewObject)
-            fpVE.Number=fp.Npts
-#            fpVE.recompute()
-            interpolate.Interpolate(fpFE,fpVE)
-            interpolate.ViewProviderInterpolate(fpFE.ViewObject)
-            fpVI.Number=fp.Npts
-#            fpVI.recompute()
-            interpolate.Interpolate(fpFI,fpVI)
-            interpolate.ViewProviderInterpolate(fpFI.ViewObject)
-            fpVIE.Number=2*fp.Npts - 1
-#            fpVIE.recompute()
-            interpolate.Interpolate(fpFIE,fpVIE)
-            interpolate.ViewProviderInterpolate(fpFIE.ViewObject)
-#            print("avant recalcul")
+                fpFA=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Da"+I)
+                docFilet3Da.addObject(fpFA)
+                fpFE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3De"+I)
+                docFilet3De.addObject(fpFE)
+                fpFI=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Di"+I)
+                docFilet3Di.addObject(fpFI)
+                fpFIE=App.ActiveDocument.addObject("Part::FeaturePython","Filet3Die"+I)
+                docFilet3Die.addObject(fpFIE)
+#                print("Filet3Da"+I, fp.preNfilets, fp.Nfilets)
+    #           App.ActiveDocument.recompute()
+
+#                print("Filet3Da"+I, " créé!")
+                interpolate.Interpolate(fpFA,fpVA) #création du filet
+                interpolate.ViewProviderInterpolate(fpFA.ViewObject)
+                interpolate.Interpolate(fpFE,fpVE) #création du filet
+                interpolate.ViewProviderInterpolate(fpFE.ViewObject)
+                interpolate.Interpolate(fpFI,fpVI) #création du filet
+                interpolate.ViewProviderInterpolate(fpFI.ViewObject)
+                interpolate.Interpolate(fpFIE,fpVIE) #création du filet
+                interpolate.ViewProviderInterpolate(fpFIE.ViewObject)
+            
             App.ActiveDocument.recompute()
-            self.tanTransfer(fp, fpFIE, fpFI, fpFE)
+            self.tanTransfer(fpAs, fpFIE, fpFI, fpFE)      
+            fpVA.Visibility=visiPa
+            fpVE.Visibility=visiPe
+            fpVI.Visibility=visiPi
+            fpVIE.Visibility=visiPie
+            fpFA.Visibility=visiFa
+            fpFE.Visibility=visiFe
+            fpFI.Visibility=visiFi
+            fpFIE.Visibility=visiFie
         self.modifSurf(fp)
 #        print('modifVoile - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
@@ -2765,19 +2812,19 @@ class beltrami:
             NSectionsI.append((App.ActiveDocument.getObject("Filet3Di"+I),"Edge1"))
             NSectionsIE.append((App.ActiveDocument.getObject("Filet3Die"+I),"Edge1"))
         SurfA = App.ActiveDocument.addObject("Surface::Sections", "SurfA")
-#        Gui.ActiveDocument.SurfA.Deviation=0.01
+        Gui.ActiveDocument.SurfA.Deviation=0.05
         docDomaine3D.addObject(SurfA) 
         SurfA.NSections=NSectionsA 
         SurfE = App.ActiveDocument.addObject("Surface::Sections", "SurfE")
-#        Gui.ActiveDocument.SurfE.Deviation=0.01
+        Gui.ActiveDocument.SurfE.Deviation=0.05
         docDomaine3D.addObject(SurfE) 
         SurfE.NSections=NSectionsE 
         SurfI = App.ActiveDocument.addObject("Surface::Sections", "SurfI")
-#        Gui.ActiveDocument.SurfI.Deviation=0.01
+        Gui.ActiveDocument.SurfI.Deviation=0.05
         docDomaine3D.addObject(SurfI) 
         SurfI.NSections=NSectionsI 
         SurfIE = App.ActiveDocument.addObject("Surface::Sections", "SurfIE")
-#        Gui.ActiveDocument.SurfIE.Deviation=0.01
+        Gui.ActiveDocument.SurfIE.Deviation=0.05
         docDomaine3D.addObject(SurfIE) 
         SurfIE.NSections=NSectionsIE 
 #        SurfIext=App.ActiveDocument.addObject("Surface::Extend", "SurfIext")
@@ -2855,111 +2902,149 @@ class beltrami:
         App.ActiveDocument.recompute()
         return
 
-class DiscPoints3D:
-    def __init__(self, fpV, fpM, fpC, fp): 
-#        print("DiscPoints3D.__init__")
-        fpV.addProperty("App::PropertyLink", "fpM",      "Discretization",   "Courbe méridienne discrétisée d'origine").fpM = fpM
-        fpV.addProperty("App::PropertyLink", "fpC",      "Discretization",   "Courbe cascade discrétisée d'origine").fpC = fpC
-        fpV.addProperty("App::PropertyLink", "fp",      "Discretization",   "Parametres").fp = fp
-        fpV.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
-        fpV.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
-#        print(fpV.PropertiesList)
-        fpV.Proxy=self
-        self.execute(fpV)
+class DiscPoints3Da:
+    def __init__(self, fpVA, fpAs): 
+#        print("DiscPoints3Da.__init__")
+        fpVA.addProperty("App::PropertyLink", "fpAs",      "Discretization",   "Parametres").fpAs = fpAs
+        fpVA.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
+        fpVA.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fpAs.Npts
+        fpVA.Proxy=self
+        self.execute(fpVA)
 #        print("DiscPoints3D.__init__ - fin")
         return 
-    def execute(self, fpV):
-#        print("DiscPoints3D.execute")
-#        print(fpV.fpM.Name)
-#        print(fpV.fpC.Name)
-        FiletM=fpV.fpM.Points
-        FiletC=fpV.fpC.Points
-        fp=fpV.fp
-        i=0
+    def execute(self, fpVA):
+#        print("DiscPoints3Da.execute")
+        fpAs=fpVA.fpAs
+        Npts=fpAs.Npts
+#   Voile A
         listePt=[]
-        for ptM in FiletM:
-            ptC=FiletC[i]
-            r=ptM.x
-            z=ptM.z
-    #   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
-    #   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
-            theta=ptC.z/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
-            x=r*math.cos(theta)
-            y=r*math.sin(theta)
-            listePt.append(App.Vector(x,y,z)) 
-            i+=1
-        fpV.Points=listePt
-        fpV.Shape = Part.Compound([Part.Vertex(k) for k in fpV.Points])
- #       print("DiscPoints3D.execute - fin")
+        for i in range(Npts):
+#   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
+#   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
+            theta=fpAs.v_s[i]/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
+            x=fpAs.r_s[i]*math.cos(theta)
+            y=fpAs.r_s[i]*math.sin(theta)
+            listePt.append(App.Vector(x,y,fpAs.z_s[i])) 
+        fpVA.Points=listePt
+        fpVA.Shape = Part.Compound([Part.Vertex(k) for k in fpVA.Points])
+#        print("listePt= ", listePt)
+#        print("DiscPoints3Da.execute - fin")
         return 
-    def onChanged(self, fpV, prop):
+    def onChanged(self, fpVA, prop):
 #        print('DiscPoint3D.onChanged propriété changée: '+prop)
         if (prop == "Number"):
  #           print('on effectue le changement')
-            self.execute(fpV)
-        return        
+            self.execute(fpVA)
+        return
+
+class DiscPoints3De:
+    def __init__(self, fpVE, fpAs): 
+#       print("DiscPoints3De.__init__")
+        fpVE.addProperty("App::PropertyLink", "fpAs",      "Discretization",   "Parametres").fpAs = fpAs
+        fpVE.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
+        fpVE.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fpAs.Npts
+        fpVE.Proxy=self
+        self.execute(fpVE)
+#        print("DiscPoints3D.__init__ - fin")
+        return 
+    def execute(self, fpVE):
+        fpAs=fpVE.fpAs
+        Npts=fpAs.Npts
+    #   Voile E
+        listePt=[]
+        for i in range(Npts):
+#   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
+#   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
+            theta=fpAs.ve_s[i]/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
+            x=fpAs.re_s[i]*math.cos(theta)
+            y=fpAs.re_s[i]*math.sin(theta)
+            listePt.append(App.Vector(x,y,fpAs.ze_s[i])) 
+        fpVE.Points=listePt
+        fpVE.Shape = Part.Compound([Part.Vertex(k) for k in fpVE.Points])
+        return 
+    def onChanged(self, fpVE, prop):
+#        print('DiscPoint3D.onChanged propriété changée: '+prop)
+        if (prop == "Number"):
+ #           print('on effectue le changement')
+            self.execute(fpVE)
+        return     
+
+class DiscPoints3Di:
+    def __init__(self, fpVI, fpAs): 
+#        print("DiscPoints3D.__init__")
+        fpVI.addProperty("App::PropertyLink", "fpAs",      "Discretization",   "Parametres").fpAs = fpAs
+        fpVI.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
+        fpVI.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fpAs.Npts
+        fpVI.Proxy=self
+        self.execute( fpVI)
+#        print("DiscPoints3D.__init__ - fin")
+        return 
+    def execute(self, fpVI):
+        fpAs=fpVI.fpAs
+        Npts=fpAs.Npts
+    #   Voile I 
+        listePt=[]
+        for i in range(Npts):
+#   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
+#   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
+            theta=fpAs.vi_s[i]/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
+            x=fpAs.ri_s[i]*math.cos(theta)
+            y=fpAs.ri_s[i]*math.sin(theta)
+            listePt.append(App.Vector(x,y,fpAs.zi_s[i])) 
+        fpVI.Points=listePt
+        fpVI.Shape = Part.Compound([Part.Vertex(k) for k in fpVI.Points])
+        return 
+    def onChanged(self, fpVI, prop):
+#        print('DiscPoint3D.onChanged propriété changée: '+prop)
+        if (prop == "Number"):
+ #           print('on effectue le changement')
+            self.execute(fpVI)
+        return  
 
 class DiscPoints3Die:
-    def __init__(self, fpV, fpM, fpCI, fpCE, fp): 
-#        print("DiscPoints3Die.__init__")
-        fpV.addProperty("App::PropertyLink", "fpM",      "Discretization",   "Courbe méridienne discrétisée d'origine").fpM = fpM
-        fpV.addProperty("App::PropertyLink", "fpCI",      "Discretization",   "Courbe cascade intrados discrétisée d'origine").fpCI = fpCI
-        fpV.addProperty("App::PropertyLink", "fpCE",      "Discretization",   "Courbe cascade extrados discrétisée d'origine").fpCE = fpCE
-        fpV.addProperty("App::PropertyLink", "fp",      "Discretization",   "Parametres").fp = fp
-        fpV.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
-        fpV.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fp.Npts
-#        print(fpV.PropertiesList)
-        fpV.Proxy=self
-        self.execute(fpV)
- #       print("DiscPoints3Die.__init__ - fin")
+    def __init__(self, fpVIE, fpAs): 
+#        print("DiscPoints3D.__init__")
+        fpVIE.addProperty("App::PropertyLink", "fpAs",      "Discretization",   "Parametres").fpAs = fpAs
+        fpVIE.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
+        fpVIE.addProperty("App::PropertyInteger",   "Number",    "Discretization",   "Number").Number=fpAs.Npts
+        fpVIE.Proxy=self
+        self.execute(fpVIE)
+#        print("DiscPoints3D.__init__ - fin")
         return 
-    def execute(self, fpV):
- #       print("DiscPoints3Die.execute")
-        FiletM=fpV.fpM.Points
-        FiletCI=fpV.fpCI.Points
-        FiletCE=fpV.fpCE.Points
-        fp=fpV.fp
+    def execute(self, fpVIE):
+        fpAs=fpVIE.fpAs
+        Npts=fpAs.Npts           
+    #   Voile IE 
+        Nptsm1=Npts-1
         listePt=[]
-        Nptsm1=fp.Npts-1
-        #Intrados en commençant par le bord de fuite
-#        print(fpV.fpCI.Name)
-        for i in range(fp.Npts):
-            ptM=FiletM[Nptsm1-i]
-            ptC=FiletCI[Nptsm1-i]
-            r=ptM.x
-            z=ptM.z
-    #   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
-    #   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
-            theta=ptC.z/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
+        for i in range(Npts):
+            r=fpAs.ri_s[Nptsm1-i]
+            z=fpAs.zi_s[Nptsm1-i]          
+            theta=fpAs.vi_s[Nptsm1-i]/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
             x=r*math.cos(theta)
             y=r*math.sin(theta)
             listePt.append(App.Vector(x,y,z)) 
-            i+=1
-        #Extrados en commençant par le point à i=1
-#        print(fpV.fpCE.Name)
-        for i in range(1,fp.Npts):
-            ptM=FiletM[i]
-            ptC=FiletCE[i]
-            r=ptM.x
-            z=ptM.z
-    #   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
-    #   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
-            theta=ptC.z/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
+    #Extrados en commençant par le point à i=1
+        for i in range(1,Npts):
+            r=fpAs.re_s[i]
+            z=fpAs.ze_s[i]
+#   L'angle calculé est inversé par rapport à la définition de la cascade où le bord d'attaque était l'origine
+#   alors qu'en 3D, c'est le centre de la roue qui est l'origine 
+            theta=fpAs.ve_s[i]/1000. # puisqu'on avait multiplié l'échelle par 1000 dans Cascade
             x=r*math.cos(theta)
             y=r*math.sin(theta)
-    #       print(str(x)+',  '+str(y)+',  '+str(z))
+#       print(str(x)+',  '+str(y)+',  '+str(z))
             listePt.append(App.Vector(x,y,z))
-        fpV.Points=listePt
-        fpV.Shape = Part.Compound([Part.Vertex(k) for k in fpV.Points])
- #       print("DiscPoints3Die.execute - fin")
+        fpVIE.Points=listePt
+        fpVIE.Shape = Part.Compound([Part.Vertex(k) for k in fpVIE.Points])
         return 
-    def onChanged(self, fpV, prop):
-#        print('DiscPoint3Die.onChanged propriété changée: '+prop)
+    def onChanged(self, fpVIE, prop):
+#        print('DiscPoint3D.onChanged propriété changée: '+prop)
         if (prop == "Number"):
-#            print('on effectue le changement')
-            self.execute(fpV)
-        return   
-     
+ #           print('on effectue le changement')
+            self.execute(fpVIE)
+        return        
+
 class  ViewProviderDisc(Discretize.ViewProviderDisc):
     def __init__(self,vobj):
         vobj.Proxy = self
@@ -3039,10 +3124,13 @@ class DiscEp_s(Disc_s):
         return
 
 class DiscCa_s(Disc_s):
-    def __init__(self, fpAs, fpAa, Npts, i):
+    def __init__(self, fpAs, fpAa, fp, i):
+#        print('DiscCA_s.__init__',fp.SensCascade,i)
+        fpAs.addProperty("App::PropertyLink", "fp",      "Discretization",   "Paramètres d'origine").fp= fp
         fpAs.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAa
         fpAs.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
-        fpAs.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
+        fpAs.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =fp.Npts
+#        fpAs.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fp.SensCascade
         fpAs.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpAs.addProperty("App::PropertyFloatList", "r_s", "Discretization", "Coor. r(s)").r_s
         fpAs.addProperty("App::PropertyFloatList", "z_s", "Discretization", "Coor. z(s)").z_s
@@ -3050,13 +3138,29 @@ class DiscCa_s(Disc_s):
         fpAs.addProperty("App::PropertyFloatList", "n_s", "Discretization", "Coor. n(s)").n_s
         fpAs.addProperty("App::PropertyFloatList", "u_s", "Discretization", "Coor. u(s)").u_s
         fpAs.addProperty("App::PropertyFloatList", "v_s", "Discretization", "Coor. v(s)").v_s
+        fpAs.addProperty("App::PropertyFloatList", "re_s", "Discretization", "Coor. re(s)").re_s
+        fpAs.addProperty("App::PropertyFloatList", "ze_s", "Discretization", "Coor. ze(s)").ze_s
+        fpAs.addProperty("App::PropertyFloatList", "me_s", "Discretization", "Coor. me(s)").me_s
+        fpAs.addProperty("App::PropertyFloatList", "ne_s", "Discretization", "Coor. ne(s)").ne_s
+        fpAs.addProperty("App::PropertyFloatList", "ue_s", "Discretization", "Coor. ue(s)").ue_s
+        fpAs.addProperty("App::PropertyFloatList", "ve_s", "Discretization", "Coor. ve(s)").ve_s
+        fpAs.addProperty("App::PropertyFloatList", "ri_s", "Discretization", "Coor. ri(s)").ri_s
+        fpAs.addProperty("App::PropertyFloatList", "zi_s", "Discretization", "Coor. zi(s)").zi_s
+        fpAs.addProperty("App::PropertyFloatList", "mi_s", "Discretization", "Coor. mi(s)").mi_s
+        fpAs.addProperty("App::PropertyFloatList", "ni_s", "Discretization", "Coor. ni(s)").ni_s
+        fpAs.addProperty("App::PropertyFloatList", "ui_s", "Discretization", "Coor. ui(s)").ui_s
+        fpAs.addProperty("App::PropertyFloatList", "vi_s", "Discretization", "Coor. vi(s)").vi_s
+        fpAs.addProperty("App::PropertyFloatList", "zeta_s", "Discretization", "Angle. zeta(s)").zeta_s
         fpAs.addProperty("App::PropertyFloatList", "Ee_s", "Discretization", "Loi épaisseur extrados").Ee_s
         fpAs.addProperty("App::PropertyFloatList", "Ei_s", "Discretization", "Loi épaisseur intrados").Ei_s
         fpAs.Proxy=self
         self.execute(fpAs)
+#        print('DiscCA+s.__init__ - fin')
         return
     def execute(self, fpAs):
-#       print('DiscCa_s.execute')
+#        print('DiscCa_s.execute',fpAs.fp.SensCascade)
+#        fpAs.SensCascade=fpAs.fp.SensCascade
+#        fpAs.Npts=fpAs.fp.Npts
 #        if(fpAs.State=="Touched"): return
     #   Synchronisation des u,v avec l'abscisse s du plan meridien
         (t,u_q,v_q)=self.extractionPoints(fpAs.fp_origine.Points)  #fpAa.Points a été discretisé à égale distance en u-v
@@ -3077,24 +3181,25 @@ class DiscCa_s(Disc_s):
         r_s.append(pj.x)
         z_s=[]
         z_s.append(pj.z)
+        v_s=[]
 #       print('r,m,u ='+str(pj.x)+', '+str(m)+', '+str(u))
         for pj in FiletMeridien.Points[1:]:
             r_s.append(pj.x)
             z_s.append(pj.z)
             m+=dm
-            u+=1000.*dm/pj.x
+            u+=1000*dm/(pj.x)
             m_s.append(m)
             u_s.append(u)       #u_s est ainsi calculé à partir d'un m fonction de s dans le plan méridien
-#       print('u_q= '+str(u_q))
-#       print('v_q= '+str(v_q))
-#       print('u_s= '+str(u_s))
-        cs=CubicSpline(u_q, v_q)
-        v_s=cs(u_s)
-#        v_s=np.interp(u_s,u_q,v_q)  #v_s est maintenant associé à u_s 
+#        print('u_q= ',u_q)
+#        print('v_q= ',v_q)
+#        print('u_s= ',u_s)
+#        print('r_s= ',r_s)
+        v_s=v_q
+        interpoU=CubicSpline(u_q, v_q,extrapolate=True)
+        v_s=interpoU(u_s).tolist() #Calcul par interpolation de v_s fonction de u_s 
 #       print('v_s= '+str(v_s))
         n_s=[]
-        n=v_s[0]*r_s[0]/1000.
-        n_s.append(n)
+        n_s.append(v_s[0]*r_s[0]/1000.)
         #   Calcul de la longueur limite Lmn (dans le plan de l'épaisseur)qui sera utilisée pour mettre à l'échelle l'épaisseur
         #
         #   n_s est l'ordonnée (r*theta ou r*v) du plan des longueurs m-n exprimée par rapport à s
@@ -3105,80 +3210,152 @@ class DiscCa_s(Disc_s):
         Lmn=0       #Longueur dans le plan mn
         Lmns=[]
         Lmns.append(Lmn)
-        j=1
-        for j in range(1,fpAs.Npts):  
+        zeta_s=[]
+        zeta_s.append(0)
+#        print("dm= ",dm)
+        for j in range(1,fpAs.Npts): 
             dn_s=(v_s[j]-v_s[j-1])*r_s[j]/1000.
             n_s.append(n_s[j-1]+dn_s)
+#            print('j= ', str(j),'dn_s= ', str(dn_s))
+#            n_s.append(v_s[j]*r_s[j]/1000.)
+#            dn_s=n_s[j]-n_s[j-1]
             dr=r_s[j]-r_s[j-1]
             dz=z_s[j]-z_s[j-1]
             dy=n_s[j]-n_s[j-1]
-            Lmn+= math.sqrt(dr*dr+dz*dz+dy*dy)
+#            Lmn+= math.sqrt(dr*dr+dz*dz+dy*dy)      #on aurait pu utiliser sqrt(dm*dm + dn_s*dn_s)
+            Lmn+= math.sqrt(dm*dm+dn_s*dn_s)
             Lmns.append(Lmn)    #abcisse curviligne de l'âme dans le plan m-n
-#       print('Lmns= '+str(Lmns))
-#       print('n_s= '+str(n_s))
+            zeta_s.append(math.atan(dn_s/dm))
+        zeta_s[0]=zeta_s[1]
+        nsegm1=nseg-1
+#        print("n_s= ", n_s)
+#        print("r_s= ", r_s)
+#        print("v_s= ", v_s)
+        for j in range (1,nsegm1):  # pour rafiner le calcul de l'angle
+            zeta_s[j]=(zeta_s[j]+zeta_s[j+1])/2
+#        print('zeta_s= '+str(zeta_s))
+        fpAs.zeta_s=zeta_s 
+#        print('fpAs.zeta_s= '+str(fpAs.zeta_s))
+#        print('r_s= '+str(r_s))
+        fpAs.r_s=r_s
+#        print('fpAs.r_s= '+str(fpAs.r_s))
+        fpAs.z_s=z_s
+        fpAs.m_s=m_s
+        fpAs.n_s=n_s
+        fpAs.u_s=u_s
+        fpAs.v_s=v_s
+#        print('Lmns= '+str(Lmns))
+#        print('v_s= '+str(v_s))
+#        print('DiscCa_s.execute - fin')
     #
     #   Récupération des fp LoiEpaisseurs
     #
         LoiEpaisseurIe=App.ActiveDocument.getObject('LoiEpaisseur'+I+'es').Points
         LoiEpaisseurIi=App.ActiveDocument.getObject('LoiEpaisseur'+I+'is').Points 
-#       print('LoiEpaisseurIe= '+str(LoiEpaisseurIe))
+#        print('LoiEpaisseurIe= '+str(LoiEpaisseurIe))
+#       mise à l'échelle pour le bord de fuite tronqué par EpExLast et EpInLast
         Lmne=Lmn/LoiEpaisseurIe[nseg].x	    #corde de l'extrados
         Lmni=Lmn/LoiEpaisseurIi[nseg].x     #corde de l'intrados  
-#       print('Lmne= '+str(Lmne))
-#       print('Lmni= '+str(Lmne))
+#        print('Lmne= '+str(Lmne))
+#        print('Lmni= '+str(Lmne))
         #   Calcul des épaisseurs en fonction de la coordonnées s dans le plan meridien
-        Eex=[]
+        Eex=[] 
         Eey=[]
         Eix=[]
         Eiy=[]
-        for j in range(fpAs.Npts):
+        me_s=[]
+        mi_s=[]
+        for j in range(fpAs.Npts): #pour chaque point
             Eey.append(LoiEpaisseurIe[j].y*Lmne)    #l'épaisseur est corrigée en fonction de la longueur curviligne
             Eiy.append(LoiEpaisseurIi[j].y*Lmni)
             Eex.append(LoiEpaisseurIe[j].x*Lmne)   
             Eix.append(LoiEpaisseurIi[j].x*Lmni)
+#        Ee_s=[]
+        interpoEe=CubicSpline(Eex, Eey, extrapolate=True)
+        Ee_s=interpoEe(Lmns).tolist()
+#        print("Ee_s= ",Ee_s)
+ #       Ei_s=[]
+        interpoEi=CubicSpline(Eix, Eiy, extrapolate=True)
+        Ei_s=interpoEi(Lmns).tolist()
+ #       print("Ei_s= ",Ei_s)
+        fpAs.Ee_s=Ee_s
+        fpAs.Ei_s=Ei_s
+        for j in range(fpAs.Npts):   #pour chaque point jusqu'à nseg
+            me_s.append(m_s[j]-Ee_s[j]*math.sin(zeta_s[j]))
+            mi_s.append(m_s[j]-Ei_s[j]*math.sin(zeta_s[j]))
+#        print("me_s= ",me_s)
+ #       print("mi_s= ",mi_s)
+        #interpolation des r et z correspondant aux me_s et mi_s
+        interpoR=CubicSpline(m_s, r_s)
+        re_s=interpoR(me_s).tolist() #Calcul par interpolation de re_s fonction de me_s 
+        ri_s=interpoR(mi_s).tolist() #Calcul par interpolation de ri_s fonction de me_s 
+        interpoZ=CubicSpline(m_s, z_s)
+        ze_s=interpoZ(me_s).tolist() #Calcul par interpolation de ze_s fonction de me_s 
+        zi_s=interpoZ(mi_s).tolist() #Calcul par interpolation de zi_s fonction de me_s 
+
+        ne_s=[]
+        ni_s=[]
+        ue_s=[]
+        ui_s=[]
+        ve_s=[]
+        vi_s=[]
+        ue=0
+        ui=0
+        ue_s.append(0)
+        ui_s.append(0)
+        ne_s.append(n_s[0]+Ee_s[0]*math.cos(zeta_s[0])) #*fpAs.SensCascade
+        ni_s.append(n_s[0]+Ei_s[0]*math.cos(zeta_s[0])) #*fpAs.SensCascade
+        ve_s.append(1000*ne_s[0]/re_s[0])
+        vi_s.append(1000*ni_s[0]/ri_s[0]) 
+        
+        for j in range(1,fpAs.Npts): #pour chaque point jusqu'à nseg
+            ne_s.append(n_s[j]+Ee_s[j]*math.cos(zeta_s[j])) #*fpAs.SensCascade
+            ni_s.append(n_s[j]+Ei_s[j]*math.cos(zeta_s[j])) #*fpAs.SensCascade
+#            ue_s.append(ue_s[j-1]+1000*(me_s[j]-me_s[j-1])/(re_s[j]))
+            ue_s.append(u_s[j]+1000*(me_s[j]-m_s[j])/(r_s[j]))
+#            ue=u_s[j]+(m_s[j]-me_s[j])*math.log(re_s[j])
+#            ue_s.append(ue) 
+#            ui_s.append(ui_s[j-1]+1000*(mi_s[j]-mi_s[j-1])/(ri_s[j]))
+            ui_s.append(u_s[j]+1000*(mi_s[j]-m_s[j])/(r_s[j]))
+#            ui=u_s[j]+(m_s[j]-mi_s[j])*math.log(ri_s[j])
+#            ui_s.append(ui)
+            dnes=n_s[j]-ne_s[j]
+            ve_s.append(v_s[j]-1000*(dnes)/re_s[j])
+#            ve_s.append(1000*ne_s[j]/re_s[j])
+#            print(I, ne_s[j], re_s[j], ve_s[j])
+            dnis=n_s[j]-ni_s[j]
+            vi_s.append(v_s[j]-1000*(dnis)/ri_s[j])
+#            vi_s.append(1000*ni_s[j]/ri_s[j])
+#            print("me_s[j]= ", me_s[j], "me_s[j-1]= ", me_s[j-1], "r_s[j]= ", r_s[j])
+#        print("ue_s= ", ue_s)
+#        print("me_s= ", me_s)
+
     #   stockage dans fpAs
 #       print('Eey= '+str(Eey))
 #       print('Eiy= '+str(Eiy))
 #       print('Eex= '+str(Eex))
 #       print('Eix= '+str(Eix))
-        fpAs.r_s=r_s
-        fpAs.z_s=z_s
-        fpAs.m_s=m_s
-        fpAs.n_s=n_s
-        fpAs.u_s=u_s
-        Ee_s=[]
-        Ee_ss=[]
-        if (not np.all(np.diff(Eex) > 0)): App.Console.PrintWarning(translate("Beltrami","Eex is not monotonically increasing")+ "\n")
-        cs=CubicSpline(Eex, Eey)
-        Ee_s=cs(Lmns)
-#        Ee_s=np.interp(Lmns,Eex,Eey)
-        Ei_s=[]
-        Ei_ss=[]
-        v_ss=[]
-        if (not np.all(np.diff(Eix) > 0)): App.Console.PrintWarning(translate("Beltrami","Eix is not monotonically increasing")+ "\n")
-        cs=CubicSpline(Eix, Eiy)
-        Ei_s=cs(Lmns)
-#        Ei_s=np.interp(Lmns,Eix,Eiy)
-        for j in range(fpAs.Npts):
-            Ee_ss.append(Ee_s[j])
-            Ei_ss.append(Ei_s[j])
-            v_ss.append(v_s[j])
-        fpAs.v_s=v_ss
-        fpAs.Ee_s=Ee_ss
-        fpAs.Ei_s=Ei_ss
+        fpAs.re_s=re_s
+        fpAs.ze_s=ze_s
+        fpAs.me_s=me_s
+        fpAs.ne_s=ne_s
+        fpAs.ue_s=ue_s
+        fpAs.ve_s=ve_s
+        fpAs.ri_s=ri_s
+        fpAs.zi_s=zi_s
+        fpAs.mi_s=mi_s
+        fpAs.ni_s=ni_s
+        fpAs.ui_s=ui_s
+        fpAs.vi_s=vi_s
         fpAs.Points=self.insertionPoints(t,u_s,v_s)
         fpAs.Shape = Part.Compound([Part.Vertex(k) for k in fpAs.Points])
-#       print('v_s')
-#       print(v_s)
-##       print('fpAs.Shape.Compounds[0].Vertexes[k]')
-#        for k in range(fpAs.Npts): debug(fpAs.Shape.Compounds[0].Vertexes[k].Point)
-#       print('DiscCa_s.execute - fin')
+#        print('DiscCa_s.execute fin')
         return
+
     def onChanged(self, fpAs, prop):
-#       print('DiscAs_s.onChanged propriété changée: '+prop)
-        if (prop == "Npts"):
-    #       print('on effectue le changement')
-            self.execute(fpAs)
+#        print('DiscAs_s.onChanged propriété changée: '+prop)
+        if (prop == "Npts"): self.execute(fpAs)
+
         return
 
 class DiscCl_s:
@@ -3216,29 +3393,29 @@ class DiscCl_s:
         return
         
 class DiscCli_s:
-    def __init__(self, fpLi, fpAs, Npts, SensCascade, i):
-#       print('DiscCli_s.init')
+    def __init__(self, fpLi, fpAs, Npts, i):
+#        print('DiscCli_s.init')
         fpLi.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLi.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
-        fpLi.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=SensCascade
+#        fpLi.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fpAs.SensCascade
         fpLi.addProperty("App::PropertyFloatList", "ni_j", "Discretization", "Loi épaisseur intrados").ni_j
         fpLi.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLi.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
         fpLi.Proxy=self
         self.execute(fpLi)
-#       print('DiscCli_s.init - fin')
+#        print('DiscCli_s.init - fin')
         return
     def execute(self,fpLi):
-#       print('DiscCli_s.execute')
+#        print('DiscCli_s.execute')
 #       print('fpLi.Npts = '+str(fpLi.Npts))
-#       print('fpLi.SensCascade = '+str(fpLi.SensCascade))
         nseg=fpLi.Npts-1
-        m_s=fpLi.fp_origine.m_s
-        n_s=fpLi.fp_origine.n_s
+        m_s=fpLi.fp_origine.mi_s
+        n_s=fpLi.fp_origine.ni_s
         Ei_s=fpLi.fp_origine.Ei_s
-#       print('m_s = '+str(m_s))
-#       print('n_s = '+str(n_s))
-#       print('Ei_s = '+str(Ei_s))
+#        print('m_s = '+str(m_s))
+#        print('n_s = '+str(n_s))
+#        print('Ei_s = '+str(Ei_s))
+
         LoiLongueursi=[]
         ni_j=[]
         j=0
@@ -3250,14 +3427,15 @@ class DiscCli_s:
     #   
         for j in range(1,fpLi.Npts):
         #   execute de la géométrie dans le plan de cascade L
-            nij=n_s[j] + fpLi.SensCascade * Ei_s[j]
+            nij=n_s[j]         
             ni_j.append(nij)
             pLi=App.Vector(0,m_s[j],nij)
             LoiLongueursi.append(pLi)
+
         fpLi.ni_j=ni_j
         fpLi.Points=LoiLongueursi
         fpLi.Shape = Part.Compound([Part.Vertex(k) for k in fpLi.Points])
-#       print('DiscCli_s.execute - fin')
+#        print('DiscCli_s.execute - fin')
         return
     def onChanged(self, fpLi, prop):
 #       print('DiscCli_s.onChanged propriété changée: '+prop)
@@ -3268,25 +3446,24 @@ class DiscCli_s:
         return
         
 class DiscCle_s:
-    def __init__(self, fpLe, fpAs, Npts, SensCascade,i):
+    def __init__(self, fpLe, fpAs, Npts, i):
+#        print('DiscCle_s')
         fpLe.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLe.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
-        fpLe.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=SensCascade
+#        fpLe.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fpAs.SensCascade
         fpLe.addProperty("App::PropertyFloatList", "ne_j", "Discretization", "Loi épaisseur extrados").ne_j
         fpLe.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
         fpLe.Proxy=self
         self.execute(fpLe)
+#        print('DiscCle_s fin')
         return
     def execute(self,fpLe):
-#       print('DiscCle_s.execute')
+#        print('DiscCle_s.execute')
         nseg=fpLe.Npts-1
-        m_s=fpLe.fp_origine.m_s
-        n_s=fpLe.fp_origine.n_s
+        m_s=fpLe.fp_origine.me_s
+        n_s=fpLe.fp_origine.ne_s
         Ee_s=fpLe.fp_origine.Ee_s
-#       print('m_s = '+str(m_s))
-#       print('n_s = '+str(n_s))
-#       print('Ee_s = '+str(Ee_s))
         LoiLongueurse=[]
         ne_j=[]
         j=0
@@ -3294,17 +3471,17 @@ class DiscCle_s:
         pLe=App.Vector(0,m_s[j],n_s[j])
         LoiLongueurse.append(pLe)
     #
-    #   Calcul de la face extrados dans le plan cascade L
+    #   Calcul de la face extrados dans le plan des longueurs
     #   
         for j in range(1,fpLe.Npts):
-            nej=n_s[j] + fpLe.SensCascade*Ee_s[j]
+            nej=n_s[j]
             ne_j.append(nej)
             pLe=App.Vector(0.,m_s[j],nej)
             LoiLongueurse.append(pLe)
         fpLe.ne_j=ne_j
         fpLe.Points=LoiLongueurse
         fpLe.Shape = Part.Compound([Part.Vertex(k) for k in fpLe.Points])
-#       print('DiscCle_s.execute - fin')
+#        print('DiscCle_s.execute - fin')
         return
     def onChanged(self, fpLe, prop):
 #       print('DiscCle_s.onChanged propriété changée: '+prop)
@@ -3326,25 +3503,19 @@ class DiscCe_s:
         return
     def execute(self,fpAe):
 #       print('DiscCe_s.execute')
-        r_s=fpAe.fp_origine1.r_s
-        n_s=fpAe.fp_origine1.n_s
-        u_s=fpAe.fp_origine1.u_s
-        v_s=fpAe.fp_origine1.v_s
-        ne_j=fpAe.fp_origine2.ne_j
+        r_s=fpAe.fp_origine1.re_s
+        n_s=fpAe.fp_origine1.ne_s
+        u_s=fpAe.fp_origine1.ue_s
+        v_s=fpAe.fp_origine1.ve_s
 #       print('r_s = '+str(r_s))
 #       print('n_s = '+str(n_s))
-#       print('u_s = '+str(u_s))
-#       print('v_s = '+str(v_s))
+#        print('u_s = '+str(u_s))
+#        print('v_s = '+str(v_s))
 #       print('ne_j = '+str(ne_j))
-        j=0
-        ve_j=[]
-        ve_j.append(v_s[j])
+
         LoiCascadee=[]
-        pAe=App.Vector(0,u_s[j],v_s[j])
-        LoiCascadee.append(pAe)
-        for j in range(1,fpAe.Npts):
-            ve_j.append(v_s[j]+(ne_j[j]-n_s[j])*1000./r_s[j])
-            pAe=App.Vector(0,u_s[j],ve_j[j])
+        for j in range(fpAe.Npts):
+            pAe=App.Vector(0,u_s[j],v_s[j])
             LoiCascadee.append(pAe)
         fpAe.Points=LoiCascadee
         fpAe.Shape = Part.Compound([Part.Vertex(k) for k in fpAe.Points])
@@ -3368,20 +3539,13 @@ class DiscCi_s:
         self.execute(fpAi)
         return
     def execute(self,fpAi):
-        r_s=fpAi.fp_origine1.r_s
-        n_s=fpAi.fp_origine1.n_s
-        u_s=fpAi.fp_origine1.u_s
-        v_s=fpAi.fp_origine1.v_s
-        ni_j=fpAi.fp_origine2.ni_j
-        j=0
-        vi_j=[]
-        vi_j.append(v_s[j])
+        r_s=fpAi.fp_origine1.ri_s
+        n_s=fpAi.fp_origine1.ni_s
+        u_s=fpAi.fp_origine1.ui_s
+        v_s=fpAi.fp_origine1.vi_s
         LoiCascadei=[]
-        pAi=App.Vector(0,u_s[j],v_s[j])            
-        LoiCascadei.append(pAi)
-        for j in range(1,fpAi.Npts):
-            vi_j.append(v_s[j]+(ni_j[j]-n_s[j])*1000./r_s[j])
-            pAi=App.Vector(0,u_s[j],vi_j[j])
+        for j in range(fpAi.Npts):
+            pAi=App.Vector(0,u_s[j],v_s[j])
             LoiCascadei.append(pAi)
         fpAi.Points=LoiCascadei
         fpAi.Shape = Part.Compound([Part.Vertex(k) for k in fpAi.Points])

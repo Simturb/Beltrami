@@ -63,6 +63,10 @@ With new release, reading of previous release generated file can present some bu
 <details>
   <summary>Release notes</summary>
   
+	### Release 1.3.1 :
+	General revision of thickness law to replace tangential thickness by transversal thickness: more convenient for design. Minors bugs corrected. Examples updated accordingly.
+	Transparent for user, same interface. Theory and user manual updated.
+	
     ### Release 1.1 :
     Release 0.6.40 of CurvesWB allows to some bugs to popup: corrected.
     For issue "Add support for translation of the strings", for the moment I removed the French translation. All is in English now. Code for translation are already incorporated. Waiting for translation files.
