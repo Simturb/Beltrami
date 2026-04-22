@@ -27,7 +27,7 @@ class beltrami:
     #
     #   Initialisation du FeaturePython Parametres
     #
-        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.3.1"
+        fp.addProperty("App::PropertyString",           "Release",        "Base",translate("Beltrami","Release number")).Release="1.3.3"
         fp.addProperty("App::PropertyInteger",          "Naubes",         "Base",translate("Beltrami","Number of blades")).Naubes=13
         fp.addProperty("App::PropertyIntegerConstraint","Nfilets",        "Base",translate("Beltrami","Number of filets(steam lines)")).Nfilets=(6,2,65,1)
         fp.addProperty("App::PropertyIntegerConstraint","preNfilets",     "Base","Nombre de filets précédents").preNfilets=0
@@ -2248,7 +2248,7 @@ class beltrami:
         #   Calcul de Usmax pour chaque filet qui dépend de Npts    
             Usmax=self.CascadeUsmax(i)
     #       print('Usmax= '+str(Usmax))
-#            print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
+#           print('SensCascade, Sens, CascadeRotation= ',fp.SensCascade, fp.Sens, fp.CascadeRotation)
         # Les informations pour les points du BSpline pour Cascade
             fpAa.addProperty("App::PropertyVector","a0","Contraintes","Position(u,v)").a0=App.Vector(0,fp.Sens*1000.*math.radians(Te.Points[i].z),0)
             fpAa.addProperty("App::PropertyVector","a1","Contraintes","Position(alpha,poids,long)").a1=App.Vector(fp.SensCascade*Ae.Points[i].z, We.Points[i].z, Le.Points[i].z)
@@ -2391,11 +2391,9 @@ class beltrami:
             fpLa.recompute()
                 #       extrados
             fpLe = App.ActiveDocument.getObject('FiletCLe'+I)
-#            fpLe.SensCascade=fp.SensCascade
             fpLe.recompute()
                 #       intrados
             fpLi = App.ActiveDocument.getObject('FiletCLi'+I)
-#            fpLi.SensCascade=fp.SensCascade
             fpLi.recompute()
         #
         #
@@ -2577,7 +2575,6 @@ class beltrami:
         #   Calcul des points pour générer les surfaces en 3D
         self.calculVoile(fp)
         self.calculSurf(fp)
-#        self.calculVolume(fp)
 #       print('voile3D - fin '+str(App.ActiveDocument.Objects.__len__()))
         return
     def calculVoile(self, fp):
@@ -2860,47 +2857,6 @@ class beltrami:
         SurfI.recompute()
         SurfIE.recompute()
         return
-    def calculVolume(self,fp):
-        #
-        # Calcul des volumes à partir des surface
-        #
-        RevIext=App.ActiveDocument.addObject("Part::Revolution","RevIext")
-        RevIext.Source = App.ActiveDocument.SurfIext
-        RevIext.Axis = (0.000000000000000,0.000000000000000,1.000000000000000)
-        RevIext.Base = (0.000000000000000,0.000000000000000,0.000000000000000)
-        RevIext.Angle = fp.Sens*360/fp.Naubes
-        RevIext.Solid = False
-        RevIext.AxisLink = None
-        RevIext.Symmetric = False
-        App.ActiveDocument.SurfIext.Visibility = False
-        RevIext.ViewObject.ShapeColor=getattr(RevIext.getLinkedObject(True).ViewObject,'ShapeColor',RevIext.ViewObject.ShapeColor)
-        RevIext.ViewObject.LineColor=getattr(App.ActiveDocument.SurfIext.getLinkedObject(True).ViewObject,'LineColor',RevIext.ViewObject.LineColor)
-        RevIext.ViewObject.PointColor=getattr(App.ActiveDocument.SurfIext.getLinkedObject(True).ViewObject,'PointColor',RevIext.ViewObject.PointColor)
-        RevIext.recompute()
-        RevE=App.ActiveDocument.addObject("Part::Revolution","RevE")
-        RevE.Source = App.ActiveDocument.SurfE
-        RevE.Axis = (0.000000000000000,0.000000000000000,1.000000000000000)
-        RevE.Base = (0.000000000000000,0.000000000000000,0.000000000000000)
-        RevE.Angle = -fp.Sens*360/fp.Naubes
-        RevE.Solid = False
-        RevE.AxisLink = None
-        RevE.Symmetric = False
-        App.ActiveDocument.SurfE.Visibility = False
-        RevE.ViewObject.ShapeColor=getattr(RevE.getLinkedObject(True).ViewObject,'ShapeColor',RevE.ViewObject.ShapeColor)
-        RevE.ViewObject.LineColor=getattr(App.ActiveDocument.SurfE.getLinkedObject(True).ViewObject,'LineColor',RevE.ViewObject.LineColor)
-        RevE.ViewObject.PointColor=getattr(App.ActiveDocument.SurfE.getLinkedObject(True).ViewObject,'PointColor',RevE.ViewObject.PointColor)
-        RevE.recompute()
-        Volume=App.activeDocument().addObject("Part::MultiCommon","Volume")
-        Volume.Shapes = [RevIext,RevE]
-        RevIext.Visibility=False
-        RevE.Visibility=False
-        Volume.ViewObject.ShapeColor=getattr(RevIext.getLinkedObject(True).ViewObject,'ShapeColor', Volume.ViewObject.ShapeColor)
-        Volume.ViewObject.DisplayMode=getattr(RevIext.getLinkedObject(True).ViewObject,'DisplayMode',Volume.ViewObject.DisplayMode)
-        App.ActiveDocument.Domaine3D.addObject(RevIext)
-        App.ActiveDocument.Domaine3D.addObject(RevE)
-        App.ActiveDocument.Domaine3D.addObject(Volume)
-        App.ActiveDocument.recompute()
-        return
 
 class DiscPoints3Da:
     def __init__(self, fpVA, fpAs): 
@@ -3125,12 +3081,11 @@ class DiscEp_s(Disc_s):
 
 class DiscCa_s(Disc_s):
     def __init__(self, fpAs, fpAa, fp, i):
-#        print('DiscCA_s.__init__',fp.SensCascade,i)
+
         fpAs.addProperty("App::PropertyLink", "fp",      "Discretization",   "Paramètres d'origine").fp= fp
         fpAs.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAa
         fpAs.addProperty("App::PropertyVectorList",   "Points",    "Discretization",   "Points").Points
         fpAs.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =fp.Npts
-#        fpAs.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fp.SensCascade
         fpAs.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpAs.addProperty("App::PropertyFloatList", "r_s", "Discretization", "Coor. r(s)").r_s
         fpAs.addProperty("App::PropertyFloatList", "z_s", "Discretization", "Coor. z(s)").z_s
@@ -3158,8 +3113,6 @@ class DiscCa_s(Disc_s):
 #        print('DiscCA+s.__init__ - fin')
         return
     def execute(self, fpAs):
-#        print('DiscCa_s.execute',fpAs.fp.SensCascade)
-#        fpAs.SensCascade=fpAs.fp.SensCascade
 #        fpAs.Npts=fpAs.fp.Npts
 #        if(fpAs.State=="Touched"): return
     #   Synchronisation des u,v avec l'abscisse s du plan meridien
@@ -3246,7 +3199,6 @@ class DiscCa_s(Disc_s):
         fpAs.v_s=v_s
 #        print('Lmns= '+str(Lmns))
 #        print('v_s= '+str(v_s))
-#        print('DiscCa_s.execute - fin')
     #
     #   Récupération des fp LoiEpaisseurs
     #
@@ -3281,8 +3233,8 @@ class DiscCa_s(Disc_s):
         fpAs.Ee_s=Ee_s
         fpAs.Ei_s=Ei_s
         for j in range(fpAs.Npts):   #pour chaque point jusqu'à nseg
-            me_s.append(m_s[j]-Ee_s[j]*math.sin(zeta_s[j]))
-            mi_s.append(m_s[j]-Ei_s[j]*math.sin(zeta_s[j]))
+            me_s.append(m_s[j]-Ee_s[j]*math.sin(zeta_s[j])*fpAs.fp.SensCascade)
+            mi_s.append(m_s[j]-Ei_s[j]*math.sin(zeta_s[j])*fpAs.fp.SensCascade)
 #        print("me_s= ",me_s)
  #       print("mi_s= ",mi_s)
         #interpolation des r et z correspondant aux me_s et mi_s
@@ -3303,14 +3255,14 @@ class DiscCa_s(Disc_s):
         ui=0
         ue_s.append(0)
         ui_s.append(0)
-        ne_s.append(n_s[0]+Ee_s[0]*math.cos(zeta_s[0])) #*fpAs.SensCascade
-        ni_s.append(n_s[0]+Ei_s[0]*math.cos(zeta_s[0])) #*fpAs.SensCascade
+        ne_s.append(n_s[0]+Ee_s[0]*math.cos(zeta_s[0])*fpAs.fp.SensCascade) 
+        ni_s.append(n_s[0]+Ei_s[0]*math.cos(zeta_s[0])*fpAs.fp.SensCascade) 
         ve_s.append(1000*ne_s[0]/re_s[0])
         vi_s.append(1000*ni_s[0]/ri_s[0]) 
         
         for j in range(1,fpAs.Npts): #pour chaque point jusqu'à nseg
-            ne_s.append(n_s[j]+Ee_s[j]*math.cos(zeta_s[j])) #*fpAs.SensCascade
-            ni_s.append(n_s[j]+Ei_s[j]*math.cos(zeta_s[j])) #*fpAs.SensCascade
+            ne_s.append(n_s[j]+Ee_s[j]*math.cos(zeta_s[j])*fpAs.fp.SensCascade) 
+            ni_s.append(n_s[j]+Ei_s[j]*math.cos(zeta_s[j])*fpAs.fp.SensCascade) 
 #            ue_s.append(ue_s[j-1]+1000*(me_s[j]-me_s[j-1])/(re_s[j]))
             ue_s.append(u_s[j]+1000*(me_s[j]-m_s[j])/(r_s[j]))
 #            ue=u_s[j]+(m_s[j]-me_s[j])*math.log(re_s[j])
@@ -3397,7 +3349,6 @@ class DiscCli_s:
 #        print('DiscCli_s.init')
         fpLi.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLi.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
-#        fpLi.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fpAs.SensCascade
         fpLi.addProperty("App::PropertyFloatList", "ni_j", "Discretization", "Loi épaisseur intrados").ni_j
         fpLi.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLi.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points
@@ -3450,7 +3401,6 @@ class DiscCle_s:
 #        print('DiscCle_s')
         fpLe.addProperty("App::PropertyLink", "fp_origine",      "Discretization",   "Courbe discrétisée d'origine").fp_origine = fpAs
         fpLe.addProperty("App::PropertyInteger", "Npts", "Parameter", "Nombre de points à discrétiser").Npts =Npts
-#        fpLe.addProperty("App::PropertyIntegerConstraint","SensCascade","Parameter","Rotation(1:anti-horaire, -1:horaire)").SensCascade=fpAs.SensCascade
         fpLe.addProperty("App::PropertyFloatList", "ne_j", "Discretization", "Loi épaisseur extrados").ne_j
         fpLe.addProperty("App::PropertyInteger",   "i",    "Discretization",   "No du filet").i=i
         fpLe.addProperty("App::PropertyVectorList",   "Points",    "Points extrados",   "Points").Points

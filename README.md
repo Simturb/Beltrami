@@ -63,6 +63,9 @@ With new release, reading of previous release generated file can present some bu
 <details>
   <summary>Release notes</summary>
   
+	### Release 1.3.3 :
+	Correction of a bug on geometry names.
+	
 	### Release 1.3.1 :
 	General revision of thickness law to replace tangential thickness by transversal thickness: more convenient for design. Minors bugs corrected. Examples updated accordingly.
 	Transparent for user, same interface. Theory and user manual updated.
